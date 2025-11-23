@@ -1,0 +1,66 @@
+.clubs {
+    padding: 6rem 1rem;
+    background-color: var(--bg-secondary);
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.clubsList {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.clubItem {
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 1.25rem;
+    transition: all 0.2s ease;
+}
+
+.clubItem:hover {
+    border-color: var(--accent-secondary);
+    transform: translateX(4px);
+}
+
+.clubContent {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.bullet {
+    color: var(--accent-highlight);
+    font-family: var(--font-mono);
+    font-size: 1.25rem;
+    flex-shrink: 0;
+}
+
+.clubInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    flex: 1;
+}
+
+.clubName {
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.clubRole {
+    font-size: 0.9rem;
+    color: var(--accent-tertiary);
+}
+
+@media (max-width: 768px) {
+    .clubs {
+        padding: 4rem 1rem;
+    }
+}
