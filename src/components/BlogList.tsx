@@ -10,7 +10,7 @@ interface BlogListProps {
     posts: PostData[];
 }
 
-export default function BlogList({ posts }: BlogListProps) {
+export default function BlogList({ posts }: { posts: any[] }) {
     if (posts.length === 0) {
         return (
             <div className={styles.empty}>
@@ -23,13 +23,22 @@ export default function BlogList({ posts }: BlogListProps) {
         <div className={styles.grid}>
             {posts.map((post, index) => (
                 <motion.article
-                    key={post.id}
+                    key={post._id}
                     className={styles.card}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1, duration: 0.5 }}
                 >
-                    <Link href={`/blog/${post.id}`} className={styles.cardLink}>
+                    <Link href={`/blog/${post.slug.current}`} className={styles.cardLink}>
+                        {post.mainImage?.asset?.url && (
+                            <div className={styles.imageContainer}>
+                                <img
+                                    src={post.mainImage.asset.url}
+                                    alt={post.title}
+                                    className={styles.image}
+                                />
+                            </div>
+                        )}
                         <div className={styles.cardContent}>
                             <h2 className={styles.cardTitle}>{post.title}</h2>
                             {post.excerpt && (
@@ -38,16 +47,11 @@ export default function BlogList({ posts }: BlogListProps) {
                             <div className={styles.meta}>
                                 <div className={styles.metaItem}>
                                     <Calendar size={16} />
-                                    <span>{post.date}</span>
+                                    <span>{new Date(post.publishedAt).toLocaleDateString()}</span>
                                 </div>
-                                {post.tags && post.tags.length > 0 && (
-                                    <div className={styles.tags}>
-                                        {post.tags.map((tag) => (
-                                            <span key={tag} className={styles.tag}>
-                                                <Tag size={14} />
-                                                {tag}
-                                            </span>
-                                        ))}
+                                {post.readTime && (
+                                    <div className={styles.metaItem}>
+                                        <span>• {post.readTime}</span>
                                     </div>
                                 )}
                             </div>
