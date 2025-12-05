@@ -4,6 +4,8 @@ import { PortableText } from '@portabletext/react';
 import { client, urlFor } from '@/lib/sanity';
 import Navbar from '@/components/Navbar';
 import styles from './post.module.css';
+// import SyntaxHighlighter from "react-syntax-highlighter";
+// import { dracula } from "react-syntax-highlighter/dist/esm/styles/hljs";
 
 export const revalidate = 60;
 
