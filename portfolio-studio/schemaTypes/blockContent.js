@@ -15,6 +15,24 @@ export default defineType({
   name: 'blockContent',
   type: 'array',
   of: [
+    {
+      type: "code",
+      name: "code",
+      title: "Code Blocks",
+      options: {
+        languageAlternatives: [
+          { title: "", value: "" },
+          { title: "Javascript", value: "javascript" },
+          { title: "HTML", value: "html" },
+          { title: "CSS", value: "css" },
+          { title: "React", value: "react" },
+          { title: "Node", value: "node" },
+          { title: "MySql", value: "mysql" },
+          { title: "ZH", value: "zh", mode: "sh" },
+        ],
+        withFilename: false,
+      },
+    },
     defineArrayMember({
       title: 'Block',
       type: 'block',
