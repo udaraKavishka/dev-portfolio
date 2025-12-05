@@ -3,32 +3,7 @@
 import { motion } from 'framer-motion';
 import { GraduationCap, Calendar } from 'lucide-react';
 import styles from './Education.module.css';
-
-interface EducationItem {
-    degree: string;
-    institution: string;
-    period: string;
-    description?: string;
-}
-
-const education: EducationItem[] = [
-    {
-        degree: 'Bachelor of Science in Computer Science',
-        institution: 'University Name',
-        period: '2018 - 2022',
-        description: 'Focused on cloud computing, distributed systems, and software engineering.',
-    },
-    {
-        degree: 'AWS Certified Solutions Architect',
-        institution: 'Amazon Web Services',
-        period: '2023',
-    },
-    {
-        degree: 'Certified Kubernetes Administrator (CKA)',
-        institution: 'Cloud Native Computing Foundation',
-        period: '2023',
-    },
-];
+import { educationData } from '@/data/content';
 
 export default function Education() {
     return (
@@ -36,7 +11,7 @@ export default function Education() {
             <div className={styles.container}>
                 <h2 className="section-title">Education & Certifications</h2>
                 <div className={styles.timeline}>
-                    {education.map((item, index) => (
+                    {educationData.map((item, index) => (
                         <motion.div
                             key={index}
                             className={styles.timelineItem}
