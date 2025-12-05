@@ -2,8 +2,9 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Send, Github, Linkedin, Mail, Twitter } from 'lucide-react';
+import { Send } from 'lucide-react';
 import styles from './Contact.module.css';
+import { contactData } from '@/data/content';
 
 export default function Contact() {
     const [formData, setFormData] = useState({
@@ -63,12 +64,7 @@ export default function Contact() {
         }
     };
 
-    const socialLinks = [
-        { icon: Github, href: 'https://github.com', label: 'GitHub' },
-        { icon: Linkedin, href: 'https://linkedin.com', label: 'LinkedIn' },
-        { icon: Twitter, href: 'https://twitter.com', label: 'Twitter' },
-        { icon: Mail, href: 'mailto:contact@example.com', label: 'Email' },
-    ];
+    const { socialLinks } = contactData;
 
     return (
         <section id="contact" className={styles.contact}>
