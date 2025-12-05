@@ -1,18 +1,11 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Terminal, Github, Linkedin, Mail } from 'lucide-react';
 import styles from './Hero.module.css';
+import { heroData } from '@/data/content';
 
 export default function Hero() {
-    const techStack = [
-        { name: 'Docker', icon: '🐳' },
-        { name: 'Kubernetes', icon: '☸️' },
-        { name: 'AWS', icon: '☁️' },
-        { name: 'Terraform', icon: '🏗️' },
-        { name: 'Jenkins', icon: '🔧' },
-        { name: 'Linux', icon: '🐧' },
-    ];
+    const { name, tagline, bio, techStack, profileImage, socialLinks } = heroData;
 
     return (
         <section id="about" className={styles.hero}>
@@ -38,9 +31,9 @@ export default function Hero() {
                                 <span className={styles.command}>whoami</span>
                             </div>
                             <div className={styles.output}>
-                                <h1 className={styles.name}>DevOps Engineer</h1>
+                                <h1 className={styles.name}>{name}</h1>
                                 <p className={styles.tagline}>
-                                    Building scalable infrastructure and automating the impossible
+                                    {tagline}
                                 </p>
                             </div>
                             <div className={styles.terminalLine}>
@@ -49,9 +42,7 @@ export default function Hero() {
                             </div>
                             <div className={styles.output}>
                                 <p className={styles.bio}>
-                                    Passionate about cloud infrastructure, automation, and continuous delivery.
-                                    I specialize in designing and implementing robust CI/CD pipelines,
-                                    containerized applications, and infrastructure as code solutions.
+                                    {bio}
                                 </p>
                             </div>
                         </div>
@@ -65,9 +56,8 @@ export default function Hero() {
                             transition={{ delay: 0.3, duration: 0.5 }}
                         >
                             <div className={styles.profileImage}>
-                                {/* Replace with your actual image */}
                                 <img
-                                    src="https://via.placeholder.com/150"
+                                    src={profileImage}
                                     alt="Profile"
                                     className={styles.profileImg}
                                 />
@@ -90,15 +80,17 @@ export default function Hero() {
                                 </div>
                             </div>
                             <div className={styles.social}>
-                                <a href="https://github.com" target="_blank" rel="noopener noreferrer" className={styles.socialLink}>
-                                    <Github size={20} />
-                                </a>
-                                <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className={styles.socialLink}>
-                                    <Linkedin size={20} />
-                                </a>
-                                <a href="mailto:contact@example.com" className={styles.socialLink}>
-                                    <Mail size={20} />
-                                </a>
+                                {socialLinks.map((link) => (
+                                    <a
+                                        key={link.label}
+                                        href={link.href}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className={styles.socialLink}
+                                    >
+                                        <link.icon size={20} />
+                                    </a>
+                                ))}
                             </div>
                         </motion.div>
                     </div>
