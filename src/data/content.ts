@@ -23,10 +23,11 @@ export const heroData = {
         { name: 'AWS', icon: '☁️' },
         { name: 'Terraform', icon: '🏗️' },
         { name: 'Python', icon: '🐍' },
+        { name: 'ML', icon: '🤖' },
         { name: 'Jenkins', icon: '🔧' },
         { name: 'Linux', icon: '🐧' },
     ],
-    profileImage: "https://via.placeholder.com/150",
+    profileImage: "/profile.jpg",
     socialLinks: [
         { icon: Github, href: 'https://github.com/udaraKavishka', label: 'GitHub' },
         { icon: Linkedin, href: 'https://www.linkedin.com/in/udaranalawansa/', label: 'LinkedIn' },
@@ -252,7 +253,7 @@ export const contactData = {
     socialLinks: [
         { icon: Github, href: 'https://github.com/udaraKavishka', label: 'GitHub' },
         { icon: Linkedin, href: 'https://www.linkedin.com/in/udaranalawansa/', label: 'LinkedIn' },
-        { icon: Twitter, href: 'https://twitter.com', label: 'Twitter' },
+        // { icon: Twitter, href: 'https://twitter.com', label: 'Twitter' },
         { icon: Mail, href: 'mailto:udarakavishka13@gmail.com', label: 'Email' },
         { icon: Facebook, href: 'https://web.facebook.com/udara.nalawansa/', label: 'Facebook' },
         { icon: Instagram, href: 'https://instagram.com/_udara27', label: 'Instagram' },
