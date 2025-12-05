@@ -6,6 +6,25 @@ import html from 'remark-html';
 
 const postsDirectory = path.join(process.cwd(), 'posts');
 
+export interface SanityPost {
+    _id: string;
+    title: string;
+    slug: {
+        current: string;
+    };
+    publishedAt: string;
+    readTime?: string;
+    mainImage?: {
+        asset: {
+            url: string;
+        };
+        alt?: string;
+    };
+    body?: any;
+    excerpt?: string;
+    tags?: string[];
+}
+
 export interface PostData {
     id: string;
     date: string;
@@ -13,6 +32,8 @@ export interface PostData {
     excerpt?: string;
     tags?: string[];
     contentHtml?: string;
+    mainImage?: string; // For compatibility
+    readTime?: string; // For compatibility
     [key: string]: any;
 }
 
@@ -24,9 +45,28 @@ export function getSortedPostsData(): PostData[] {
 
     const fileNames = fs.readdirSync(postsDirectory);
     const allPostsData = fileNames.map((fileName) => {
-        const id = fileName.replace(/\.md$/, '');
         const fullPath = path.join(postsDirectory, fileName);
-        const fileContents = fs.readFileSync(fullPath, 'utf8');
+        const stat = fs.statSync(fullPath);
+        let fileContents = '';
+        let id = '';
+
+        if (stat.isDirectory()) {
+            // Check for README.md in the directory
+            const readmePath = path.join(fullPath, 'README.md');
+            if (fs.existsSync(readmePath)) {
+                fileContents = fs.readFileSync(readmePath, 'utf8');
+                id = fileName;
+            } else {
+                return null; // Skip directories without README.md
+            }
+        } else if (fileName.endsWith('.md')) {
+            // Handle legacy .md files directly in posts/
+            fileContents = fs.readFileSync(fullPath, 'utf8');
+            id = fileName.replace(/\.md$/, '');
+        } else {
+            return null; // Skip non-md files
+        }
+
         const matterResult = matter(fileContents);
 
         return {
@@ -35,7 +75,10 @@ export function getSortedPostsData(): PostData[] {
         } as PostData;
     });
 
-    return allPostsData.sort((a, b) => {
+    // Filter out nulls
+    const validPosts = allPostsData.filter((post): post is PostData => post !== null);
+
+    return validPosts.sort((a, b) => {
         if (a.date < b.date) {
             return 1;
         } else {
@@ -45,7 +88,17 @@ export function getSortedPostsData(): PostData[] {
 }
 
 export async function getPostData(id: string): Promise<PostData> {
-    const fullPath = path.join(postsDirectory, `${id}.md`);
+    let fullPath = path.join(postsDirectory, `${id}.md`);
+
+    // Check if it's a directory-based post first (preferred) or if the .md file doesn't exist
+    const dirPath = path.join(postsDirectory, id);
+    if (fs.existsSync(dirPath) && fs.statSync(dirPath).isDirectory()) {
+        const readmePath = path.join(dirPath, 'README.md');
+        if (fs.existsSync(readmePath)) {
+            fullPath = readmePath;
+        }
+    }
+
     const fileContents = fs.readFileSync(fullPath, 'utf8');
     const matterResult = matter(fileContents);
 
