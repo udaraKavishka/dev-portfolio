@@ -36,6 +36,10 @@ yarn-error.log*
 # vercel
 .vercel
 
+.agent
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+.agent/workflows/update-and-commit.md
+.agent/workflows/update-and-commit.md
