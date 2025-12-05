@@ -2,6 +2,7 @@
 
 A modern, professional portfolio website for DevOps engineers, featuring a Linux tiling window manager (Hyperland) aesthetic with terminal-inspired design elements.
 
+**🚀 Live Demo:** [udaradev.me](https://udaradev.me)
 
 ## 🌟 Features
 
@@ -25,32 +26,39 @@ A modern, professional portfolio website for DevOps engineers, featuring a Linux
    - Interactive hover effects
    - Tech stack badges
    - GitHub and live demo links
+   - **Data Source**: Managed via `src/data/content.ts`
 
 3. **Tech Stack**
    - Organized by category (Cloud, IaC, CI/CD, Monitoring, Programming)
    - Clean list format
    - Hover animations
+   - **Data Source**: Managed via `src/data/content.ts`
 
 4. **Education & Certifications**
    - Timeline layout
    - Degrees and certifications
    - Institution details
+   - **Data Source**: Managed via `src/data/content.ts`
 
 5. **Clubs & Societies**
    - List of memberships and roles
    - Clean, scannable format
+   - **Data Source**: Managed via `src/data/content.ts`
 
 6. **My Setup**
    - Hardware specifications
    - Software and tools
    - Services and applications
+   - **Data Source**: Managed via `src/data/content.ts`
 
 7. **Contact**
    - Contact form with validation
    - Social media links
    - Email integration ready
+   - **Data Source**: Managed via `src/data/content.ts`
 
 8. **Blog**
+   - Powered by **Sanity.io** (Headless CMS)
    - Markdown-based blog posts
    - Syntax-highlighted code blocks
    - Tags and metadata
@@ -73,10 +81,10 @@ A modern, professional portfolio website for DevOps engineers, featuring a Linux
 ### Icons
 - **Lucide React** - Beautiful, consistent icons
 
-### Blog
-- **Gray Matter** - Frontmatter parsing
-- **Remark** - Markdown processing
-- **Remark HTML** - HTML conversion
+### CMS (Blog)
+- **Sanity.io** - Headless CMS for managing blog posts
+- **Next-Sanity** - Sanity integration for Next.js
+- **Portable Text** - Rich text content rendering
 
 ## 📦 Installation
 
@@ -109,51 +117,30 @@ A modern, professional portfolio website for DevOps engineers, featuring a Linux
 
 ### Update Personal Information
 
-1. **Hero Section**
-   - Edit `src/components/Hero.tsx`
-   - Update name, bio, tagline, and social links
-   - Replace profile image in `public/` folder
+All personal data (Projects, Skills, Education, Setup, Contact info) is centralized in `src/data/content.ts`.
 
-2. **Projects**
-   - Edit `src/components/Projects.tsx`
-   - Update the `projects` array with your work
+1. **Edit Data File**
+   - Open `src/data/content.ts`
+   - Update the `heroData`, `projectsData`, `skillsData`, `educationData`, `clubsData`, `setupData`, and `contactData` objects with your own information.
 
-3. **Tech Stack**
-   - Edit `src/components/Skills.tsx`
-   - Modify the `skills` array
+2. **Profile Image**
+   - Replace the profile image in the `public/` folder (e.g., `public/profile.jpg`) and update the path in `heroData`.
 
-4. **Education**
-   - Edit `src/components/Education.tsx`
-   - Update the `education` array
+### Manage Blog Posts (Sanity CMS)
 
-5. **Clubs & Societies**
-   - Edit `src/components/Clubs.tsx`
-   - Modify the `clubs` array
+This project uses Sanity.io for blog content.
 
-6. **Setup**
-   - Edit `src/components/Setup.tsx`
-   - Update the `setupData` array with your hardware/software
+1. **Sanity Configuration**
+   - The Sanity configuration is located in `sanity.config.js` and `sanity.cli.js`.
+   - The client configuration is in `src/lib/sanity.ts`.
 
-7. **Contact**
-   - Edit `src/components/Contact.tsx`
-   - Update email and social media links
+2. **Sanity Studio**
+   - The Sanity Studio is embedded in the application (typically at `/studio` or a separate route, or run locally).
+   - To manage content locally, you might need to run the Sanity Studio command if configured, or access your Sanity project dashboard online.
+   - *Note: Check `package.json` for specific Sanity scripts if available, or use `npx sanity start` inside the `portfolio-studio` directory if it exists.*
 
-### Add Blog Posts
-
-Create markdown files in the `posts/` directory:
-
-```markdown
----
-title: 'Your Post Title'
-date: '2024-03-20'
-excerpt: 'Short description'
-tags: ['DevOps', 'Kubernetes']
----
-
-# Your Content Here
-
-Write your blog post content in markdown...
-```
+3. **Content Schema**
+   - Schemas are defined in `portfolio-studio/schemaTypes/` (or similar path depending on setup).
 
 ### Color Customization
 
@@ -185,9 +172,12 @@ npm run lint         # Run ESLint
 
 ### Vercel (Recommended)
 
+This project is deployed on [Vercel](https://vercel.com) and accessible at [udaradev.me](https://udaradev.me).
+
 1. Push your code to GitHub
-2. Import project in [Vercel](https://vercel.com)
-3. Deploy automatically on every push
+2. Import project in Vercel
+3. Add your custom domain (e.g., `udaradev.me`) in Vercel settings
+4. Deploy automatically on every push
 
 ### Netlify
 
@@ -196,37 +186,23 @@ npm run lint         # Run ESLint
 3. Build command: `npm run build`
 4. Publish directory: `.next`
 
-### Manual Deployment
-
-```bash
-npm run build
-# Upload .next folder to your hosting provider
-```
-
 ## 📂 Project Structure
 
 ```
 portfolio/
 ├── public/              # Static assets
-├── posts/              # Blog posts (markdown)
+├── portfolio-studio/    # Sanity Studio configuration & schemas
 ├── src/
 │   ├── app/
-│   │   ├── blog/       # Blog pages
+│   │   ├── blog/       # Blog pages (Sanity integration)
 │   │   ├── globals.css # Global styles
 │   │   ├── layout.tsx  # Root layout
 │   │   └── page.tsx    # Home page
 │   ├── components/     # React components
-│   │   ├── Navbar.tsx
-│   │   ├── Hero.tsx
-│   │   ├── Projects.tsx
-│   │   ├── Skills.tsx
-│   │   ├── Education.tsx
-│   │   ├── Clubs.tsx
-│   │   ├── Setup.tsx
-│   │   ├── Contact.tsx
-│   │   └── BlogList.tsx
+│   ├── data/           # Data files (content.ts)
 │   └── lib/
-│       └── posts.ts    # Blog utilities
+│       ├── sanity.ts   # Sanity client configuration
+│       └── posts.ts    # Legacy/Utility for posts
 ├── .agent/
 │   └── workflows/      # Custom workflows
 └── package.json
