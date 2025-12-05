@@ -3,11 +3,21 @@ import { Calendar, Tag, ArrowLeft } from 'lucide-react';
 import { PortableText } from '@portabletext/react';
 import { client, urlFor } from '@/lib/sanity';
 import Navbar from '@/components/Navbar';
+import SyntaxHighlighter from 'react-syntax-highlighter';
+import { dracula } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import styles from './post.module.css';
 // import SyntaxHighlighter from "react-syntax-highlighter";
 // import { dracula } from "react-syntax-highlighter/dist/esm/styles/hljs";
 
 export const revalidate = 60;
+
+const Code = ({ value }: any) => (
+    <div className="my-10">
+        <SyntaxHighlighter language={value?.language ?? 'text'} style={dracula}>
+            {value?.code ?? ''}
+        </SyntaxHighlighter>
+    </div>
+);
 
 export async function generateStaticParams() {
     const posts = await client.fetch(`*[_type == "post"]{ "slug": slug.current }`);
@@ -52,7 +62,8 @@ export default async function BlogPost({
                         />
                     </div>
                 )
-            )
+            ),
+            code: Code,
         }
     };
 
