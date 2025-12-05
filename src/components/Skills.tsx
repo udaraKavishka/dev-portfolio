@@ -4,34 +4,9 @@ import { motion } from 'framer-motion';
 import { useInView } from 'framer-motion';
 import { useRef } from 'react';
 import styles from './Skills.module.css';
+import { skillsData } from '@/data/content';
 
-interface Skill {
-    name: string;
-    category: string;
-}
-
-const skills: Skill[] = [
-    { name: 'Docker', category: 'Containerization' },
-    { name: 'Kubernetes', category: 'Orchestration' },
-    { name: 'AWS', category: 'Cloud' },
-    { name: 'Azure', category: 'Cloud' },
-    { name: 'GCP', category: 'Cloud' },
-    { name: 'Terraform', category: 'IaC' },
-    { name: 'Ansible', category: 'IaC' },
-    { name: 'CloudFormation', category: 'IaC' },
-    { name: 'Jenkins', category: 'CI/CD' },
-    { name: 'GitLab CI', category: 'CI/CD' },
-    { name: 'GitHub Actions', category: 'CI/CD' },
-    { name: 'ArgoCD', category: 'CI/CD' },
-    { name: 'Prometheus', category: 'Monitoring' },
-    { name: 'Grafana', category: 'Monitoring' },
-    { name: 'ELK Stack', category: 'Monitoring' },
-    { name: 'Python', category: 'Programming' },
-    { name: 'Bash', category: 'Programming' },
-    { name: 'Go', category: 'Programming' },
-];
-
-const categories = Array.from(new Set(skills.map((s) => s.category)));
+const categories = Array.from(new Set(skillsData.map((s) => s.category)));
 
 export default function Skills() {
     const ref = useRef(null);
@@ -52,7 +27,7 @@ export default function Skills() {
                         >
                             <h3 className={styles.categoryTitle}>{category}</h3>
                             <div className={styles.skillsList}>
-                                {skills
+                                {skillsData
                                     .filter((skill) => skill.category === category)
                                     .map((skill, index) => (
                                         <motion.div
