@@ -79,7 +79,7 @@ export const projectsData: ProjectItem[] = [
         id: 5,
         title: 'ParaWrite',
         description: 'A text paraphrasing tool that enables sentence by sentence editing with efficient processing and a clean, user friendly interface for improving written content.',
-        techStack: ['Harbor', 'Docker', 'Trivy', 'Nginx'],
+        techStack: ['Next.js', 'React', 'TypeScript', 'CSS Modules'],
         githubUrl: 'https://github.com/udaraKavishka/ParaWrite',
     },
     {
