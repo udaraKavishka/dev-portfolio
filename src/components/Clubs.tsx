@@ -4,19 +4,7 @@ import { motion } from 'framer-motion';
 import { useInView } from 'framer-motion';
 import { useRef } from 'react';
 import styles from './Clubs.module.css';
-
-interface Club {
-    name: string;
-    role: string;
-}
-
-const clubs: Club[] = [
-    { name: 'DevOps Community', role: 'Community Lead' },
-    { name: 'Cloud Native Student Group', role: 'Co-Founder' },
-    { name: 'Open Source Contributors Club', role: 'Active Member' },
-    { name: 'Linux User Group', role: 'Member' },
-    { name: 'Tech Meetup Organizer', role: 'Organizer' },
-];
+import { clubsData } from '@/data/content';
 
 export default function Clubs() {
     const ref = useRef(null);
@@ -27,7 +15,7 @@ export default function Clubs() {
             <div className={styles.container}>
                 <h2 className="section-title">Clubs & Societies</h2>
                 <div className={styles.clubsList}>
-                    {clubs.map((club, index) => (
+                    {clubsData.map((club, index) => (
                         <motion.div
                             key={index}
                             className={styles.clubItem}
