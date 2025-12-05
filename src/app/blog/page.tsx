@@ -1,6 +1,7 @@
 import { client } from '@/lib/sanity';
 import { SanityPost } from '@/lib/posts';
 import BlogList from '@/components/BlogList';
+import Navbar from '@/components/Navbar';
 import styles from './blog.module.css';
 
 export const revalidate = 60; // Revalidate every 60 seconds
@@ -22,16 +23,19 @@ export default async function Blog() {
     }`);
 
     return (
-        <main className={styles.blog}>
+        <>
+            <Navbar />
+            <main className={styles.blog}>
             <div className={styles.container}>
                 <header className={styles.header}>
                     <h1 className={styles.title}>Blog</h1>
                     <p className={styles.subtitle}>
-                        Thoughts, tutorials, and insights about web development and design.
+                        Thoughts, tutorials, and insights .
                     </p>
                 </header>
                 <BlogList posts={posts} />
             </div>
-        </main>
+            </main>
+        </>
     );
 }
