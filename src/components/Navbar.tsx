@@ -65,7 +65,7 @@ export default function Navbar() {
         <nav className={`${styles.navbar} ${scrolled ? styles.scrolled : ''}`}>
             <div className={styles.container}>
                 <Link href="/" className={styles.logo}>
-                    <span className={styles.prompt}>$</span> devops.sh
+                    <span className={styles.prompt}>$</span> udaradev.sh
                 </Link>
 
                 <div className={styles.desktop}>
