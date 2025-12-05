@@ -17,6 +17,12 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "DevOps Portfolio",
   description: "A modern, professional portfolio for a DevOps engineer.",
+  icons: {
+    icon: '/favicon.png',
+    // Or use other formats:
+    // icon: '/icon.png',
+    // apple: '/apple-icon.png',
+  },
 };
 
 export default function RootLayout({
@@ -25,7 +31,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html>
       <body
         className={`${inter.variable} ${jetbrainsMono.variable} antialiased`}
       >
