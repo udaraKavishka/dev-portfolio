@@ -82,6 +82,15 @@ export const projectsData: ProjectItem[] = [
         techStack: ['Harbor', 'Docker', 'Trivy', 'Nginx'],
         githubUrl: 'https://github.com/udaraKavishka/ParaWrite',
     },
+    {
+        id: 6,
+        title: 'DevOps Portfolio Website',
+        description: 'A modern, professional portfolio website showcasing my skills, projects, and experience as a DevOps engineer, built with Next.js and deployed on Vercel for optimal performance and scalability.',
+        techStack: ['Next.js', 'React', 'TypeScript', 'CSS Modules', 'Vercel'],
+        githubUrl: 'https://github.com/udaraKavishka/dev-portfolio',
+        liveUrl: 'https://udaradev.me',
+
+    },
     // {
     //     id: 6,
     //     title: 'CI/CD Project – Production Grade Blog Deployment',
