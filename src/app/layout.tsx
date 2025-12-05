@@ -15,7 +15,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "DevOps Portfolio",
+  title: "Udara Portfolio",
   description: "A modern, professional portfolio for a DevOps engineer.",
   icons: {
     icon: '/favicon.png',
