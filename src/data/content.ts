@@ -15,8 +15,9 @@ import {
 
 export const heroData = {
     name: "Udara Nalawansa",
-    tagline: "Building scalable infrastructure and automating the impossible",
-    bio: "Passionate about cloud infrastructure, automation, continuous delivery, and MLOps, designing resilient CI/CD pipelines, containerized workloads, and infrastructure as code while building machine learning driven solutions that reflect my dedication to technology, innovation, and effective problem solving.",
+    tagline: "Designing Scalable Systems Through Software, Cloud, and Automation",
+    // bio: "Passionate about cloud infrastructure, automation, continuous delivery, and MLOps, designing resilient CI/CD pipelines, containerized workloads, and infrastructure as code while building machine learning driven solutions that reflect my dedication to technology, innovation, and effective problem solving.",
+    bio:"Passionate about software engineering, cloud infrastructure, automation, continuous delivery, and MLOps, with a focus on designing resilient CI/CD pipelines, building scalable and maintainable applications, deploying containerized workloads, and implementing infrastructure as code. Actively developing machine learning driven solutions that combine solid engineering practices with data driven insights, reflecting a strong dedication to technology, innovation, and effective problem solving.",
     techStack: [
         { name: 'Docker', icon: '🐳' },
         { name: 'Kubernetes', icon: '☸️' },
