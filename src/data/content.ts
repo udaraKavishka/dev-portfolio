@@ -92,6 +92,26 @@ export const projectsData: ProjectItem[] = [
         liveUrl: 'https://udaradev.me',
 
     },
+    {
+        
+        id: 7,
+        title: 'Efficient Campus Navigation — Smart Shortest Path System for University of Vavuniya',
+        description: 'A smart navigation system for the University of Vavuniya campus that predicts travel times and computes the shortest paths, enhancing efficiency for students, staff, and visitors.(Incharge of the Model)',
+        techStack: ['Python', 'Pandas', 'NumPy', 'scikit-learn (Random Forest)', 'NetworkX', 'Tkinter', 'Pillow (PIL)', 'Dijkstra’s Algorithm'],
+        githubUrl: 'https://github.com/DilmyPerera/Efficient-Campus-Navigation',
+        // liveUrl: '#'
+
+
+    },
+    {
+        id: 8,
+        title: 'Modern Portfolio — Responsive Personal Website',
+        description: 'A sleek, fully responsive personal portfolio website built to showcase projects, skills, and technology interests with modern UI design and smooth navigation.',
+        techStack: ['React', 'Tailwind CSS', 'Figma', 'React Scroll', 'SVG Icons'],
+        githubUrl: 'https://github.com/udaraKavishka/modern-portfolio',
+        liveUrl: 'https://udara-portfolio.vercel.app/'
+}
+
     // {
     //     id: 6,
     //     title: 'CI/CD Project – Production Grade Blog Deployment',
