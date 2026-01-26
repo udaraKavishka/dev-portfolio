@@ -32,6 +32,7 @@ export default function Navbar() {
         { href: '#projects', label: 'Projects' },
         { href: '#skills', label: 'Skills' },
         { href: '#education', label: 'Education' },
+        { href: '#achievements', label: 'Achievements' },
         { href: '#clubs', label: 'Clubs' },
         { href: '#setup', label: 'Setup' },
         { href: '#contact', label: 'Contact' },
