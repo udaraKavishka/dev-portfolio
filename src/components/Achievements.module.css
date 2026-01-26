@@ -1,0 +1,157 @@
+.achievements {
+    padding: 6rem 1rem;
+    background-color: var(--bg-secondary);
+}
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.tabContainer {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 3rem;
+}
+
+.tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.875rem 2rem;
+    background-color: var(--bg-primary);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.tab:hover {
+    border-color: var(--accent-secondary);
+    color: var(--accent-secondary);
+}
+
+.tab.active {
+    background-color: var(--accent-primary);
+    border-color: var(--accent-primary);
+    color: var(--bg-primary);
+}
+
+.content {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.item {
+    display: flex;
+    gap: 1.5rem;
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.item:hover {
+    border-color: var(--accent-secondary);
+    transform: translateX(4px);
+}
+
+.iconWrapper {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--bg-secondary);
+    border: 2px solid var(--accent-primary);
+    border-radius: 50%;
+    color: var(--accent-primary);
+}
+
+.itemContent {
+    flex: 1;
+}
+
+.titleRow {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.itemTitle {
+    font-family: var(--font-mono);
+    font-size: 1.125rem;
+    color: var(--accent-primary);
+    margin: 0;
+    flex: 1;
+}
+
+.linkIcon {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    color: var(--text-secondary);
+    transition: all 0.2s ease;
+}
+
+.linkIcon:hover {
+    border-color: var(--accent-tertiary);
+    color: var(--accent-tertiary);
+    transform: scale(1.1);
+}
+
+.itemIssuer {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.25rem;
+}
+
+.itemDate {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 0.75rem;
+}
+
+.itemDescription {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+    .achievements {
+        padding: 4rem 1rem;
+    }
+
+    .tabContainer {
+        flex-direction: column;
+    }
+
+    .item {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .titleRow {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+}
