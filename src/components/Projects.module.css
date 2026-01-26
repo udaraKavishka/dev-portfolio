@@ -3,6 +3,39 @@
     background-color: var(--bg-primary);
 }
 
+.viewMoreContainer {
+    display: flex;
+    justify-content: center;
+    margin-top: 3rem;
+}
+
+.viewMoreButton {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.875rem 2rem;
+    background-color: var(--bg-secondary);
+    border: 2px solid var(--accent-primary);
+    border-radius: var(--radius-sm);
+    color: var(--accent-primary);
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.viewMoreButton:hover {
+    background-color: var(--accent-primary);
+    color: var(--bg-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.viewMoreButton:active {
+    transform: translateY(0);
+}
+
 .container {
     max-width: 1200px;
     margin: 0 auto;

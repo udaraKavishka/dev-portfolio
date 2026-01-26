@@ -1,11 +1,15 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { ExternalLink, Github } from 'lucide-react';
+import { ExternalLink, Github, ArrowRight } from 'lucide-react';
 import styles from './Projects.module.css';
 import { projectsData } from '@/data/content';
 
 export default function Projects() {
+    const handleViewMore = () => {
+        window.open('https://github.com/udaraKavishka', '_blank');
+    };
+
     return (
         <section id="projects" className={styles.projects}>
             <div className={styles.container}>
@@ -57,6 +61,12 @@ export default function Projects() {
                             </div>
                         </motion.div>
                     ))}
+                </div>
+                <div className={styles.viewMoreContainer}>
+                    <button onClick={handleViewMore} className={styles.viewMoreButton}>
+                        <span>View More Projects on GitHub</span>
+                        <ArrowRight size={18} />
+                    </button>
                 </div>
             </div>
         </section>
