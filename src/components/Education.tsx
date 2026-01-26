@@ -9,7 +9,7 @@ export default function Education() {
     return (
         <section id="education" className={styles.education}>
             <div className={styles.container}>
-                <h2 className="section-title">Education & Certifications</h2>
+                <h2 className="section-title">Education</h2>
                 <div className={styles.timeline}>
                     {educationData.map((item, index) => (
                         <motion.div
