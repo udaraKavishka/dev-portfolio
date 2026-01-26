@@ -1,20 +1,46 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Download } from 'lucide-react';
+import { FileText } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import styles from './Hero.module.css';
 import { heroData } from '@/data/content';
 
 export default function Hero() {
-    const { name, tagline, bio, techStack, profileImage, socialLinks } = heroData;
+    const { name, tagline, bio, techStack, profileImage, socialLinks, roles } = heroData;
+    const [currentRoleIndex, setCurrentRoleIndex] = useState(0);
+    const [displayedText, setDisplayedText] = useState('');
+    const [isDeleting, setIsDeleting] = useState(false);
 
-    const handleDownloadCV = () => {
-        const link = document.createElement('a');
-        link.href = '/cv.pdf'; // Make sure you have cv.pdf in the public folder
-        link.download = 'Udara_Nalawansa_CV.pdf';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+    useEffect(() => {
+        const currentRole = roles[currentRoleIndex];
+        const typingSpeed = isDeleting ? 50 : 100;
+        const pauseTime = isDeleting ? 1000 : 2000;
+
+        if (!isDeleting && displayedText === currentRole) {
+            setTimeout(() => setIsDeleting(true), pauseTime);
+            return;
+        }
+
+        if (isDeleting && displayedText === '') {
+            setIsDeleting(false);
+            setCurrentRoleIndex((prev) => (prev + 1) % roles.length);
+            return;
+        }
+
+        const timeout = setTimeout(() => {
+            setDisplayedText(
+                isDeleting
+                    ? currentRole.substring(0, displayedText.length - 1)
+                    : currentRole.substring(0, displayedText.length + 1)
+            );
+        }, typingSpeed);
+
+        return () => clearTimeout(timeout);
+    }, [displayedText, isDeleting, currentRoleIndex, roles]);
+
+    const handleViewResume = () => {
+        window.open('/Udara_Nalawansa.pdf', '_blank');
     };
 
     return (
@@ -42,6 +68,13 @@ export default function Hero() {
                             </div>
                             <div className={styles.output}>
                                 <h1 className={styles.name}>{name}</h1>
+                                <div className={styles.roleContainer}>
+                                    <span className={styles.prompt}>❯</span>
+                                    <span className={styles.role}>
+                                        {displayedText}
+                                        <span className={styles.cursor}>|</span>
+                                    </span>
+                                </div>
                                 <p className={styles.tagline}>
                                     {tagline}
                                 </p>
@@ -56,12 +89,12 @@ export default function Hero() {
                                 </p>
                             </div>
                             <button 
-                                onClick={handleDownloadCV}
-                                className={styles.downloadButton}
-                                aria-label="Download CV"
+                                onClick={handleViewResume}
+                                className={styles.resumeButton}
+                                aria-label="View Resume"
                             >
-                                <Download size={18} />
-                                <span>Download CV</span>
+                                <FileText size={18} />
+                                <span>View My Resume</span>
                             </button>
                         </div>
                     </div>
