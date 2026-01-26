@@ -1,11 +1,21 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { Download } from 'lucide-react';
 import styles from './Hero.module.css';
 import { heroData } from '@/data/content';
 
 export default function Hero() {
     const { name, tagline, bio, techStack, profileImage, socialLinks } = heroData;
+
+    const handleDownloadCV = () => {
+        const link = document.createElement('a');
+        link.href = '/cv.pdf'; // Make sure you have cv.pdf in the public folder
+        link.download = 'Udara_Nalawansa_CV.pdf';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
 
     return (
         <section id="about" className={styles.hero}>
@@ -45,6 +55,14 @@ export default function Hero() {
                                     {bio}
                                 </p>
                             </div>
+                            <button 
+                                onClick={handleDownloadCV}
+                                className={styles.downloadButton}
+                                aria-label="Download CV"
+                            >
+                                <Download size={18} />
+                                <span>Download CV</span>
+                            </button>
                         </div>
                     </div>
 
