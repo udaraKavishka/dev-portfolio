@@ -46,7 +46,7 @@ export default async function Home() {
         <Projects />
         <Skills />
         <Education />
-        <Achievements />
+        {/* <Achievements /> */}
         <Clubs />
         <HomeBlog posts={posts} />
         <Setup />
