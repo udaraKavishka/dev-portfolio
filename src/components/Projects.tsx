@@ -24,6 +24,20 @@ export default function Projects() {
                             viewport={{ once: true, margin: '-100px' }}
                             transition={{ delay: index * 0.1, duration: 0.5 }}
                         >
+                            <div className={styles.badgeContainer}>
+                                {project.isOngoing && (
+                                    <div className={styles.ongoingBadge}>
+                                        <span className={styles.ongoingDot}></span>
+                                        Ongoing
+                                    </div>
+                                )}
+                                {project.liveUrl && (
+                                    <div className={styles.liveBadge}>
+                                        <span className={styles.liveDot}></span>
+                                        Live
+                                    </div>
+                                )}
+                            </div>
                             <div className={styles.cardHeader}>
                                 <h3 className={styles.projectTitle}>{project.title}</h3>
                                 <div className={styles.links}>
