@@ -49,6 +49,7 @@ interface ProjectItem {
     techStack: string[];
     githubUrl: string;
     liveUrl?: string;
+    isOngoing?: boolean;
 }
 
 export const projectsData: ProjectItem[] = [
@@ -86,6 +87,8 @@ export const projectsData: ProjectItem[] = [
         description: 'A text paraphrasing tool that enables sentence by sentence editing with efficient processing and a clean, user friendly interface for improving written content.',
         techStack: ['Next.js', 'React', 'TypeScript', 'CSS Modules'],
         githubUrl: 'https://github.com/udaraKavishka/ParaWrite',
+        liveUrl: 'https://parawrite.udaradev.me',
+
     },
     {
         id: 6,
@@ -109,6 +112,14 @@ export const projectsData: ProjectItem[] = [
         techStack: ['React', 'Tailwind CSS', 'Figma', 'React Scroll', 'SVG Icons'],
         githubUrl: 'https://github.com/udaraKavishka/modern-portfolio',
         liveUrl: 'https://udara-portfolio.vercel.app/'
+    },
+    {
+        id: 9,
+        title: 'DevOps and AI: Building Production-Ready RAG Systems',
+        description: 'An ongoing DevOps &U+0078  AI project implementing a RAG-based API with FastAPI and a local LLM. Designed to evolve into a production-ready system with Docker, Kubernetes, and automated workflows.',
+        techStack: ['FastApi', 'Kubernetes', 'ChromaDB', 'Ollama', 'tinyllma', 'SwaggerUI', 'Docker'],
+        githubUrl: 'https://github.com/udaraKavishka/devops-ai-rag-api',
+        isOngoing: true
     }
 ];
 
