@@ -134,7 +134,6 @@ export const skillsData = [
     { name: 'GitHub Actions', category: 'CI/CD' },
     { name: 'Nexus', category: 'CI/CD' },
     { name: 'SonarQube', category: 'CI/CD' },
-    { name: 'Trivy', category: 'CI/CD' },
     { name: 'GitLab CI', category: 'CI/CD' },
     { name: 'ArgoCD', category: 'CI/CD' },
 
@@ -163,12 +162,15 @@ export const skillsData = [
 
     // Backend
     { name: 'Node.js', category: 'Backend' },
+    { name: 'Python', category: 'Backend' },
+    { name: 'Go', category: 'Backend' },
     { name: 'Express.js', category: 'Backend' },
     { name: 'Spring Boot', category: 'Backend' },
 
     // Databases
     { name: 'MongoDB', category: 'Database' },
     { name: 'MySQL', category: 'Database' },
+    { name: 'PostgreSQL', category: 'Database' },
 
     // Tools and Collaboration
     { name: 'Git', category: 'Tools' },
