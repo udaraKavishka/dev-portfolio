@@ -6,7 +6,6 @@ import Contact from '@/components/Contact';
 import Education from '@/components/Education';
 import Clubs from '@/components/Clubs';
 import Setup from '@/components/Setup';
-import Achievements from '@/components/Achievements';
 import HomeBlog from '@/components/HomeBlog';
 import { client } from '@/lib/sanity';
 
@@ -46,7 +45,6 @@ export default async function Home() {
         <Projects />
         <Skills />
         <Education />
-        {/* <Achievements /> */}
         <Clubs />
         <HomeBlog posts={posts} />
         <Setup />
