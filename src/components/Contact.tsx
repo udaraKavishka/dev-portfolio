@@ -169,9 +169,9 @@ export default function Contact() {
                         transition={{ duration: 0.6 }}
                     >
                         <div className={styles.infoCard}>
-                            <h3 className={styles.infoTitle}>Let's Connect</h3>
+                            <h3 className={styles.infoTitle}>Let&apos;s Connect</h3>
                             <p className={styles.infoText}>
-                                I'm always open to discussing new projects, creative ideas, or opportunities
+                                I&apos;m always open to discussing new projects, creative ideas, or opportunities
                                 to be part of your visions. Feel free to reach out!
                             </p>
                             <div className={styles.socialLinks}>

@@ -1,11 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Menu, X, Moon, Sun } from 'lucide-react';
 import styles from './Navbar.module.css';
 
 export default function Navbar() {
+    const router = useRouter();
     const [isOpen, setIsOpen] = useState(false);
     const [theme, setTheme] = useState<'dark' | 'light'>('dark');
     const [scrolled, setScrolled] = useState(false);
@@ -46,8 +48,8 @@ export default function Navbar() {
             // Check if we're on a blog page
             const currentPath = window.location.pathname;
             if (currentPath.startsWith('/blog')) {
-                // Navigate to home page with hash
-                window.location.href = '/' + href;
+                router.push('/' + href);
+                setIsOpen(false);
             } else {
                 // We're on home page, just scroll
                 const element = document.querySelector(href);
