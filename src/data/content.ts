@@ -2,12 +2,9 @@ import {
     Github,
     Linkedin,
     Mail,
-    Twitter,
     Laptop,
     Code,
     Globe,
-    GraduationCap,
-    Calendar,
     Facebook,
     Instagram
 } from 'lucide-react';
