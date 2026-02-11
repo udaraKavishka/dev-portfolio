@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import { Calendar, Tag, ArrowLeft } from 'lucide-react';
-import { PortableText } from '@portabletext/react';
+import { PortableText, type PortableTextComponents } from '@portabletext/react';
+import Image from 'next/image';
+import type { PortableTextBlock } from '@portabletext/types';
 import { client, urlFor } from '@/lib/sanity';
 import Navbar from '@/components/Navbar';
 import SyntaxHighlighter from 'react-syntax-highlighter';
@@ -11,7 +13,32 @@ import styles from './post.module.css';
 
 export const revalidate = 60;
 
-const Code = ({ value }: any) => (
+type CodeBlockValue = {
+    language?: string;
+    code?: string;
+};
+
+type SanityImageValue = {
+    asset?: {
+        url?: string;
+    };
+    alt?: string;
+};
+
+type SanityPost = {
+    title: string;
+    publishedAt: string;
+    readTime?: string;
+    mainImage?: {
+        asset?: {
+            url?: string;
+        };
+    };
+    body: PortableTextBlock[];
+    tags?: string[];
+};
+
+const Code = ({ value }: { value: CodeBlockValue }) => (
     <div className="my-10">
         <SyntaxHighlighter language={value?.language ?? 'text'} style={dracula}>
             {value?.code ?? ''}
@@ -20,8 +47,10 @@ const Code = ({ value }: any) => (
 );
 
 export async function generateStaticParams() {
-    const posts = await client.fetch(`*[_type == "post"]{ "slug": slug.current }`);
-    return posts.map((post: any) => ({
+    const posts = await client.fetch<Array<{ slug: string }>>(
+        `*[_type == "post"]{ "slug": slug.current }`
+    );
+    return posts.map((post) => ({
         slug: post.slug,
     }));
 }
@@ -32,7 +61,7 @@ export default async function BlogPost({
     params: Promise<{ slug: string }>;
 }) {
     const { slug } = await params;
-    const post = await client.fetch(
+    const post = await client.fetch<SanityPost | null>(
         `*[_type == "post" && slug.current == $slug][0]{
             title,
             publishedAt,
@@ -50,14 +79,17 @@ export default async function BlogPost({
         return <div>Post not found</div>;
     }
 
-    const components = {
+    const components: PortableTextComponents = {
         types: {
-            image: ({ value }: any) => (
+            image: ({ value }: { value: SanityImageValue }) => (
                 value?.asset && (
                     <div className="my-8">
-                        <img
-                            src={urlFor(value).url()}
+                        <Image
+                            src={urlFor(value).width(1200).height(800).fit('max').url()}
                             alt={value.alt || 'Blog image'}
+                            width={1200}
+                            height={800}
+                            sizes="(max-width: 800px) 100vw, 800px"
                             className="rounded-lg shadow-md"
                         />
                     </div>
@@ -105,10 +137,13 @@ export default async function BlogPost({
 
                         {post.mainImage?.asset?.url && (
                             <div className={styles.mainImageContainer}>
-                                <img
+                                <Image
                                     src={post.mainImage.asset.url}
                                     alt={post.title}
+                                    fill
+                                    sizes="(max-width: 800px) 100vw, 800px"
                                     className={styles.mainImage}
+                                    priority
                                 />
                             </div>
                         )}
