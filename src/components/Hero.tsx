@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { FileText } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import styles from './Hero.module.css';
 import { heroData } from '@/data/content';
 
@@ -18,14 +19,16 @@ export default function Hero() {
         const pauseTime = isDeleting ? 1000 : 2000;
 
         if (!isDeleting && displayedText === currentRole) {
-            setTimeout(() => setIsDeleting(true), pauseTime);
-            return;
+            const timeout = setTimeout(() => setIsDeleting(true), pauseTime);
+            return () => clearTimeout(timeout);
         }
 
         if (isDeleting && displayedText === '') {
-            setIsDeleting(false);
-            setCurrentRoleIndex((prev) => (prev + 1) % roles.length);
-            return;
+            const timeout = setTimeout(() => {
+                setIsDeleting(false);
+                setCurrentRoleIndex((prev) => (prev + 1) % roles.length);
+            }, pauseTime);
+            return () => clearTimeout(timeout);
         }
 
         const timeout = setTimeout(() => {
@@ -107,9 +110,11 @@ export default function Hero() {
                             transition={{ delay: 0.3, duration: 0.5 }}
                         >
                             <div className={styles.profileImage}>
-                                <img
+                                <Image
                                     src={profileImage}
                                     alt="Profile"
+                                    fill
+                                    sizes="150px"
                                     className={styles.profileImg}
                                 />
                             </div>
