@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Keep the Sanity studio linting isolated to its own config.
+    "portfolio-studio/**",
   ]),
 ]);
 
