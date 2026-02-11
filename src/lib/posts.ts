@@ -3,6 +3,7 @@ import path from 'path';
 import matter from 'gray-matter';
 import { remark } from 'remark';
 import html from 'remark-html';
+import type { PortableTextBlock } from '@portabletext/types';
 
 const postsDirectory = path.join(process.cwd(), 'posts');
 
@@ -20,12 +21,12 @@ export interface SanityPost {
         };
         alt?: string;
     };
-    body?: any;
+    body?: PortableTextBlock[];
     excerpt?: string;
     tags?: string[];
 }
 
-export interface PostData {
+export interface PostData extends Record<string, unknown> {
     id: string;
     date: string;
     title: string;
@@ -34,7 +35,6 @@ export interface PostData {
     contentHtml?: string;
     mainImage?: string; // For compatibility
     readTime?: string; // For compatibility
-    [key: string]: any;
 }
 
 export function getSortedPostsData(): PostData[] {
