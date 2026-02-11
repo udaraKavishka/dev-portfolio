@@ -2,11 +2,13 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Calendar, ArrowRight } from 'lucide-react';
+import { SanityPost } from '@/lib/posts';
 import styles from './HomeBlog.module.css';
 
 interface HomeBlogProps {
-    posts: any[];
+    posts: SanityPost[];
 }
 
 export default function HomeBlog({ posts }: HomeBlogProps) {
@@ -33,9 +35,11 @@ export default function HomeBlog({ posts }: HomeBlogProps) {
                             <Link href={`/blog/${post.slug.current}`} className={styles.cardLink}>
                                 {post.mainImage?.asset?.url && (
                                     <div className={styles.imageContainer}>
-                                        <img
+                                        <Image
                                             src={post.mainImage.asset.url}
                                             alt={post.title}
+                                            fill
+                                            sizes="(max-width: 768px) 100vw, 320px"
                                             className={styles.image}
                                         />
                                     </div>

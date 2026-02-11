@@ -1,16 +1,17 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { Calendar, Tag, ArrowRight } from 'lucide-react';
-import { PostData } from '@/lib/posts';
+import { Calendar, ArrowRight } from 'lucide-react';
+import { SanityPost } from '@/lib/posts';
 import styles from './BlogList.module.css';
 
 interface BlogListProps {
-    posts: PostData[];
+    posts: SanityPost[];
 }
 
-export default function BlogList({ posts }: { posts: any[] }) {
+export default function BlogList({ posts }: BlogListProps) {
     if (posts.length === 0) {
         return (
             <div className={styles.empty}>
@@ -32,9 +33,11 @@ export default function BlogList({ posts }: { posts: any[] }) {
                     <Link href={`/blog/${post.slug.current}`} className={styles.cardLink}>
                         {post.mainImage?.asset?.url && (
                             <div className={styles.imageContainer}>
-                                <img
+                                <Image
                                     src={post.mainImage.asset.url}
                                     alt={post.title}
+                                    fill
+                                    sizes="(max-width: 768px) 100vw, 350px"
                                     className={styles.image}
                                 />
                             </div>
