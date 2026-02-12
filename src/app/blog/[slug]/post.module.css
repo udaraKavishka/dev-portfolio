@@ -97,7 +97,8 @@
 
 .content {
     color: var(--text-primary);
-    line-height: 1.8;
+    font-size: 1rem;
+    line-height: 1.7;
 }
 
 .content h1,
@@ -186,7 +187,17 @@
     max-width: 100%;
     height: auto;
     border-radius: var(--radius-sm);
-    margin: 1.5rem 0;
+    display: block;
+    margin: 1.5rem auto;
+}
+
+.contentImage {
+    max-width: 100%;
+    width: auto;
+    height: auto;
+    border-radius: var(--radius-sm);
+    display: block;
+    margin: 1.5rem auto;
 }
 
 .content table {

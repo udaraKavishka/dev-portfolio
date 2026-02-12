@@ -21,6 +21,12 @@ type CodeBlockValue = {
 type SanityImageValue = {
     asset?: {
         url?: string;
+        metadata?: {
+            dimensions?: {
+                width: number;
+                height: number;
+            };
+        };
     };
     alt?: string;
 };
@@ -32,6 +38,12 @@ type SanityPost = {
     mainImage?: {
         asset?: {
             url?: string;
+            metadata?: {
+                dimensions?: {
+                    width: number;
+                    height: number;
+                };
+            };
         };
     };
     body: PortableTextBlock[];
@@ -67,9 +79,12 @@ export default async function BlogPost({
             publishedAt,
             readTime,
             mainImage {
-                asset->{url}
+                asset->{url, metadata{dimensions}}
             },
-            body,
+            body[]{
+                ...,
+                asset->{url, metadata{dimensions}}
+            },
             tags
         }`,
         { slug }
@@ -81,20 +96,28 @@ export default async function BlogPost({
 
     const components: PortableTextComponents = {
         types: {
-            image: ({ value }: { value: SanityImageValue }) => (
-                value?.asset && (
+            image: ({ value }: { value: SanityImageValue }) => {
+                if (!value?.asset) {
+                    return null;
+                }
+
+                const dimensions = value.asset.metadata?.dimensions;
+                const width = dimensions?.width ?? 1200;
+                const height = dimensions?.height ?? 800;
+
+                return (
                     <div className="my-8">
                         <Image
-                            src={urlFor(value).width(1200).height(800).fit('max').url()}
+                            src={urlFor(value).width(width).height(height).fit('max').url()}
                             alt={value.alt || 'Blog image'}
-                            width={1200}
-                            height={800}
+                            width={width}
+                            height={height}
                             sizes="(max-width: 800px) 100vw, 800px"
-                            className="rounded-lg shadow-md"
+                            className={styles.contentImage}
                         />
                     </div>
-                )
-            ),
+                );
+            },
             code: Code,
         }
     };
