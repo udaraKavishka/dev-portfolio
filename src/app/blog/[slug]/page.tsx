@@ -5,11 +5,11 @@ import Image from 'next/image';
 import type { PortableTextBlock } from '@portabletext/types';
 import { client, urlFor } from '@/lib/sanity';
 import Navbar from '@/components/Navbar';
+import { ArticleSchema } from '@/components/StructuredData';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { dracula } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import styles from './post.module.css';
-// import SyntaxHighlighter from "react-syntax-highlighter";
-// import { dracula } from "react-syntax-highlighter/dist/esm/styles/hljs";
+import type { Metadata } from 'next';
 
 export const revalidate = 60;
 
@@ -35,6 +35,7 @@ type SanityPost = {
     title: string;
     publishedAt: string;
     readTime?: string;
+    excerpt?: string;
     mainImage?: {
         asset?: {
             url?: string;
@@ -65,6 +66,83 @@ export async function generateStaticParams() {
     return posts.map((post) => ({
         slug: post.slug,
     }));
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+    const { slug } = await params;
+    
+    try {
+        const post = await client.fetch<SanityPost | null>(
+            `*[_type == "post" && slug.current == $slug][0]{
+                title,
+                excerpt,
+                publishedAt,
+                mainImage {
+                    asset->{url}
+                },
+                tags
+            }`,
+            { slug }
+        );
+
+        if (!post) {
+            return {
+                title: 'Post Not Found',
+                description: 'The requested blog post could not be found.',
+            };
+        }
+
+        const postUrl = `https://udaradev.me/blog/${slug}`;
+        const imageUrl = post.mainImage?.asset?.url || '/screenshot.png';
+        const description = post.excerpt || `Read "${post.title}" by Udara Nalawansa - DevOps Engineer`;
+        
+        return {
+            title: post.title,
+            description: description,
+            keywords: [
+                ...(post.tags || []),
+                'DevOps',
+                'Cloud Engineering',
+                'Software Development',
+                'Tutorial',
+                'Tech Blog'
+            ],
+            authors: [{ name: 'Udara Nalawansa', url: 'https://udaradev.me' }],
+            openGraph: {
+                type: 'article',
+                url: postUrl,
+                title: post.title,
+                description: description,
+                publishedTime: post.publishedAt,
+                authors: ['Udara Nalawansa'],
+                images: [
+                    {
+                        url: imageUrl,
+                        width: 1200,
+                        height: 630,
+                        alt: post.title,
+                    }
+                ],
+                siteName: 'Udara Nalawansa Blog',
+            },
+            twitter: {
+                card: 'summary_large_image',
+                title: post.title,
+                description: description,
+                images: [imageUrl],
+                creator: '@udaranalawansa',
+            },
+            alternates: {
+                canonical: postUrl,
+            },
+        };
+    } catch (error) {
+        console.error('Error generating metadata:', error);
+        return {
+            title: 'Blog Post',
+            description: 'Read the latest from Udara Nalawansa',
+        };
+    }
 }
 
 export default async function BlogPost({
@@ -124,6 +202,14 @@ export default async function BlogPost({
 
     return (
         <>
+            <ArticleSchema 
+                title={post.title}
+                publishedAt={post.publishedAt}
+                excerpt={post.excerpt}
+                imageUrl={post.mainImage?.asset?.url}
+                tags={post.tags}
+                slug={slug}
+            />
             <Navbar />
             <main className={styles.post}>
                 <div className={styles.container}>
