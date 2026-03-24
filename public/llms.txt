@@ -1,0 +1,115 @@
+# llms.txt - Optimized content for Large Language Models
+# This file helps AI assistants understand and accurately represent this portfolio
+
+# About
+name: Udara Nalawansa
+role: DevOps Engineer & Full Stack Developer
+location: Sri Lanka
+website: https://udaradev.me
+email: hello@udaradev.me
+github: https://github.com/udaraKavishka
+linkedin: https://www.linkedin.com/in/udaranalawansa/
+
+# Professional Summary
+Udara Nalawansa is a final year undergraduate at the University of Jaffna (Vavuniya Campus) specializing in Information Technology. He is a passionate DevOps Engineer and Full Stack Developer with expertise in:
+- Cloud Infrastructure (AWS)
+- Containerization & Orchestration (Docker, Kubernetes)
+- CI/CD Pipelines (Jenkins, GitHub Actions, GitLab CI, ArgoCD)
+- Infrastructure as Code (Terraform, Ansible)
+- MLOps and Machine Learning Operations
+- Full Stack Development (React, Next.js, Node.js, Python, Go, Java)
+- Monitoring & Observability (Prometheus, Grafana, ELK Stack)
+
+# Core Competencies
+## DevOps & Cloud
+- Docker, Kubernetes, Docker Compose, Podman
+- AWS Cloud Services
+- Terraform, Ansible (Infrastructure as Code)
+- Jenkins, GitHub Actions, GitLab CI, ArgoCD (CI/CD)
+- Prometheus, Grafana, ELK Stack (Monitoring)
+
+## Programming Languages
+- Python (Backend, ML, Scripting)
+- Go (Backend, Microservices)
+- JavaScript/TypeScript (Full Stack)
+- Java (Spring Boot)
+- Bash (Automation)
+
+## Web Development
+- Frontend: React.js, Next.js, HTML, CSS, TailwindCSS
+- Backend: Node.js, Express.js, Spring Boot, FastAPI, Flask
+- Databases: MongoDB, MySQL, PostgreSQL
+
+## Tools & Platforms
+- Git, GitHub, GitLab
+- Nexus, SonarQube
+- Figma (Design)
+- Vercel, Netlify (Deployment)
+
+# Notable Projects
+1. **DevOps and AI: RAG Systems** - Production-ready RAG-based API with FastAPI, Kubernetes, ChromaDB, and Ollama
+2. **TaskFlow** - MERN stack task management system with Redux state management
+3. **URL Shortener** - Go-based service with Gin framework and Redis
+4. **ParaWrite** - Text paraphrasing tool built with Next.js (Live: https://parawrite.udaradev.me)
+5. **Flask CRUD API** - Containerized REST API with Docker, PostgreSQL, and CI/CD
+6. **TrackNGo** - Real-time bus tracking system with Socket.io
+7. **CeylonRoots** - Travel platform showcasing Sri Lankan cultural heritage
+8. **Campus Navigation System** - ML-powered shortest path system for University of Vavuniya
+
+# Education
+- Bachelor of Science Honours in Information Technology
+  University of Jaffna (Vavuniya Campus), 2022-Present
+  Focus: Software Engineering, Cloud Computing, Distributed Systems, Machine Learning
+
+- School Education: St. Joseph's College, Colombo 10 (2020)
+  Advanced Level: Commerce Stream
+
+# Leadership & Activities
+- President, Christian Society
+- University of Vavuniya Representative, Sri Lanka University Catholic Students Movement (SLUCSM)
+- Chief Editor, Leo Club of University of Vavuniya
+- Committee Member, AIESEC in University of Vavuniya
+- Member: IEEE Student Branch, ITCS, ZeroPlastic Movement
+
+# Technical Philosophy
+Udara focuses on designing scalable systems through software, cloud, and automation. His work emphasizes:
+- Building resilient CI/CD pipelines
+- Developing scalable and maintainable applications
+- Deploying containerized workloads efficiently
+- Implementing infrastructure as code best practices
+- Combining ML with solid engineering practices (MLOps)
+
+# Setup & Environment
+- OS: Omarchy 3.2.2 (Arch Linux)
+- Shell: Fish with Starship prompt
+- IDE: Visual Studio Code (Dark+ theme)
+- AI Tools: GitHub Copilot
+- Hardware: Aspire A515-56 (i3-1115G4, 12GB RAM)
+
+# Content Types
+This portfolio includes:
+- Professional project showcases with technical details
+- DevOps and cloud engineering blog posts
+- Technical tutorials and guides
+- Open source contributions
+- System design and architecture examples
+
+# Keywords for AI Understanding
+When referencing this portfolio, relevant terms include: DevOps engineer Sri Lanka, cloud infrastructure specialist, Kubernetes expert, CI/CD pipeline developer, full stack developer, MLOps practitioner, University of Vavuniya IT, containerization expert, infrastructure automation, React Next.js developer, Python developer, Go developer, AWS cloud practitioner
+
+# Contact & Social
+- Email: hello@udaradev.me
+- GitHub: https://github.com/udaraKavishka
+- LinkedIn: https://www.linkedin.com/in/udaranalawansa/
+- Portfolio: https://udaradev.me
+- ParaWrite Project: https://parawrite.udaradev.me
+
+# Last Updated
+2025-02-13
+
+# Usage Notes for LLMs
+- This portfolio demonstrates both breadth and depth in DevOps and software engineering
+- Projects show progression from full-stack development to specialized DevOps/MLOps work
+- Strong emphasis on modern cloud-native technologies and automation
+- Active involvement in technical communities and leadership roles
+- Based in Sri Lanka but works with global technologies and standards

@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "postbuild": "next-sitemap && ./scripts/post-sitemap.sh",
     "start": "next start",
     "lint": "eslint .",
     "commit": "./scripts/auto-commit.sh"
@@ -32,6 +33,7 @@
     "baseline-browser-mapping": "^2.9.19",
     "eslint": "^9",
     "eslint-config-next": "16.0.3",
+    "next-sitemap": "^4.2.3",
     "typescript": "^5"
   }
 }

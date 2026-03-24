@@ -1,0 +1,66 @@
+# *
+# Algolia Crawler Verification
+# Algolia-Crawler-Verif: 402DDA736720E37C
+
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /_next/
+Disallow: /portfolio-studio/
+
+# GPTBot
+User-agent: GPTBot
+Allow: /
+Crawl-delay: 1
+
+# ChatGPT-User
+User-agent: ChatGPT-User
+Allow: /
+
+# anthropic-ai
+User-agent: anthropic-ai
+Allow: /
+Crawl-delay: 1
+
+# Claude-Web
+User-agent: Claude-Web
+Allow: /
+
+# Google-Extended
+User-agent: Google-Extended
+Allow: /
+
+# CCBot
+User-agent: CCBot
+Allow: /
+Crawl-delay: 2
+
+# cohere-ai
+User-agent: cohere-ai
+Allow: /
+
+# FacebookBot
+User-agent: FacebookBot
+Allow: /
+
+# PerplexityBot
+User-agent: PerplexityBot
+Allow: /
+
+# Bingbot
+User-agent: Bingbot
+Allow: /
+
+# Applebot
+User-agent: Applebot
+Allow: /
+
+# Diffbot
+User-agent: Diffbot
+Allow: /
+
+# Host
+Host: https://udaradev.me
+
+# Sitemaps
+Sitemap: https://udaradev.me/sitemap.xml
