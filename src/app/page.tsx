@@ -7,6 +7,7 @@ import Education from '@/components/Education';
 import Clubs from '@/components/Clubs';
 import Setup from '@/components/Setup';
 import HomeBlog from '@/components/HomeBlog';
+import { PersonSchema, WebsiteSchema, ProfilePageSchema } from '@/components/StructuredData';
 import { client } from '@/lib/sanity';
 
 async function getPosts() {
@@ -39,6 +40,9 @@ export default async function Home() {
 
   return (
     <>
+      <PersonSchema />
+      <WebsiteSchema />
+      <ProfilePageSchema />
       <Navbar />
       <main>
         <Hero />
