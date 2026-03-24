@@ -8,6 +8,13 @@ module.exports = {
   // Robots.txt configuration
   robotsTxtOptions: {
     additionalSitemaps: [],
+    // Add Algolia verification as a comment
+    transformRobotsTxt: async (_, robotsTxt) => {
+      return robotsTxt.replace(
+        '# *',
+        '# *\n# Algolia Crawler Verification\n# Algolia-Crawler-Verif: 402DDA736720E37C'
+      );
+    },
     policies: [
       {
         userAgent: '*',

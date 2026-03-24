@@ -1,7 +1,6 @@
 # *
 # Algolia Crawler Verification
 # Algolia-Crawler-Verif: 402DDA736720E37C
-
 User-agent: *
 Allow: /
 Disallow: /api/
