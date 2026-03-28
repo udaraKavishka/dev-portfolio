@@ -4,6 +4,7 @@ import BlogList from '@/components/BlogList';
 import Navbar from '@/components/Navbar';
 import styles from './blog.module.css';
 import type { Metadata } from 'next';
+import { BlogListingSchema } from '@/components/StructuredData';
 
 export const metadata: Metadata = {
     title: 'Blog | DevOps Tutorials & Cloud Engineering',
@@ -58,6 +59,7 @@ export default async function Blog() {
 
     return (
         <>
+            <BlogListingSchema />
             <Navbar />
             <main className={styles.blog}>
             <div className={styles.container}>

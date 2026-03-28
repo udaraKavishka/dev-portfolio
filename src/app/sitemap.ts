@@ -6,7 +6,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   
   try {
     // Fetch blog posts from Sanity
-    const posts = await client.fetch<Array<{ slug: { current: string }, publishedAt: string }>>(
+    const posts = await client.fetch<Array<{ slug: { current: string }, publishedAt: string, _updatedAt: string }>>(
       `*[_type == "post"]{ 
         slug, 
         publishedAt,
@@ -33,7 +33,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Dynamic blog post pages
     const blogPages: MetadataRoute.Sitemap = posts.map((post) => ({
       url: `${baseUrl}/blog/${post.slug.current}`,
-      lastModified: new Date(post.publishedAt),
+      lastModified: new Date(post._updatedAt || post.publishedAt),
       changeFrequency: 'monthly' as const,
       priority: 0.7,
     }))

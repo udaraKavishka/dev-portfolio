@@ -1,0 +1,19 @@
+{
+  "name": "Udara Nalawansa | DevOps Engineer",
+  "short_name": "Udara Dev",
+  "description": "Portfolio of Udara Nalawansa - DevOps Engineer and Full Stack Developer",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#191724",
+  "theme_color": "#191724",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "lang": "en",
+  "categories": ["portfolio", "technology"]
+}

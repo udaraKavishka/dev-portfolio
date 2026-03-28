@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     'Go Developer',
     'React Developer',
     'Next.js Developer',
-    'University of Vavuniya',
+    'University of Jaffna',
     'Infrastructure as Code',
     'Cloud Native Development',
     'Microservices Architecture'
@@ -88,6 +88,10 @@ export const metadata: Metadata = {
   alternates: {
     canonical: 'https://udaradev.me',
   },
+  themeColor: [
+    { media: '(prefers-color-scheme: dark)', color: '#191724' },
+    { media: '(prefers-color-scheme: light)', color: '#faf4ed' },
+  ],
 };
 
 export default function RootLayout({
@@ -96,7 +100,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html>
+    <html lang="en">
+      <head>
+        <link rel="preconnect" href="https://cdn.sanity.io" />
+        <link rel="dns-prefetch" href="https://cdn.sanity.io" />
+      </head>
       <body
         className={`${inter.variable} ${jetbrainsMono.variable} antialiased`}
       >

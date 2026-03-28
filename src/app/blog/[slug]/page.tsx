@@ -5,7 +5,7 @@ import Image from 'next/image';
 import type { PortableTextBlock } from '@portabletext/types';
 import { client, urlFor } from '@/lib/sanity';
 import Navbar from '@/components/Navbar';
-import { ArticleSchema } from '@/components/StructuredData';
+import { ArticleSchema, BreadcrumbSchema } from '@/components/StructuredData';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { dracula } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import styles from './post.module.css';
@@ -34,6 +34,7 @@ type SanityImageValue = {
 type SanityPost = {
     title: string;
     publishedAt: string;
+    _updatedAt?: string;
     readTime?: string;
     excerpt?: string;
     mainImage?: {
@@ -135,6 +136,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
             alternates: {
                 canonical: postUrl,
             },
+            other: {
+                'article:author': 'https://udaradev.me',
+                'article:section': 'Technology',
+            },
         };
     } catch (error) {
         console.error('Error generating metadata:', error);
@@ -155,7 +160,9 @@ export default async function BlogPost({
         `*[_type == "post" && slug.current == $slug][0]{
             title,
             publishedAt,
+            _updatedAt,
             readTime,
+            excerpt,
             mainImage {
                 asset->{url, metadata{dimensions}}
             },
@@ -202,9 +209,15 @@ export default async function BlogPost({
 
     return (
         <>
+            <BreadcrumbSchema items={[
+                { name: 'Home', url: 'https://udaradev.me' },
+                { name: 'Blog', url: 'https://udaradev.me/blog' },
+                { name: post.title, url: `https://udaradev.me/blog/${slug}` }
+            ]} />
             <ArticleSchema 
                 title={post.title}
                 publishedAt={post.publishedAt}
+                modifiedAt={post._updatedAt}
                 excerpt={post.excerpt}
                 imageUrl={post.mainImage?.asset?.url}
                 tags={post.tags}
