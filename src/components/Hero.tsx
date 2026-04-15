@@ -114,6 +114,8 @@ export default function Hero() {
                                     src={profileImage}
                                     alt="Profile"
                                     fill
+                                    loading="eager"
+                                    priority
                                     sizes="150px"
                                     className={styles.profileImg}
                                 />

@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -88,6 +88,9 @@ export const metadata: Metadata = {
   alternates: {
     canonical: 'https://udaradev.me',
   },
+};
+
+export const viewport: Viewport = {
   themeColor: [
     { media: '(prefers-color-scheme: dark)', color: '#191724' },
     { media: '(prefers-color-scheme: light)', color: '#faf4ed' },
@@ -100,7 +103,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" data-scroll-behavior="smooth">
       <head>
         <link rel="preconnect" href="https://cdn.sanity.io" />
         <link rel="dns-prefetch" href="https://cdn.sanity.io" />
