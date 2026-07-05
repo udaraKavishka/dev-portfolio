@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { Pin } from 'lucide-react';
 import type { Post } from '@/lib/posts';
 import { CATEGORIES } from '@/lib/categories';
 import styles from './BlogList.module.css';
@@ -25,9 +26,13 @@ export default function BlogList({ posts }: BlogListProps) {
         return new URLSearchParams(window.location.search).get('category');
     });
 
-    const filteredPosts = activeCategory
-        ? posts.filter((post) => post.category === activeCategory)
-        : posts;
+    const filteredPosts = (
+        activeCategory
+            ? posts.filter((post) => post.category === activeCategory)
+            : posts
+    )
+        .slice()
+        .sort((a, b) => Number(b.pinned ?? false) - Number(a.pinned ?? false));
 
     const setCategory = (slug: string | null) => {
         setActiveCategory(slug);
@@ -68,7 +73,10 @@ export default function BlogList({ posts }: BlogListProps) {
                             transition={{ delay: Math.min(index * 0.03, 0.6), duration: 0.4 }}
                         >
                             <Link href={`/blog/${post.slug}`} className={styles.row}>
-                                <span className={styles.rowTitle}>{post.title}</span>
+                                <span className={styles.rowTitle}>
+                                    {post.pinned && <Pin size={13} className={styles.pinIcon} />}
+                                    {post.title}
+                                </span>
                                 <span className={styles.rowDate}>{formatDate(post.date)}</span>
                             </Link>
                         </motion.article>
