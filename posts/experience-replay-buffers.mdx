@@ -1,0 +1,24 @@
+---
+title: "Experience replay: a small memory against forgetting"
+date: "2026-04-04"
+category: "research-diaries"
+excerpt: "Keep a buffer of old training examples and mix them into every new training round. The simplest continual learning idea, and stubbornly hard to beat."
+tags: ["Machine Learning", "Continual Learning"]
+readTime: "3 min read"
+---
+
+Continual learning research produces sophisticated methods with intimidating math, and then there's experience replay, which a first-year student could implement in an afternoon: keep a sample of old training examples in a buffer, and whenever you train on new data, mix some buffer examples in. In benchmark after benchmark it remains embarrassingly competitive with the fancy alternatives. Simple, cheap, effective is a rare combination worth understanding properly.
+
+Why it works is no mystery. Forgetting happens because the optimizer only sees new data and has no incentive to preserve behavior on old data. Replay restores the incentive directly: the old regime stays physically present in every training batch, so drifting away from it costs loss immediately. Where regularization methods like EWC protect old knowledge indirectly, through penalties on weight movement, replay protects it by keeping the evidence in the room.
+
+The design decisions are all about the buffer.
+
+Size first. You can't keep everything; unbounded history is exactly the cost you're trying to avoid. The encouraging news from both the literature and my own experiments is that modest buffers, a few percent of the data seen so far, already recover most of the benefit. The gap between no replay and a small buffer is dramatic. The gap between a small buffer and a huge one is not.
+
+Then, what to keep. Uniform random sampling over everything seen so far is the honest default, and reservoir sampling gives you that in streaming fashion with fixed memory: for the n-th example, keep it with probability buffer_size/n, evicting a random resident if it enters. A few lines of code, provably uniform, no tuning. Smarter selection schemes exist (keep the surprising examples, maximize diversity) and sometimes help, but random is the baseline that refuses to embarrass itself.
+
+Finally, the mixing ratio between new and replayed examples per batch. Too little replay and forgetting creeps back. Too much and the model underfits the new data you're trying to learn. This one is a real hyperparameter; expect to tune it for your workload rather than copying a number from a paper.
+
+Replay's honest weaknesses: it stores raw data, which can be a problem under privacy or retention constraints (regularization methods avoid this entirely). And a small buffer is a lossy sketch of the past, so rare-but-important old cases may simply not be in it when needed.
+
+Which points at the pragmatic answer: replay and regularization aren't competitors, they fail differently, and combining them (a buffer plus an EWC-style penalty) covers each other's gaps. When simple-but-lossy meets principled-but-approximate, use both.

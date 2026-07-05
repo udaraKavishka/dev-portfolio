@@ -1,0 +1,20 @@
+---
+title: "Checkpoints, or how I stopped losing eight-hour training runs"
+date: "2026-05-13"
+category: "research-diaries"
+excerpt: "A crashed GPU run with no checkpoint is eight hours converted into nothing. Resumability is not an optimization, it's the difference between a setback and a rerun."
+tags: ["Machine Learning", "GPU", "Reliability"]
+readTime: "3 min read"
+---
+
+I learned this one the expensive way. A long training run on a remote GPU machine, hours in, and the process died. Out-of-memory, as it turned out, from a slow accumulation I hadn't noticed. No checkpoints. The only artifact of those hours was a truncated terminal scrollback, and since the run had been started in an SSH session without logging to a file, even that evaporated when the connection closed. Everything the run had learned was gone. The rerun started from zero.
+
+The rule I extracted, and now follow with religious consistency: any run long enough to resent losing must be able to resume from where it died. Concretely, three pieces.
+
+Checkpoint everything the optimizer knows, on a schedule. Model weights alone aren't enough to resume cleanly; optimizers like Adam carry momentum state, the learning-rate scheduler has a position, and you need the epoch and step counters plus the random number generator states if you care about exact reproducibility. Serialize the lot every N steps or minutes. Write to a temporary file and atomically rename it, so a crash during the save itself can't destroy your only good checkpoint. Keep the last few instead of just one, because a checkpoint written after the problem began (say, after loss went NaN) is a checkpoint of the problem.
+
+Make startup resume-aware. The script's first act is checking for the newest valid checkpoint and loading it, so recovery after a crash is just running the same command again. No flags to remember, no decisions to make at 11pm. The difference between "rerun the command" and "reconstruct what step we were on" is the difference between a hiccup and an evening.
+
+Log to files, not terminals. `tee` at minimum, structured logging if you're feeling proper, but the point is that stdout must land on disk. Crashes are precisely the moments you most need history, and terminal scrollback is the least durable storage on any machine, doubly so over SSH. When my run died, the log file would have shown memory creeping up for an hour before the kill. The scrollback showed nothing, because it no longer existed.
+
+The meta-lesson is about assumptions. Short scripts fail fast and rerun free, so nothing teaches you these habits until the first time a failure costs real hours. Long runs change the economics: failure stops being an inconvenience and becomes a loss of accumulated state. Engineer for the crash before the crash, because afterwards is a bad time to start.

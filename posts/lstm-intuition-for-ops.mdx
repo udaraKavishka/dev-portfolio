@@ -1,0 +1,24 @@
+---
+title: "LSTM intuition for infrastructure people"
+date: "2026-03-17"
+category: "research-diaries"
+excerpt: "You don't need the equations to understand why LSTMs suit metrics forecasting. You need the idea of a hidden state with a memory policy."
+tags: ["Machine Learning", "Time Series", "Monitoring"]
+readTime: "4 min read"
+---
+
+Every explanation of LSTMs I found either drowned me in gate equations or waved at "memory" so vaguely it explained nothing. Here's the version that finally clicked for me, aimed at people who think in metrics and dashboards rather than calculus.
+
+Start with the problem. A feedforward network looks at one input and produces one output; it has no notion of "before." But a metrics series is nothing except before. The CPU reading at 9:00 means something different if the last hour was flat versus climbing. To forecast, a model needs to carry context forward through time.
+
+A recurrent network does this by keeping a running summary, called the hidden state, that updates with each new observation. Read a value, revise the summary, move to the next value. By the end of a window, the summary has, in principle, absorbed the whole history.
+
+In practice, plain recurrent networks have goldfish memory. The training signal fades as it travels backwards through many time steps (the vanishing gradient problem), so anything more than a dozen steps old effectively never happened. For load forecasting that's fatal. The pattern you care about might be "this spike resembles the one from 24 hours ago."
+
+The LSTM's contribution is making memory a managed resource instead of an accident. Alongside the hidden state it carries a cell state, a kind of long-term register, and three small learned circuits called gates decide what happens to it. One gate decides what to discard from the register, one decides what new information to write, one decides how much of the register to reveal as output at this step. Every gate is learned from data, not configured by you.
+
+The dashboard analogy: it's a stateful stream processor with a learned retention policy. It learns for itself that a nightly batch spike is worth remembering until tomorrow, and that random jitter is worth forgetting immediately. That selective, long-range memory is precisely what infrastructure metrics demand, since they mix daily cycles, weekly cycles, and noise.
+
+What LSTMs don't do: magic. They need a decent volume of history to learn from, they'll happily memorize noise if you let them (regularization exists for a reason), and they only learn patterns that exist in the training data. A workload whose behavior keeps shifting will drift away from any model trained on its past, LSTM included. That failure mode, models going stale as workloads evolve, deserves its own post.
+
+But as the temporal backbone of a forecasting system for cluster metrics, this is the tool the job asks for. Sequences in, learned memory in the middle, prediction out.

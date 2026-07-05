@@ -1,0 +1,22 @@
+---
+title: "URLs are not a place for secrets"
+date: "2026-04-13"
+category: "intern-diaries"
+excerpt: "Query parameters end up in access logs, browser history, and Referer headers. If a token travels in a URL, it's being written down everywhere."
+tags: ["Security", "Web", "Backend"]
+readTime: "3 min read"
+---
+
+There's a category of security issue that never feels like an incident because nothing dramatic happens. A token gets passed as a query parameter, everything works, everyone moves on. The problem only becomes visible when you list all the places a URL gets recorded.
+
+Server access logs write the full request path by default, so every nginx and gunicorn log line now contains the token. Browser history keeps it on every machine the user touched, including shared ones. The Referer header ships your full URL to any third-party domain the page loads a script or image from, which for an average page is a lot of domains. Proxies and corporate gateways log URLs. Monitoring and error-tracking tools capture them in breadcrumbs. And users copy-paste URLs into chats and bug reports without reading them, because why would they.
+
+None of these systems is doing anything wrong. Logging URLs is normal, that's the point: a URL is treated as an address, not a secret, by every layer of the stack. Put a credential in one and you've distributed it to every layer that touches addresses.
+
+I got sensitive to this after working on auth flows where the tidy-looking version of a redirect had a token riding in the query string. It worked fine. It also meant the token appeared in access logs on our side. Nobody hostile was reading those logs, as far as anyone knows. But "our security depends on nobody reading the logs" is a strange sentence to defend in review.
+
+The fixes are unglamorous. Tokens that authenticate requests belong in headers (`Authorization: Bearer ...`) or in httpOnly cookies, both of which stay out of URLs, history, and Referer. Data that changes state belongs in a request body over POST. And when a flow genuinely requires a token in a URL, which magic login links do, the mitigations are lifetime and disposability: make it single-use, expire it in minutes, and consume it immediately on arrival, exchanging it server-side for a session that lives in a cookie. Then the logged URL contains only a corpse.
+
+One more that's easy to miss: strip the parameter after use. If your frontend lands on a URL with a token in it, replace the browser state (`history.replaceState`) once you've consumed it, so it doesn't linger in history and can't be re-triggered by a refresh.
+
+The test I apply in reviews now is one question: if this exact URL appeared in a log file readable by the whole engineering team, would anything be compromised? If yes, the URL is carrying something it shouldn't.

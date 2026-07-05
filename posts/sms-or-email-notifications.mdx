@@ -1,0 +1,20 @@
+---
+title: "SMS or email? Picking channels for product notifications"
+date: "2026-07-03"
+category: "intern-diaries"
+excerpt: "Cost per message, delivery constraints, and what users actually check: a practical framework from building notifications on both channels."
+tags: ["Notifications", "Product", "Backend"]
+readTime: "3 min read"
+---
+
+Having built product notifications on both SMS and email, I've ended up with a working framework for the "which channel" question, learned mostly from the ways each channel punished wrong assumptions.
+
+Start with the economics, because they're lopsided. Email costs fractions of a cent and tolerates volume; the marginal cost of one more message rounds to zero. SMS costs real money per message, every message, and in both directions of failure: sending to an invalid number wastes spend, and a batch job with a bug can convert directly into a phone bill. This asymmetry alone should shape defaults: email is where routine information goes, SMS is a budget you spend deliberately.
+
+Then the physical constraints, which are stricter than most product discussions acknowledge. SMS gives you 160 characters of a 1980s character set; step outside it (an emoji, a curly quote pasted from a doc) and, depending on the gateway, the message shrinks, splits, or fails outright with a cryptic error code. I've written about that failure in detail. No links you'd trust, no formatting, no images. Email gives you effectively unlimited length, HTML, attachments, and threading, in exchange for the deliverability game (SPF, DKIM, reputation) and the fact that your message lands in a crowded inbox, possibly the spam folder.
+
+The deciding variable, though, is urgency versus reference. SMS gets read now: open rates are near-total and near-immediate, which is why it's the right channel for the OTP, the "your appointment is in an hour," the thing whose value expires today. Email gets read eventually and, crucially, gets kept: it's searchable, forwardable, and printable, which makes it the right channel for receipts, documents, and anything a user might need to find again in March. Sending a reference document by SMS wastes the channel's urgency; sending a time-critical alert only by email gambles on inbox timing.
+
+Practical rules that fell out of the bruises: validate numbers and addresses at entry, not at send time, because the send-time discovery costs either money or a crashed batch. Treat per-recipient failures as skips with warnings, never batch aborts. Log every send with enough context to answer "did the customer get it" without archaeology, because that question arrives weekly. And keep the channel decision per notification type in one visible place (a table in code or config), so the next notification's author inherits reasoning instead of re-deriving it.
+
+Neither channel is better. They're different instruments, and most real systems need both, played deliberately.

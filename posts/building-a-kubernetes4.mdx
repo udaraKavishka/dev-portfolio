@@ -1,0 +1,186 @@
+---
+title: "(IV)Building a Kubernetes Cluster with Kubespray: A Learning Journey"
+date: "2025-11-27T02:48:00.000+05:30"
+category: "research-diaries"
+updated: "2025-12-05T21:26:25Z"
+readTime: "04 min read"
+mainImage: "/blog/building-a-kubernetes4/cover.png"
+---
+
+*If you haven’t read the previous posts, **[Part I](https://www.udaradev.me/blog/building-a-kubernetes1)** introduces the motivation for the cluster, **[Part II](https://www.udaradev.me/blog/building-a-kubernetes2)** covers hardware setup, and **[Part III](https://www.udaradev.me/blog/building-a-kubernetes3)** details the networking configuration. With static IPs assigned and network connectivity confirmed, the next critical step was deploying Kubernetes on all nodes.*
+
+Once the hardware and network were in place, it was time for the fun part: bringing Kubernetes to life. We chose Kubespray for its flexibility and automation, but it wasn’t without errors and retries. In this post, I’ll walk through the exact steps we followed ,SSH setup, prerequisites, running the playbook and how we troubleshooted along the way until the cluster finally came online.
+
+## Why Kubespray?
+
+Kubernetes is a **container orchestration platform** that automates the deployment, scaling, and management of containerized applications. Deploying a Kubernetes cluster manually on multiple nodes can be complex, requiring careful configuration of networking, certificates, and cluster components.
+
+**Kubespray** is an open-source project that uses **Ansible** to automate Kubernetes deployment. It simplifies the process by:
+
+- Automatically setting up the **control plane (master node)** and **worker nodes**
+- Configuring **etcd** (the distributed key-value store for Kubernetes)
+- Setting up the **CNI (Container Network Interface)** for pod communication
+- Installing required tools and dependencies on all nodes
+
+## Step 1: Setting Up Passwordless SSH
+
+Kubespray requires **SSH access from the master to all nodes** without passwords. This allows Ansible to execute commands remotely on each node.
+
+On the master node:
+
+```javascript
+//# Generate an SSH key pair
+ssh-keygen -t rsa -b 4096 -N "" -f ~/.ssh/id_rsa
+```
+
+- rsa -b 4096 specifies the encryption type and key length
+- -N "" sets no passphrase
+- -f ~/.ssh/id_rsa specifies the key file location
+
+Next, copy the public key to all nodes:
+
+```javascript
+ssh-copy-id user@192.168.1.201
+ssh-copy-id user@192.168.1.202
+ssh-copy-id user@192.168.1.203
+ssh-copy-id user@192.168.1.204
+ssh-copy-id user@192.168.1.205
+```
+
+Finally, test connectivity:
+
+```javascript
+ssh user@192.168.1.201 echo "SSH works"
+```
+
+## Step 2: Installing Prerequisites
+
+Kubespray depends on **Ansible, Python, and related packages**. On the master node:
+
+```javascript
+sudo apt update
+sudo apt upgrade -y
+```
+
+```javascript
+sudo apt install -y python3 python3-pip python3-venv git
+```
+
+Create a **Python virtual environment** to isolate dependencies:
+
+```javascript
+python3 -m venv venv
+source venv/bin/activate
+```
+
+Clone the Kubespray repository and install dependencies:
+
+```zh
+git clone https://github.com/kubernetes-sigs/kubespray.git
+cd kubespray
+pip install -r requirements.txt
+```
+
+## Step 3: Configuring the Inventory
+
+The **inventory** defines which nodes belong to the cluster and their roles. Kubespray provides a sample inventory:
+
+```zh
+cp -rfp inventory/sample inventory/research
+```
+
+Edit inventory/mycluster/inventory.ini to assign IPs and users:
+
+```zh
+[all]
+node1 ansible_host=192.168.1.201 ip=192.168.1.201 ansible_user=user
+node2 ansible_host=192.168.1.202 ip=192.168.1.202 ansible_user=user
+node3 ansible_host=192.168.1.203 ip=192.168.1.203 ansible_user=user
+node4 ansible_host=192.168.1.204 ip=192.168.1.204 ansible_user=user
+node5 ansible_host=192.168.1.205 ip=192.168.1.205 ansible_user=user
+```
+
+```zh
+[kube_control_plane]
+node1[etcd]
+node1[kube_node]
+node2
+node3
+node4
+node5[k8s_cluster:children]
+kube_control_plane
+kube_node
+```
+
+- **kube_control_plane** — The master node controlling the cluster
+- **etcd** — Distributed key-value store for storing cluster state
+- **kube_node** — Worker nodes running application workloads
+- **inventory file** — Lists all nodes and their roles for Ansible
+
+## Step 4: Deploying the Cluster
+
+Run the Ansible playbook to deploy Kubernetes:
+
+```zh
+ansible-playbook -i inventory/research/inventory.ini cluster.yml -b -v --private-key=~/.ssh/id_rsa
+```
+
+- -i specifies the inventory file
+- -b runs commands with sudo privileges
+- -v enables verbose logging
+
+**Note:** Deployment may take 10–15 minutes depending on network and hardware.
+
+If a node fails or is unreachable, the playbook can be rerun after troubleshooting. In our case, **node5 was temporarily unreachable**, so the initial deployment used four nodes.
+
+## Step 5: Verifying the Cluster
+
+On the master node, configure **kubectl** (the Kubernetes CLI):
+
+```zh
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/confi
+```
+
+Check node status:
+
+```zh
+kubectl get nodes
+```
+
+Check all pods:
+
+```zh
+kubectl get pods --all-namespaces
+```
+
+All nodes should appear as **Ready**, and all pods should be **Running or Completed**.
+
+- **kubectl** — Command-line tool to interact with Kubernetes clusters
+- **pods** — The smallest deployable units in Kubernetes, containing one or more containers
+- **Ready** — Status indicating the node is healthy and part of the cluster
+```zh
+NAME    STATUS   ROLES           AGE   VERSION   INTERNAL-IP      EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION      CONTAINER-RUNTIME
+node1   Ready    control-plane   1d    v1.30.0   172.16.180.101  <none>        Ubuntu 24.04 LTS    5.15.0-73-generic   containerd://1.7.1
+node2   Ready    <none>          1d    v1.30.0   172.16.180.102  <none>        Ubuntu 24.04 LTS    5.15.0-73-generic   containerd://1.7.1
+node3   Ready    <none>          1d    v1.30.0   172.16.180.103  <none>        Ubuntu 24.04 LTS    5.15.0-73-generic   containerd://1.7.1
+node4   Ready    <none>          1d    v1.30.0   172.16.180.104  <none>        Ubuntu 24.04 LTS    5.15.0-73-generic   containerd://1.7.1
+node5   Ready    <none>          1m    v1.30.0   172.16.180.105  <none>        Ubuntu 24.04 LTS    5.15.0-73-generic   containerd://1.7.1
+
+
+```
+
+
+## Whats Next
+
+However, the victory was short-lived. After shutting down for the day and returning to the lab the next morning, we ran into an unexpected issue:
+
+- When trying to SSH into the nodes, some IPs became unreachable.
+- Running ip addr revealed that the static IP assignments had reset.
+
+In other words, the cluster setup had worked, but our network configuration didn’t persist after reboot.
+
+This marked the start of our next challenge: **making static IPs persistent in Linux for a stable Kubernetes environment.**
+
+Stay tuned for the next blog post, where we’ll dive into how we debugged and solved this problem.

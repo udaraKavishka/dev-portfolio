@@ -1,0 +1,22 @@
+---
+title: "Emoji broke our SMS gateway"
+date: "2026-02-24"
+category: "intern-diaries"
+excerpt: "A single 🎉 in a message template can fail an entire SMS batch. The fix is understanding GSM-7, the 160-character alphabet from 1985 that still runs texting."
+tags: ["SMS", "Debugging", "Backend"]
+readTime: "3 min read"
+---
+
+We had a job that sent celebratory SMS messages to customers. It worked for months, then one day a batch started failing with a bare error code from the gateway: 2001. No message, no hint. The logs showed nothing unusual except that the failing messages had a party popper emoji in them.
+
+That emoji was the whole bug.
+
+SMS has its own character set called GSM-7, standardized in the 1980s. It covers basic Latin letters, digits, and a small set of symbols, packed 7 bits per character so 160 of them fit in a 140-byte message. Anything outside that set forces the message into UCS-2 encoding, which halves your budget to 70 characters and, depending on the gateway, may not be supported at all. Ours, a local Sri Lankan provider, simply rejected non-GSM content with that unhelpful 2001.
+
+The fix wasn't hard once we understood the constraint. Strip or transliterate anything outside GSM-7 before the message reaches the gateway. The emoji became plain text. Curly apostrophes became straight ones. That last part matters more than you'd think, because plenty of copy gets pasted from Word or Google Docs, which auto-curl quotes, and a curly quote is just as non-GSM as an emoji.
+
+The second half of the lesson was about batch behavior. The same job also choked on phone numbers that weren't in the local +94 format. The original code treated any bad number as a fatal error, so one malformed row killed messages for everyone behind it in the batch. That's the wrong failure mode. A bad phone number is that customer's problem, not the batch's. We changed it to skip invalid numbers with a warning and carry on, and to make no API call at all if every number filtered out, because calling a paid gateway with an empty list is a silly way to spend money.
+
+If you're integrating with any SMS provider, three things I'd check on day one now: what character set they actually accept, what their error codes mean (get the table from support before you need it), and what your code does when one recipient out of five hundred is invalid. The gateway's documentation answered none of these for us. A test message with an emoji answered the first one immediately.
+
+Text messaging feels like the most boring, solved channel in the stack. It is also the one channel still governed by a character table older than most people using it.

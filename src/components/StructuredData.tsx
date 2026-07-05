@@ -21,7 +21,11 @@ export function PersonSchema() {
     url: SITE_URL,
     email: "hello@udaradev.me",
     image: absoluteUrl('/profile.jpg'),
-    jobTitle: "DevOps Engineer",
+    jobTitle: "Intern Software Engineer",
+    worksFor: {
+      "@type": "Organization",
+      name: "Xaventra"
+    },
     description: defaultDescription,
     alumniOf: {
       "@type": "CollegeOrUniversity",
@@ -85,8 +89,8 @@ type ProfilePageSchemaProps = {
   projects: ProjectItem[];
   posts?: Array<{
     title: string;
-    slug?: { current?: string };
-    publishedAt?: string;
+    slug: string;
+    date?: string;
   }>;
 };
 
@@ -123,13 +127,12 @@ export function ProfilePageSchema({ projects, posts = [] }: ProfilePageSchemaPro
         author: { "@id": PERSON_ID }
       })),
       ...posts
-        .filter((post) => post.slug?.current)
         .slice(0, 3)
         .map((post) => ({
           "@type": "BlogPosting",
           headline: post.title,
-          url: absoluteUrl(`/blog/${post.slug?.current}`),
-          datePublished: post.publishedAt,
+          url: absoluteUrl(`/blog/${post.slug}`),
+          datePublished: post.date,
           author: { "@id": PERSON_ID }
         }))
     ]

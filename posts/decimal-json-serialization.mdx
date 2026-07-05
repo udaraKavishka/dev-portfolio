@@ -1,0 +1,38 @@
+---
+title: "Decimal doesn't survive JSON, and your invoices care"
+date: "2026-03-14"
+category: "intern-diaries"
+excerpt: "Python's json module refuses to serialize Decimal, and the obvious fix quietly reintroduces the float errors Decimal exists to prevent."
+tags: ["Python", "Backend", "Debugging"]
+readTime: "3 min read"
+---
+
+If you handle money in Python you use Decimal, because floats can't represent 0.1 and financial arithmetic on floats drifts. Then at some point you serialize a payment record to JSON, and Python greets you with:
+
+```python
+TypeError: Object of type Decimal is not JSON serializable
+```
+
+I hit this in a workflow system where step data was stored as JSON between steps. A field holding a company's stated capital was a Decimal, the serializer choked, and a downstream calculation crashed for one specific record while every other record sailed through. Data-dependent crashes like that are the annoying kind: the code is "working" right up until the one row that exercises the path.
+
+The tempting one-line fix is `json.dumps(data, default=float)`. It runs. It's also wrong, because converting to float throws away exactly the precision guarantee that made you choose Decimal. The error won't show up in tests with round numbers. It shows up months later as an invoice that's off by a cent, and a cent-level discrepancy in accounting is not a small bug, it's a reconciliation investigation.
+
+The safer convention is serializing Decimal as a string:
+
+```python
+class MoneyEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, Decimal):
+            return str(obj)
+        return super().default(obj)
+```
+
+Strings survive the round trip exactly. The cost is that the reading side must know to parse those fields back into Decimal, so the knowledge lives in two places. Document the convention somewhere findable, because the person deserializing next year won't guess it.
+
+Two wider lessons came out of this bug.
+
+Serialization boundaries are where types go to die. Inside the process you have Decimal, datetime, UUID, enums. JSON has strings, numbers, booleans, null. Every crossing either loses information or needs an explicit convention, and the crossings hide everywhere: caches, queues, audit logs, anything that stores state between steps of a workflow.
+
+And test with hostile data, not round numbers. A test using `100` proves nothing about `Decimal("33333.33")`. The values that break serialization are the ones with real precision, which are precisely the values production will contain and your fixtures won't.
+
+Now when a codebase hands me a "simple" JSON persistence layer, the first thing I look for is which types are being flattened at the boundary, and who is supposed to restore them on the way back in. Someone has to. Often nobody does.

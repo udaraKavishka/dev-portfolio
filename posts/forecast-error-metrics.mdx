@@ -1,0 +1,20 @@
+---
+title: "MAE, RMSE, or MAPE: which error metric fits capacity planning"
+date: "2026-04-10"
+category: "research-diaries"
+excerpt: "Three standard ways to score a forecast, three different opinions about which mistakes matter. For infrastructure, the choice is not cosmetic."
+tags: ["Time Series", "Machine Learning", "Capacity Planning"]
+readTime: "3 min read"
+---
+
+Every forecasting paper reports MAE, RMSE, and MAPE, usually in a table, usually without comment. When I started evaluating load forecasts myself I treated them as interchangeable flavors of "how wrong." They aren't. Each one embeds an opinion about which errors matter, and for capacity planning the opinions disagree in ways that change your conclusions.
+
+MAE, mean absolute error, is the honest average: how far off are we, typically, in the metric's own units. An MAE of 0.3 cores means your forecast misses by 0.3 cores on average. Every miss counts proportionally to its size. Clean to interpret, hard to argue with.
+
+RMSE squares errors before averaging, which means large errors dominate the score. Two forecasts with the same MAE can have very different RMSEs: the one that's slightly wrong all the time beats the one that's usually perfect but occasionally misses badly. Whether that's a feature depends on your problem. For capacity, it mostly is a feature. Being 5% off all day is invisible; missing a spike by 3x is an outage. If SLA violations are what you fear, RMSE's paranoia about large misses aligns with your interests better than MAE's even temper.
+
+MAPE divides each error by the true value, giving a percentage. Stakeholders love it because "8% error" travels well in a slide deck. But on infrastructure metrics MAPE has a rough time. When true utilization is near zero, which idle periods guarantee, dividing by it inflates the score absurdly: predict 0.2 cores when the truth was 0.05 and that's a 300% error on a difference nobody would notice on a graph. A workload with long quiet stretches can make an excellent forecaster look terrible in MAPE, purely because of the quiet stretches. If you must use it, look at variants that dampen the small-denominator blowup, or report it alongside MAE and note where it lies.
+
+There's also an asymmetry none of the three capture: for capacity, under-predicting is worse than over-predicting. Predicting too much wastes some money for a while; predicting too little starves workloads. All the standard metrics treat both directions as equal sins. That's the argument for reporting operational outcomes next to statistical ones: count SLA violations, measure over-provisioned core-hours, and let those numbers carry the asymmetry that MAE and friends can't.
+
+My defaults now: MAE for "how good is this generally," RMSE for "how scared should I be of the worst case," operational counts for "does any of this matter." And a rule for reading papers: when a model wins on one metric and quietly loses on another, that's not noise. The metrics are disagreeing about what matters, and it's worth working out which one is on your side.

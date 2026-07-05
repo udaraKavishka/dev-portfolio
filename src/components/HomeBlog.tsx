@@ -2,17 +2,24 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import Image from 'next/image';
-import { Calendar, ArrowRight } from 'lucide-react';
-import { SanityPost } from '@/lib/posts';
+import { ArrowRight } from 'lucide-react';
+import type { Post } from '@/lib/posts';
 import styles from './HomeBlog.module.css';
 
 interface HomeBlogProps {
-    posts: SanityPost[];
+    posts: Post[];
+}
+
+function formatDate(date: string) {
+    return new Date(date).toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+    });
 }
 
 export default function HomeBlog({ posts }: HomeBlogProps) {
-    const latestPosts = posts.slice(0, 3);
+    const latestPosts = posts.slice(0, 5);
 
     if (latestPosts.length === 0) {
         return null;
@@ -22,47 +29,26 @@ export default function HomeBlog({ posts }: HomeBlogProps) {
         <section id="blog" className={styles.blog}>
             <div className={styles.container}>
                 <h2 className="section-title">Latest Blog Posts</h2>
-                <div className={styles.grid}>
+                <div className={styles.list}>
                     {latestPosts.map((post, index) => (
                         <motion.article
-                            key={post._id}
-                            className={styles.card}
-                            initial={{ opacity: 0, y: 20 }}
+                            key={post.slug}
+                            initial={{ opacity: 0, y: 10 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true, margin: '-100px' }}
-                            transition={{ delay: index * 0.1, duration: 0.5 }}
+                            transition={{ delay: index * 0.05, duration: 0.4 }}
                         >
-                            <Link href={`/blog/${post.slug.current}`} className={styles.cardLink}>
-                                {post.mainImage?.asset?.url && (
-                                    <div className={styles.imageContainer}>
-                                        <Image
-                                            src={post.mainImage.asset.url}
-                                            alt={post.mainImage.alt || post.title}
-                                            fill
-                                            sizes="(max-width: 768px) 100vw, 320px"
-                                            className={styles.image}
-                                        />
-                                    </div>
-                                )}
-                                <div className={styles.cardContent}>
-                                    <h3 className={styles.cardTitle}>{post.title}</h3>
-                                    {post.excerpt && (
-                                        <p className={styles.excerpt}>{post.excerpt}</p>
-                                    )}
-                                    <div className={styles.meta}>
-                                        <Calendar size={16} />
-                                        <span>{new Date(post.publishedAt).toLocaleDateString()}</span>
-                                        {post.readTime && <span>• {post.readTime}</span>}
-                                    </div>
-                                </div>
+                            <Link href={`/blog/${post.slug}`} className={styles.row}>
+                                <span className={styles.rowTitle}>{post.title}</span>
+                                <span className={styles.rowDate}>{formatDate(post.date)}</span>
                             </Link>
                         </motion.article>
                     ))}
                 </div>
                 <div className={styles.viewMoreContainer}>
                     <Link href="/blog" className={styles.viewMoreButton}>
-                        <span>View All Blog Posts</span>
-                        <ArrowRight size={18} />
+                        <span>view all posts</span>
+                        <ArrowRight size={16} />
                     </Link>
                 </div>
             </div>

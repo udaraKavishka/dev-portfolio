@@ -1,0 +1,22 @@
+---
+title: "Where did my table borders go? HTML-to-PDF gotchas"
+date: "2026-06-14"
+category: "intern-diaries"
+excerpt: "A document renders fine in the browser and comes out of the PDF engine with invisible tables. The fix is one attribute and a lesson about rendering targets."
+tags: ["PDF", "HTML", "Debugging"]
+readTime: "3 min read"
+---
+
+The task: generate formal documents as PDFs from HTML templates. The symptom: tables that looked fine in a browser preview rendered in the PDF with no borders at all, cell contents floating in white space like the table had been asked to dress formally and showed up naked.
+
+The cause sits in a corner of HTML history. The old-school `border` attribute on a `<table>` (as opposed to CSS borders) is what some HTML-to-PDF engines respect by default, and modern markup habits omit it because CSS is supposed to handle presentation. Meanwhile, the CSS reset in our template zeroed out table borders, expecting component styles to add them back, and the PDF engine's CSS support didn't cover the way they were being added back. Browser: fine. PDF: naked tables. The immediate fix was explicit, boring border declarations the engine understood, with the `border` attribute as the belt-and-suspenders fallback.
+
+The generalizable lesson is that an HTML-to-PDF engine is a different rendering target wearing a browser costume. These engines implement a subset of CSS, and the subset varies by engine and version. Flexbox may half-work. Custom fonts need explicit registration. `@page` rules for margins and page numbers follow a spec browsers barely use. Developing against Chrome and shipping to a PDF engine is developing against the wrong target; the preview that matters is the engine's own output, and the feedback loop should be built around generating actual PDFs from day one.
+
+Adjacent lessons from the same stretch of work:
+
+Page breaks are a layout concern browsers never taught you. A table that splits mid-row across pages, or a heading orphaned at a page's bottom, reads as broken to anyone holding the document. The `page-break-inside: avoid` family of properties (or the engine's equivalents) needs deliberate placement on tables, signature blocks, anything that must stay whole.
+
+Test with hostile content lengths. The template looks perfect with the sample company name. Then production supplies a company whose registered name is fourteen words long, and the header wraps into the logo. Formal documents attract long official strings: names, addresses, registration numbers. Feed the template the longest real values you can find before calling it done.
+
+PDFs are also where "pixel-perfect" expectations live, because people print them and file them with authorities. It's a strange corner of web work: the most conservative rendering target, carrying the most formal output. Style accordingly, which mostly means: simply.

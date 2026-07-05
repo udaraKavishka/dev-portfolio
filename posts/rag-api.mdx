@@ -1,0 +1,621 @@
+---
+title: "Build a RAG API with FastAPI"
+date: "2026-02-12T21:18:00.000Z"
+category: "self-learn"
+updated: "2026-02-12T09:17:23Z"
+readTime: "15 min read"
+mainImage: "/blog/rag-api/cover.png"
+---
+
+Have you ever considered how large companies build AI-powered APIs that developers can integrate into their apps, with their own knowledge base? Similar to ChatGPT APIs for conversational AI or GitHub Copilot for code suggestions, these all use AI to power their responses.
+
+We will build our own modern web framework like FastAPI, combined with a RAG (Retrieval-Augmented Generation) system to create intelligent APIs that can answer questions based on your knowledge base.
+
+This blog is the beginning of a series where we will build a RAG API, containerize it using Docker, and deploy it into a Kubernetes cluster. We will further improve it by automating the workflow with GitHub Actions to rebuild and redeploy your API automatically whenever your data changes.
+
+
+We will create a RAG API using **FastAPI**, **Chroma**, and **Ollama**, and you'll run everything on your own computer. Your API will answer questions by searching your knowledge base, then using AI to generate more accurate answers. You will get automatic, interactive API documentation using **Swagger UI**, the tool professional developers use to build and test APIs, but all locally and for free.
+
+**Why FastAPI and RAG?**
+
+****
+
+**FastAPI** is a modern Python web framework that makes it easy to build APIs with automatic documentation, type validation, and high performance. It's used by companies like Uber, Netflix, and Microsoft for building production APIs.
+
+**RAG (Retrieval-Augmented Generation)** combines document search with AI generation. Instead of the AI guessing from its training data, RAG first searches your documents for relevant information, then uses that context to generate accurate answers.
+
+![Build a RAG API with FastAPI - image 1](/blog/rag-api/image-1.png)
+
+### Setup Environment
+
+In this step, we’ll set up Python and Ollama.
+
+- **Python** is a high-level programming language known for its readability and versatility.
+- **Ollama** is an open-source tool that lets you run **large language models (LLMs)  directly on your own computer.
+
+
+You need these tools because Python will be used to build the API, and Ollama runs AI models locally on your machine.
+
+> **What is Ollama?**
+Ollama lets you run large language models locally instead of sending requests to cloud services like OpenAI or Anthropic.
+
+
+In this project, you'll use the **tinyllama** model, which powers the AI responses in your RAG system.
+
+#### Install Python
+
+**Arch Linux:**
+
+```bash
+sudo pacman -Syu
+sudo pacman -S python python-pip python-virtualenv --noconfirm
+python --version
+pip --version
+```
+
+**Windows:**
+
+1. Download the latest Python 3.x installer from [python.org/downloads](https://www.python.org/downloads/).
+
+2. Check **Add Python to PATH** during installation.
+
+3. Open PowerShell or Command Prompt:
+
+
+```
+python --version
+pip --version
+```
+
+#### Install Ollama
+
+**Arch Linux:**
+
+Using AUR helper (yay):
+
+```
+yay -S ollama
+```
+
+Or manual installation:
+
+```
+wget https://ollama.com/download/ollama-linux.tar.gz
+tar -xvzf ollama-linux.tar.gz
+cd ollama-linux
+sudo cp ollama /usr/local/bin/
+ollama --version
+ollama list
+```
+
+**Windows:**
+
+1. Download the Windows installer from [Ollama](https://ollama.com/download).
+1. Run the `.exe` installer and follow prompts.
+1. Verify installation:
+
+```
+ollama --version
+ollama list
+```
+
+
+#### Pull and Run TinyLlama
+
+```
+ollama pull tinyllama
+ollama run tinyllama
+```
+
+ollama run tinyllama loads the model into memory and keeps a conversation session open. Each message is sent to the model, and the response is streamed back token by token, so you can chat with the model without writing extra code.
+
+**Test tinyllama:**
+
+- Type a question like: What is Kubernetes?
+- You should get a response from tinyllama.
+
+> ***The response I got has nothing to do with containers or DevOps!****
+Small models like tinyllama aren't trained on recent technical topics, so they may generate fictional explanations for terms like "Kubernetes" based on patterns they've seen, rather than real knowledge.*
+
+> ***
+How does RAG solve this problem?****
+RAG (Retrieval-Augmented Generation) retrieves relevant information from your documents first, then uses that context to generate accurate answers. Even if tinyllama doesn't know Kubernetes from its training, your RAG system can pull the correct definition from your documentation and pass it to the model as context.*
+
+### Setup python workspace
+
+> **What is a virtual environment?**
+A virtual environment is an isolated Python environment that keeps your project's dependencies separate from other Python projects on your computer.
+
+
+
+Without a virtual environment, installing packages for one project could break another project that needs a different version. A virtual environment makes sure each project has its own set of packages, preventing conflicts.
+
+> 
+**How does it work?**
+When you create a virtual environment, Python creates a folder (usually called venv) that contains its own copy of Python and a place to install packages. When you "activate" the virtual environment, your terminal uses the Python and packages from that folder instead of the system-wide Python.
+
+```
+mkdir ~/Desktop/devops-rag-api
+cd ~/Desktop/devops-rag-api
+python3 -m venv venv
+```
+
+> What does this command do?
+python3 -m venv venv tells Python to create a virtual environment  
+
+> python3 - uses Python 
+ -m venv - runs the venv module (Python's built-in virtual environment tool)
+ venv - the name of the folder to create (you can use any name, but venv is a common convention)
+
+#### **Activate Virtual Environment:**
+
+```
+Linux: source venv/bin/activate
+Windows: venv\Scripts\activate
+```
+
+> **Why do we need to activate the virtual environment?**
+Activating the virtual environment makes sure anything you install or run with Python only affects this project. It keeps your project's tools and packages separate, so nothing you do here will break other Python programs on your computer.
+
+#### Install Python dependencies
+
+> What are dependencies?
+
+> Dependencies are external libraries (packages) that your project needs to run. Instead of writing everything from scratch, we use existing libraries that other developers have created.
+
+```
+pip --version
+```
+
+#### Install the required python packages
+
+
+```
+pip install fastapi uvicorn chromadb ollama
+```
+
+> What's pip installing?
+ pip is downloading and installing four packages into your virtual environment:
+fastapi - A web framework that helps us build APIs quickly. Think of it as a toolkit that handles all the networking and routing logic (like complex HTTP request/response), so we can focus on writing the actual RAG functionality instead.
+
+> 
+**uvicorn** - A server that runs our FastAPI app and makes it accessible locally on your computer (or on the internet). When you start your API, uvicorn listens for incoming requests on your local machine and routes them to the right functions in your code.
+
+> 
+**chromadb** - A vector database that stores document embeddings (numerical representations of text). When a user asks a question, ChromaDB searches through these embeddings to find the most relevant documents, which is the "Retrieval" part of RAG.
+
+> 
+**ollama** - A Python client library that lets your code talk to Ollama. While you can use Ollama from the command line, this package gives your Python API a way to send questions to and get responses programmatically.
+
+
+These packages work together: FastAPI handles incoming questions, ChromaDB finds relevant documents, the ollama client sends everything to tinyllama for answer generation, and uvicorn serves it all up. They're now available only in this virtual environment, keeping them separate from other projects (and easy to delete).
+
+```
+pip list | grep -E "fastapi|uvicorn|chromadb|ollama"
+```
+
+You should see all four packages listed with version numbers.
+
+![Build a RAG API with FastAPI - image 2](/blog/rag-api/image-2.png)
+
+### Create your knowledge base and Embeddings
+
+> **Why do we need a knowledge base?**
+AI models like tinyllama have limited knowledge from their training data. By providing your own knowledge base, you can give the AI accurate, up-to-date information about specific topics. This is the "Retrieval" part of RAG - we retrieve relevant information before generating an answer.
+
+In this step, I'm creating a knowledge base and embeddings.A knowledge base is a centralized repository of information, like a digital library, containing articles, FAQs, and guides. It helps users find answers to common questions and solve problems independently, improving efficiency and customer support. I need it because this is the "Retrieval" part of RAG - we retrieve relevant information before generating an answer.
+
+#### Create a file k8s.txt:
+
+```
+Kubernetes is a container orchestration platform used to manage containers at scale.
+```
+
+> **Why:**
+Tinyllama has limited knowledge from its training data. The knowledge base provides accurate, up-to-date context for RAG.
+
+> **What is this content?**
+This sentence describes Kubernetes, which is a key concept in DevOps. We're storing this as our knowledge base so that when someone asks "What is Kubernetes?", our RAG system can find this information and use it to generate an accurate answer.
+
+#### Create embedding script
+
+You've created your knowledge document with Kubernetes content. To make this content searchable by your RAG system, we need to convert it into embeddings.
+
+> **What are embeddings?**
+Embeddings are numerical representations of text that capture meaning. Words with similar meanings are placed close together, while unrelated words are far apart. For example, "container" and "Docker" would have embeddings that are mathematically similar. This allows the computer to understand relationships between words based on their meaning, not just spelling.
+
+**How do embeddings work in RAG?**
+When you ask "What is Kubernetes?", the system:
+
+- Converts your question into an embedding (a list of vectors)
+- Compares it to embeddings of all text in your knowledge base
+- Finds the text with the most similar embedding (meaning)
+- Uses that text as context for generating the answer
+
+This is much more powerful than keyword matching - it understands meaning!
+
+**Create a new file embed .py**
+
+```python
+import chromadb
+
+client = chromadb.PersistentClient(path="./db")
+collection = client.get_or_create_collection("docs")
+
+with open("k8s.txt", "r") as f:
+text = f.read()
+
+collection.add(documents=[text], ids=["k8s"])
+
+print("Embedding stored in Chroma")
+```
+
+Let's break down each key line:
+
+> **import chromadb **- Imports the Chroma library so we can use it in our script.
+
+> **client = chromadb.PersistentClient(path="./db") **- Creates a Chroma client that stores data permanently in a new ./db folder on your computer. The PersistentClient means the data will be saved to disk, so it persists even after you close the program.
+
+> **collection = client.get_or_create_collection("docs")** - Gets an existing collection named "docs" or creates a new one if it doesn't exist. A collection is like a folder that holds your documents and their embeddings. You can have multiple collections for different types of documents.
+
+> **with open("k8s.txt", "r") as f:** - Opens the k8s.txt file in read mode. The with statement automatically closes the file when done, which is a best practice in Python.
+
+> **text = f.read()** - Reads all the content from the file and stores it in the text variable.
+
+> **collection.add(documents=text, ids="k8s")** - Adds the text to the collection with the ID "k8s". Chroma automatically converts the text into embeddings (numerical representations) when you add it. The ids parameter gives each document a unique identifier so you can reference it later.
+
+>  **print("Embedding stored in Chroma")** - Prints a confirmation message to let you know the process completed successfully.
+
+#### run the embed.py
+
+```
+python embed.py
+```
+
+The script successfully loaded your knowledge document into Chroma. The embeddings are now ready for semantic search!
+
+Check your file explorer in VScode.
+
+You should now see a new db/ folder inside your project directory.
+
+![Build a RAG API with FastAPI - image 3](/blog/rag-api/image-3.png)
+
+> **What is the db/ folder?**
+This folder was created by Chroma when you ran the embedding script. It stores your knowledge base's embeddings so Chroma can quickly search through them when your API is running.
+
+> **What do the different files in db/ do?**
+The subfolder with a long UUID-like name contains the raw embedding vectors and associated data. This is where the actual numerical representations of your text are stored, ready to be searched when your RAG API receives a question.
+
+The chroma.sqlite3 file is an SQLite database where Chroma stores references and metadata about your documents and embeddings. Think of it like an index in a library book - it tells Chroma where to find specific information, but the actual content is stored elsewhere.
+
+### Create the API
+
+Your knowledge base is now stored as embeddings in Chroma. Now to bring it all together - let's build an API that combines AI with document search to answer questions!
+
+> **What is an API?**
+An API (Application Programming Interface) lets software retrieve and share data with other apps. For example, when you use a travel app to see flight prices, the app uses airline APIs to request up-to-date prices and display them for you.
+
+In this project, you'll build a web API that can answer questions using AI powered by your own knowledge base.
+
+For now, you'll interact with your API yourself to search your documents and get back AI-generated answers. Later in this series, you'll see how other apps or users could connect to your API too!
+
+**Why build an API?**
+Making your RAG system an API means others can use it beyond your terminal! You could...
+
+- Build a web UI that calls your API
+- Integrate your API into mobile apps
+- Connect your API to other services
+- Share your API with teammates
+
+Let's create the main API application that will handle incoming questions, search your knowledge base in Chroma, and generate answers using tinyllama. We'll use FastAPI to create the API app.
+
+> **What is FastAPI?**
+FastAPI is a modern Python web framework for building APIs. It's designed to be fast, easy to use, and automatically generates interactive documentation. Companies like Uber, Netflix, and Microsoft use FastAPI for their APIs.
+
+> **Why use FastAPI?**
+Normally, when building an API from scratch, you'd need to deal with a lot of technical details: your code needs to listen for specific requests from other apps, understand the data format, make sure the right information is received, and then send back results in a way other programs understand.
+
+FastAPI takes care of a lot of this background work for you: it handles how requests come in and go out, checks if incoming information is correct, and returns answers in the right format. This means engineers (like you!) can focus on describing what should happen rather than all the complicated communication and data handling rules that usually go into building an API.
+
+**create a new file name app.py**
+
+```python
+from fastapi import FastAPI
+import chromadb
+import ollama
+
+app = FastAPI()
+chroma = chromadb.PersistentClient(path="./db")
+collection = chroma.get_or_create_collection("docs")
+
+@app.post("/query")
+def query(q:from fastapi import FastAPI
+import chromadb
+import ollama
+
+app = FastAPI()
+chroma = chromadb.PersistentClient(path="./db")
+collection = chroma.get_or_create_collection("docs")
+
+@app.post("/query")
+def query(q: str):
+results = collection.query(query_texts=[q], n_results=1)
+context = results["documents"][0][0] if results["documents"] else ""
+
+answer = ollama.generate(
+model="tinyllama",
+prompt=f"Context:\n{context}\n\nQuestion: {q}\n\nAnswer clearly and concisely:"
+)
+
+return {"answer": answer["response"]} str):
+results = collection.query(query_texts=[q], n_results=1)
+context = results["documents"][0][0] if results["documents"] else ""
+
+answer = ollama.generate(
+model="tinyllama",
+prompt=f"Context:\n{context}\n\nQuestion: {q}\n\nAnswer clearly and concisely:"
+)
+
+return {"answer": answer["response"]}
+```
+
+#### How does this RAG API work?
+
+
+This FastAPI app creates a web server with one endpoint: /query. Here's how your API works, step by step:
+
+1. Question arrives: Someone sends a question to your API at /query
+1. Search your documents: Chroma searches through your knowledge base to find text that matches the question's meaning
+1. Get matching text: Chroma returns the most relevant information from your documents (this is called "context")
+1. 4Generate answer: The question and the matching text are sent together to tinyllama, which creates an answer
+1. Send back the answer: The answer is sent back to whoever asked the question
+
+This is the complete RAG pattern: Retrieve relevant information, then Augment the LLM's generation with that information. FastAPI handles the HTTP layer, making this accessible as a web service.
+
+### Run API server
+
+Perfect! You've created your FastAPI application code. Now let's start the server so your API can receive and respond to questions.
+
+Why do we need a server?
+Your API code is just Python code sitting in a file. A server is needed to:
+
+- Listen for incoming HTTP requests
+- Route requests to the correct endpoint
+- Handle multiple requests at the same time
+- Convert HTTP requests into Python function calls
+```
+uvicorn --version
+```
+
+
+You should see something like Running uvicorn 0.38.0.
+
+> **What is uvicorn?**
+Uvicorn is a web server that runs FastAPI applications. Think of it as the engine that powers your API - FastAPI defines what your API does, but uvicorn actually runs it and handles incoming requests.
+
+**Check if ollama is running**
+
+```
+curl http://localhost:11434
+```
+
+> Why are we checking if Ollama is running?
+Ollama provides the language model (tinyllama) that your RAG API talks to for generating answers. If Ollama isn't running, your API requests will fail when they try to call the model. Checking its status helps you avoid mysterious connection errors down the line.
+
+```
+uvicorn app:app --reload
+```
+
+> **What does this command do?**
+uvicorn is a server that runs your FastAPI application. The command app:app tells uvicorn to look in the app.py file for a variable named app (your FastAPI instance).
+
+> The **--reload **flag enables hot-reloading, so the server automatically restarts whenever you change your code - great for development! This means you can edit your code and see changes immediately without manually restarting the server.
+
+Uvicorn starts listening on port 8000, which means your API is accessible at http://127.0.0.1:8000. Port 8000 is just a number that identifies this specific service on your computer. Think of it like a door number - when you want to talk to your API, you knock on "door 8000".
+
+You should see output like:
+
+![Build a RAG API with FastAPI - image 4](/blog/rag-api/image-4.png)
+
+> What do these messages mean?
+
+> **"Uvicorn running on http://127.0.0.1:8000"http://127.0.0.1:8000" **- Your server is now listening for requests
+
+> **"Started reloader process"** - The auto-reload feature is active
+
+> **"Application startup complete"** - FastAPI has finished initializing and is ready to handle requests
+
+### Test your RAG API
+
+Let's test your API using the command line first, then try FastAPI's feature called Swagger UI that lets you explore and test your API visually in your browser.
+
+> **What is Swagger UI?**
+Swagger UI is an automatically generated, interactive documentation page for your FastAPI server. It lets you visually explore your API's endpoints, see what parameters they accept, and even try them out right from your browser - no special tools or coding required.
+
+you can use the terminal also to check
+
+```
+curl -X POST "http://127.0.0.1:8000/query" -G --data-urlencode "q=What is Kubernetes?"
+```
+
+> **What does this curl command do?**
+
+> **curl **- A command-line tool for making HTTP requests
+
+>  **-X POST **- Specifies we want to use the POST method
+
+> **"http://127.0.0.1:8000/query" **- The URL of our API endpoint
+
+> **-G --data-urlencode "q=What is Kubernetes?"** - Sends the question as a URL-encoded parameter
+
+> **Why does Swagger UI matter?**
+Without Swagger UI, you'd have to test your API by manually crafting curl commands or writing test scripts for every endpoint - remembering exact routes, HTTP methods, and payloads. This process is tedious, error-prone, and much less beginner-friendly.
+
+FastAPI automatically generates Swagger UI documentation based on your code. It reads your function signatures, type hints, and docstrings to create beautiful, interactive docs.
+
+Open your browser and go to: 
+
+```
+http://127.0.0.1:8000/docs
+```
+
+
+
+You'll see the Swagger UI showing your API documentation.
+
+**What do I see in Swagger UI?**
+Swagger UI shows:
+
+- All available endpoints (like /query)
+- HTTP methods (POST, GET, etc.)
+-  Required parameters
+- Response formats
+- A way to test endpoints directly in the browser
+
+**What information does Swagger show?**
+When you expand an endpoint, you'll see:
+
+- Parameters - What data the endpoint expects (in our case, q as a query parameter)
+- Request body - If the endpoint accepts data in the request body
+- Responses - What the endpoint returns (status codes and response formats)
+- Try it out button - Lets you test the endpoint right in the browser
+
+Click try it out
+Enter a question like What is Kubernetes? in the q parameter field.
+
+Click Execute
+
+![Build a RAG API with FastAPI - image 5](/blog/rag-api/image-5.png)
+
+### Add dynamic content to your knowledge base
+
+> **What is dynamic content?**
+Dynamic content means information that can be added, updated, or removed while your application is running, without having to restart it or manually edit files. Instead of only being able to add content by editing k8s.txt and re-running embed.py, you'll be able to add new information through an API call.
+
+Why is this useful?
+In production systems, knowledge bases need to be updated frequently as new information becomes available. Having an API endpoint to add content means:
+
+- Other applications can update your knowledge base automatically
+- Users can add information through a web interface
+- Your system can stay up-to-date without manual intervention
+- You can expand your knowledge base incrementally
+
+#### create a /add endpoint
+
+```python
+`@app.post("/add")
+def add_knowledge(text: str):
+"""Add new content to the knowledge base dynamically."""
+try:
+# Generate a unique ID for this document
+import uuid
+doc_id = str(uuid.uuid4())
+
+# Add the text to Chroma collection
+collection.add(documents=[text], ids=[doc_id])
+
+return {
+"status": "success",
+"message": "Content added to knowledge base",
+"id": doc_id
+}
+except Exception as e:
+return {
+"status": "error",
+"message": str(e)
+}
+```
+
+**What does this code do?**
+This endpoint:
+
+1. Accepts a text parameter (the content to add)
+1. Generates a unique ID for the new document using uuid
+1. Adds the text to the Chroma collection with that ID
+1. Returns a success message with the document ID
+
+> **Why generate a unique ID?**
+Each document in Chroma needs a unique identifier. We use uuid (Universally Unique Identifier) to generate a random, unique ID for each piece of content we add. This ensures we can reference specific documents later if needed.
+
+#### Test your new endpoint
+
+Now let's test the /add endpoint to make sure it works!
+
+Open Swagger UI in your browser: 
+
+```
+http://127.0.0.1:8000/docs
+```
+
+
+
+You should now see two endpoints:
+
+POST /query - Your original endpoint
+
+POST /add - Your new endpoint!
+
+add text 
+
+```
+Docker is a platform that uses containers to package applications with all their dependencies.
+```
+
+you should see
+
+```json
+{
+"status": "success",
+"message": "Content added to knowledge base",
+"id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+}
+```
+
+![Build a RAG API with FastAPI - image 6](/blog/rag-api/image-6.png)
+
+****
+
+**What just happened?**
+Your API:
+
+1. Received the POST request with the new text
+1. Generated a unique ID for the document
+1. Added the text to Chroma as embeddings
+1. Returned a success message
+
+The new content is now in your knowledge base and can be searched by the /query endpoint!
+
+Test that the new content works
+
+Let's verify that the content you just added can be found by your RAG system!
+
+Go back to the POST /query endpoint in Swagger UI.
+Click Try it out.
+
+
+Enter a question that should match your new content, like: What is Docker?
+
+#### Can the API still hallucinate details I didn't give it?
+
+
+Yes, the API can still add details that weren't in your knowledge base! Here's why:
+
+Small models like tinyllama are trained to generate coherent, detailed responses. When given minimal context, they often "fill in the blanks" to create more complete-sounding answers, even if those details aren't in your knowledge base.
+
+#### How can you reduce hallucination?
+
+- Provide more detailed context in your knowledge base (the more specific information you give, the less the model needs to invent)
+- Use larger, more capable models (like Llama 3.3 70B) that are better at sticking to provided context
+- Improve your prompts to explicitly tell the model to only use information from the context
+- Add validation in your API to check if responses match your knowledge base
+
+RAG significantly reduces hallucination by providing relevant context, but it doesn't eliminate it completely - especially with smaller models. This is an active area of research in AI!
+
+Congratulations! You've successfully:
+
+- Set up Python and Ollama for local AI development
+- Built a RAG API using FastAPI, Chroma, and tinyllama
+- Created interactive API documentation with Swagger UI
+- Tested your API with both curl and Swagger UI
+
+You now understand how to build production-ready APIs with automatic documentation - the same way professional developers create AI-powered services.

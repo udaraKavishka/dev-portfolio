@@ -1,0 +1,20 @@
+---
+title: "Reuse the JWT helpers you already have"
+date: "2026-02-23"
+category: "intern-diaries"
+excerpt: "The second, slightly different token decoder in a codebase is a security bug on a delay timer. Auth code is the worst place to duplicate logic."
+tags: ["Security", "Authentication", "Code Quality"]
+readTime: "3 min read"
+---
+
+Here's a pattern I've learned to flag instantly in reviews, having first learned to flag it in my own work: a new endpoint needs to check a token, and instead of finding the codebase's existing JWT helpers, the author writes a fresh little decode-and-verify inline. It's five lines. It works. It's a bug that hasn't happened yet.
+
+The problem is that token verification is a checklist wearing a one-liner's clothes. A proper check verifies the signature, the expiry, the issuer or audience where relevant, handles the malformed case, and knows which claim actually identifies the user. The codebase's established helper accumulated all of this over time, each item usually added after something went wrong. The fresh inline version contains whatever the author remembered that afternoon. The gap between the two is invisible in review (the code looks right, it decodes a token!) and stays invisible until someone presents an expired token to exactly this endpoint and gets in.
+
+Divergence also compounds. Two decoders drift: the main one gets a fix (a new validation, a rotated key, an algorithm restriction) and the copy doesn't, because nobody remembers it exists. Every security improvement now has to find N call sites instead of one. The audit question "how do we validate tokens" stops having an answer and starts having a survey.
+
+What makes auth special here, compared to ordinary duplication, is the failure economics. Duplicated formatting logic fails as inconsistent output; annoying, visible, cheap. Duplicated verification fails as an authentication bypass; silent, exploitable, expensive. The usual pragmatic tolerance for a bit of copy-paste ("we'll refactor later") prices in the wrong failure mode when the code guards a door.
+
+So the discipline, stated plainly: before touching token logic, grep for what exists. `decode`, `verify`, `jwt`, the session module, wherever this codebase keeps its crypto plumbing. Use the helper even when it's slightly awkward for your case; extend it if it genuinely doesn't cover you, so the extension lives where the next person will find it. And if you find yourself needing behavior the helper deliberately doesn't allow, treat that as a design conversation, not an inline workaround, because the restriction is probably somebody's scar.
+
+The general principle is old (don't repeat yourself), but auth is where it stops being a style preference. One door, one lock, one place to check the lock.

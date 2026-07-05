@@ -1,0 +1,24 @@
+---
+title: "What a homelab cluster teaches that managed Kubernetes can't"
+date: "2026-06-28"
+category: "research-diaries"
+excerpt: "Building a cluster from actual machines means owning every failure from BIOS to CNI. It's slower, cheaper, and a better teacher than any managed control plane."
+tags: ["Homelab", "Kubernetes", "Learning"]
+readTime: "3 min read"
+---
+
+I've written a whole series about building a Kubernetes cluster from bare machines with a few colleagues, so this post is the retrospective: what the exercise taught that managed offerings structurally can't, and what I'd tell someone deciding whether the pain is worth it.
+
+The core difference is that managed Kubernetes starts at the API server. Everything below (machines, OS, networking, etcd, the control plane itself) is someone else's product, invisible by design. A homelab starts at the power button, and the layers you're forced to touch on the way up are exactly where the deep understanding lives. Our first weeks were BIOS quirks, OS installs, and network config, none of which appears in any Kubernetes tutorial and all of which shaped everything above it.
+
+Concrete things the lab taught that no managed cluster would have:
+
+Failures below the abstraction exist and dominate. A flaky cable, a machine that sleeps when it shouldn't, DNS on the host interfering with DNS in the cluster. Managed platforms don't eliminate this class of problem; they hire people to hide it from you. Debugging it once recalibrates how you read every future "weird cluster issue," because you now have a mental stack that goes below kubelet.
+
+The control plane is programs, not weather. Running etcd yourself, watching what happens when it's unhappy, understanding why quorum means an odd number of nodes: after this, control-plane behavior stops being mysterious vendor magic. When a managed cluster misbehaves, you now have hypotheses instead of a support ticket and a prayer.
+
+Resource scarcity is educational. On cloud, the answer to pressure is a bigger node type. On four second-hand machines, capacity is finite and physical, so requests, limits, and eviction stop being config trivia and become daily negotiations. Best resource-management education available, and it costs less than a certification exam.
+
+What I'd warn about, honestly: the time cost is real and front-loaded, expect the first weeks to produce zero Kubernetes and lots of infrastructure yak-shaving. Doing it with colleagues halved the frustration and doubled the learning, since explaining your broken networking theory to someone is debugging by another name.
+
+Would I run production on it? Obviously not. That was never the point. The lab exists to make the invisible layers visible once, so that ever after, you know what the managed platforms are actually managing. Cheap tuition, as these things go.

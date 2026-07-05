@@ -1,117 +1,77 @@
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
-import { remark } from 'remark';
-import html from 'remark-html';
-import type { PortableTextBlock } from '@portabletext/types';
 
 const postsDirectory = path.join(process.cwd(), 'posts');
 
-export interface SanityPost {
-    _id: string;
+export interface Post {
+    slug: string;
     title: string;
-    slug: {
-        current: string;
-    };
-    publishedAt: string;
+    date: string;
+    updated?: string;
+    category?: string;
+    excerpt?: string;
+    tags?: string[];
     readTime?: string;
+    mainImage?: string;
+    mainImageAlt?: string;
     seoTitle?: string;
     seoDescription?: string;
-    mainImage?: {
-        asset: {
-            url: string;
-        };
-        alt?: string;
+}
+
+export interface PostWithContent extends Post {
+    content: string;
+}
+
+function parsePost(fileName: string): PostWithContent {
+    const slug = fileName.replace(/\.mdx?$/, '');
+    const fullPath = path.join(postsDirectory, fileName);
+    const fileContents = fs.readFileSync(fullPath, 'utf8');
+    const { data, content } = matter(fileContents);
+
+    return {
+        slug,
+        title: data.title ?? slug,
+        date: data.date ?? '',
+        updated: data.updated,
+        category: data.category,
+        excerpt: data.excerpt,
+        tags: data.tags,
+        readTime: data.readTime,
+        mainImage: data.mainImage,
+        mainImageAlt: data.mainImageAlt,
+        seoTitle: data.seoTitle,
+        seoDescription: data.seoDescription,
+        content,
     };
-    body?: PortableTextBlock[];
-    excerpt?: string;
-    tags?: string[];
 }
 
-export interface PostData extends Record<string, unknown> {
-    id: string;
-    date: string;
-    title: string;
-    excerpt?: string;
-    tags?: string[];
-    contentHtml?: string;
-    mainImage?: string; // For compatibility
-    readTime?: string; // For compatibility
-}
-
-export function getSortedPostsData(): PostData[] {
-    // Create posts directory if it doesn't exist
+export function getAllPosts(): Post[] {
     if (!fs.existsSync(postsDirectory)) {
         return [];
     }
 
-    const fileNames = fs.readdirSync(postsDirectory);
-    const allPostsData = fileNames.map((fileName) => {
-        const fullPath = path.join(postsDirectory, fileName);
-        const stat = fs.statSync(fullPath);
-        let fileContents = '';
-        let id = '';
-
-        if (stat.isDirectory()) {
-            // Check for README.md in the directory
-            const readmePath = path.join(fullPath, 'README.md');
-            if (fs.existsSync(readmePath)) {
-                fileContents = fs.readFileSync(readmePath, 'utf8');
-                id = fileName;
-            } else {
-                return null; // Skip directories without README.md
-            }
-        } else if (fileName.endsWith('.md')) {
-            // Handle legacy .md files directly in posts/
-            fileContents = fs.readFileSync(fullPath, 'utf8');
-            id = fileName.replace(/\.md$/, '');
-        } else {
-            return null; // Skip non-md files
-        }
-
-        const matterResult = matter(fileContents);
-
-        return {
-            id,
-            ...matterResult.data,
-        } as PostData;
-    });
-
-    // Filter out nulls
-    const validPosts = allPostsData.filter((post): post is PostData => post !== null);
-
-    return validPosts.sort((a, b) => {
-        if (a.date < b.date) {
-            return 1;
-        } else {
-            return -1;
-        }
-    });
+    return fs
+        .readdirSync(postsDirectory)
+        .filter((fileName) => /\.mdx?$/.test(fileName))
+        .map((fileName) => {
+            const { content, ...post } = parsePost(fileName);
+            void content;
+            return post;
+        })
+        .sort((a, b) => (a.date < b.date ? 1 : -1));
 }
 
-export async function getPostData(id: string): Promise<PostData> {
-    let fullPath = path.join(postsDirectory, `${id}.md`);
+export function getPostSlugs(): string[] {
+    return getAllPosts().map((post) => post.slug);
+}
 
-    // Check if it's a directory-based post first (preferred) or if the .md file doesn't exist
-    const dirPath = path.join(postsDirectory, id);
-    if (fs.existsSync(dirPath) && fs.statSync(dirPath).isDirectory()) {
-        const readmePath = path.join(dirPath, 'README.md');
-        if (fs.existsSync(readmePath)) {
-            fullPath = readmePath;
+export function getPostBySlug(slug: string): PostWithContent | null {
+    for (const ext of ['.mdx', '.md']) {
+        const fileName = `${slug}${ext}`;
+        if (fs.existsSync(path.join(postsDirectory, fileName))) {
+            return parsePost(fileName);
         }
     }
-
-    const fileContents = fs.readFileSync(fullPath, 'utf8');
-    const matterResult = matter(fileContents);
-
-    const processedContent = await remark()
-        .use(html)
-        .process(matterResult.content);
-    const contentHtml = processedContent.toString();
-
-    return {
-        id,
-        contentHtml,
-        ...matterResult.data,
-    } as PostData;
+    return null;
 }

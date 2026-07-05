@@ -1,0 +1,26 @@
+---
+title: "Skip and warn: designing batch jobs for partial failure"
+date: "2026-03-02"
+category: "intern-diaries"
+excerpt: "One bad row should never kill a batch of five hundred. Deciding what failure means per item is most of the design work in any bulk job."
+tags: ["Backend", "Reliability", "Design"]
+readTime: "3 min read"
+---
+
+Here's a bug pattern I've now seen enough times to consider it a genre. A batch job processes a list: send notifications, sync records, generate documents. It works in testing. Then production data arrives with one malformed item, the code throws, and the whole batch dies. Four hundred and ninety-nine valid items don't get processed because item 273 had a bad phone number.
+
+The naive loop is fail-fast by accident, not by decision. Nobody chose "abort everything on first error." It's just what an unhandled exception does.
+
+For most batch work the right behavior is the opposite: skip the bad item, log a warning with enough detail to fix it later, and keep going. A malformed record is a data problem scoped to that record. The other records shouldn't inherit it.
+
+But "skip and warn" isn't a universal rule either, and the interesting work is deciding which failures are which. I sort them into three buckets.
+
+Item-level failures: invalid input, missing optional data, a record in a state the job doesn't handle. Skip, warn, continue. The warning must identify the item, because "3 items skipped" with no IDs is a message you'll curse during the follow-up investigation.
+
+Batch-level failures: the API you're calling is down, credentials are wrong, the database is unreachable. Skipping makes no sense because every remaining item will fail the same way. Abort, and abort loudly.
+
+Ambiguous failures: a timeout on one item. Is it that item, or the start of an outage? A decent heuristic is a failure budget: tolerate a few, but if the last N consecutive items all failed, treat it as batch-level and stop.
+
+Two edge cases that earn special handling. First, the empty batch. If every item filters out during validation, don't call the external service with an empty payload. Some APIs error on it, some charge for it, and either way it pollutes logs with a call that did nothing. Check for empty and exit early. Second, the summary. A batch job should end with one line stating what happened: processed 487, skipped 13, failed 0. That line turns "did it work?" from an investigation into a glance.
+
+None of this is clever engineering. It's just deciding, before the job hits real data, what each kind of failure should do. The default (crash on the first surprise) is the one behavior almost nobody actually wants.

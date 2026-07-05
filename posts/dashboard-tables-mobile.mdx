@@ -1,0 +1,24 @@
+---
+title: "Never let a dashboard table scroll sideways"
+date: "2026-06-16"
+category: "intern-diaries"
+excerpt: "Horizontal scroll on mobile is where table data goes to be ignored. If a table doesn't fit, the answer is redesign, not overflow-x."
+tags: ["Frontend", "UX", "CSS"]
+readTime: "3 min read"
+---
+
+There's a CSS pattern that shows up in every admin dashboard eventually: a wide data table wrapped in `overflow-x: auto` so it "works" on mobile. I've come to believe this pattern is almost always a design failure with a scrollbar attached, and the rule I now argue for in reviews is blunt: dashboard tables don't scroll horizontally. If the table doesn't fit, the section gets redesigned.
+
+The case against sideways scroll starts with what actually happens on a phone. The user sees the first two or three columns. The rest exist in a space they must drag to reach, losing sight of the row's identity (usually the leftmost column) while they do. Comparing values across rows in a far column means scrolling right, memorizing, scrolling back, repeating. Nobody does this. What people do instead is not read the data, which means the columns past the fold are decoration you're paying rendering time for. And on top of the usability cost, a horizontally scrollable region inside a vertically scrolling page creates gesture ambiguity that makes the whole screen feel broken.
+
+The redesigns that actually work, in rough order of how often they apply:
+
+Cut columns, honestly. Most wide tables are wide because every field made the cut. On mobile, decide which two or three values answer the user's actual question and show only those, with the rest available on tap in a detail view. This decision hurts precisely because it's a real product decision that the wide table let everyone avoid.
+
+Reshape rows into cards. A row is a record; on narrow screens a record is a small card with labeled values stacked vertically. Cards cost more vertical space and repay it in readability; every value sits next to its label with the record's identity visible.
+
+Pivot the table. Sometimes swapping rows and columns fits narrow screens naturally, particularly for comparison tables with few entities and many attributes.
+
+Question the table itself. If the user only ever scans for one number or the latest status, a summary stat or a sorted list serves them better than a grid pretending everyone wants everything.
+
+The exception I'll grant: genuinely tabular workflows (spreadsheet-like data entry, wide financial reports) used by people at desks. Those are desktop tools and can behave like it. But a dashboard someone checks from their phone is exactly where the data matters most and the width budget is smallest. Design for the budget instead of scrolling past it.

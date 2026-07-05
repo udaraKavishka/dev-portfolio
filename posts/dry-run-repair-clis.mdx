@@ -1,0 +1,29 @@
+---
+title: "Every data repair script needs a dry-run mode"
+date: "2026-04-01"
+category: "intern-diaries"
+excerpt: "Fixing dirty production data with a one-off script is routine work. Doing it without a preview mode is how routine work becomes an incident."
+tags: ["Databases", "CLI", "Reliability"]
+readTime: "3 min read"
+---
+
+Legacy data is never clean. I've worked with records where an email field held three comma-separated addresses, because years ago the form didn't validate and users improvised. Whatever the specifics, sooner or later you write a repair script: find the malformed rows, fix them in bulk.
+
+The uncomfortable part is that a repair script is a weapon pointed at production data. It runs with full write access, its logic encodes your assumptions about the mess, and messes exist precisely because assumptions failed before. The single practice that makes this safe is a dry-run mode, and I now consider it non-negotiable.
+
+Dry run means the script does all of its real work (query, classify, compute the fix) and then, instead of writing, prints what it would have done:
+
+```
+Would update person 4521: "a@x.com, b@y.com" -> keep "a@x.com", drop 1 other
+Would update person 4587: "c@z.com,c@z.com"  -> deduplicate to "c@z.com"
+Would skip person 4612: no valid email found (manual review)
+164 rows: 158 would update, 6 skipped
+```
+
+Reading that output is where every real discovery happens. Rows matching your pattern for reasons you didn't anticipate. Way more matches than expected, suggesting the query is too greedy. A "fix" that would pick the wrong survivor from the duplicates. Each one is a bug you found by reading instead of by damaging data. In my experience the first dry run is never the last; the output sends you back to refine the logic two or three times before it says exactly what you intend.
+
+Implementation is almost embarrassingly simple. A `--dry-run` flag, one conditional around the write, print statements. Two design rules make it trustworthy. The dry-run path must share all logic with the real path except the write itself; if they diverge, the preview lies, and a lying preview is worse than none. And I make dry run the default, so the destructive path requires an explicit `--execute`. Defaulting to destruction in a script you run twice a year is asking your future, distracted self to make the mistake for you.
+
+Two supporting habits: run inside a transaction anyway, as a second net, and log every actual change with before and after values, because a month later someone will ask what the script touched and "the code should explain it" is not an answer.
+
+Boring machinery, all of it. But data repair is exactly where you want boring. The excitement was already there; it's why you're writing the script.

@@ -1,0 +1,22 @@
+---
+title: "From forecast to scaling action without trusting the model too much"
+date: "2026-05-04"
+category: "research-diaries"
+excerpt: "A prediction is not a decision. The controller layer between model and cluster is where a predictive autoscaler earns or loses its safety."
+tags: ["Kubernetes", "Autoscaling", "MLOps"]
+readTime: "3 min read"
+---
+
+Say you have a model that forecasts CPU demand a few minutes ahead, and it's decently accurate. The tempting architecture is a straight pipe: forecast comes out, replica count goes in. Predicted demand divided by per-pod capacity, rounded up, applied. I think that design is wrong even when the model is good, because it hands an unsupervised actuator to a component that is guaranteed to sometimes be confidently wrong.
+
+The layer between forecast and cluster deserves to be a real controller with its own opinions. The rules I'd consider minimum equipment:
+
+Clamp everything. Hard floor and ceiling on replica count, and a maximum step size per decision. If the model says jump from 3 replicas to 40, the controller moves part of the way and waits for evidence. A wild forecast then costs you a few minutes of suboptimal capacity instead of an absurd bill or a starved cluster. Boring rate limiting absorbs the model's worst day.
+
+Scale up eagerly, down suspiciously. The asymmetry from capacity planning applies here too: acting on a too-high forecast wastes a little money; acting on a too-low one hurts users. So follow upward forecasts promptly, but require a downward forecast to persist for several consecutive intervals before shedding capacity. This one habit prevents the classic failure where a momentary dip in the prediction tears down pods right before the real spike.
+
+Keep the reactive path alive. This is the important one. The predictive controller sets the baseline capacity, and a plain reactive mechanism (the ordinary HPA, or logic equivalent to it) stays active as the backstop. If reality diverges from the forecast, the reactive layer catches the divergence the old slow way, which is still infinitely better than not catching it. Prediction improves the common case; reaction bounds the worst case. Any design that deletes the fallback is betting availability on a model never meeting a situation outside its training data, and every model eventually does.
+
+Watch the disagreement. The gap between what the forecast said and what demand did is the healthiest signal in the whole system. Small and stable: things are fine. Growing: the workload is drifting away from the training distribution, and it's time to retrain, before the drift becomes an incident rather than after.
+
+The theme underneath all four rules: treat the model as a well-informed advisor, not an authority. Forecasting improves decisions. The controller is still the one deciding.

@@ -1,0 +1,22 @@
+---
+title: "Elastic weight consolidation in plain terms"
+date: "2026-03-29"
+category: "research-diaries"
+excerpt: "How do you retrain a network without erasing what it knows? EWC's answer: figure out which weights matter and make them expensive to move."
+tags: ["Machine Learning", "Continual Learning"]
+readTime: "3 min read"
+---
+
+In a previous post I described catastrophic forgetting: retrain a network on new data and it paints over its old knowledge. Elastic weight consolidation, EWC, is one of the cleaner answers to that problem, and the core idea fits in a sentence. Before training on new data, measure which weights matter most to the old task, then penalize changing those specific weights.
+
+The intuition I use: some weights in a trained network are load-bearing walls and some are furniture. Move furniture freely and nothing collapses. Move a load-bearing wall and the old capability falls down. EWC's contribution is a practical way to estimate which is which.
+
+The estimate comes from a quantity called the Fisher information, which sounds intimidating and is computed from things you already have. For each weight, look at how sensitive the model's outputs on the old data are to nudging that weight. High sensitivity means the old task genuinely depends on it: load-bearing. Near-zero sensitivity means the weight could wander without consequence: furniture. You get one importance score per weight, computed once, after finishing training on the old data.
+
+Then, while training on new data, the loss gets an extra term: for each weight, its importance score times the squared distance from its old value. Important weights get a stiff spring pulling them back toward where they were. Unimportant weights get a spring so soft it may as well not exist, leaving them free to learn the new task. That's the "elastic" in the name. Nothing is frozen outright; everything is allowed to move at a price proportional to what moving it would destroy.
+
+What I like about EWC in practice: it needs no archive of old training data at training time, just the stored importance scores and old weight values. That matters when old data is too large to keep or not allowed to be kept.
+
+What to watch out for. There's a coefficient balancing the penalty against the new-task loss, and it matters a lot. Too high and the network is rigid, learning the new task badly. Too low and you're back to plain forgetting. Expect to tune it. The Fisher estimate is also an approximation that treats weights as independent, which they aren't, so protection is imperfect. And across many sequential tasks, penalties accumulate and the network gradually runs out of free furniture to learn with.
+
+Which is why EWC often gets paired with a second, complementary technique: keeping a small replay buffer of old examples and mixing them into new training. Regularization protects the weights; replay refreshes the memory. That combination is the next post.

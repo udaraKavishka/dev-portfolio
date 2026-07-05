@@ -1,0 +1,52 @@
+---
+title: "Building a Kubernetes Cluster with Kubespray: A Learning Journey"
+date: "2025-10-04T01:27:00.000+05:30"
+category: "research-diaries"
+updated: "2025-12-05T20:00:26Z"
+readTime: "3 min read"
+mainImage: "/blog/building-a-kubernetes1/cover.png"
+---
+
+## Series Introduction
+
+This blog series documents the journey of setting up a **Kubernetes cluster using Kubespray** for research and learning purposes. The series covers everything from **hardware setup, networking, and OS installation**, to **Kubernetes deployment, troubleshooting, and lessons learned**.
+
+Each post focuses on a specific stage of the project, highlighting challenges, solutions, and best practices. The goal is to provide a **step-by-step, real-world perspective** on building and managing a small-scale Kubernetes cluster collaboratively, while also exploring **resource usage, monitoring, and optimization**.
+
+Whether you’re a student, researcher, or aspiring DevOps engineer, this series offers **practical insights and hands-on experience** for learning Kubernetes and distributed system design.
+
+## Why We Built a Kubernetes Cluster for Research
+
+*Every project starts with a reason. For us, it wasn’t just about running Kubernetes , it was about learning, experimenting, and building something real for research. In this post, I’ll share how my journey from machine learning to DevOps led to the idea of building a cluster with my team, and why this setup matters for the work we’re doing.*
+
+## Introduction
+
+We decided to build a Kubernetes cluster using **Kubespray** to explore system design, networking, and distributed environments. The cluster would also support our individual research projects — mine being focused on **resource usage and cost-optimized allocation in Kubernetes pods**.
+
+This post is the **first in a series**, documenting both the progress and the obstacles we face along the way. It’s not just a tutorial , it’s a record of our lessons, mistakes, and what we learned from them.
+
+Our first goal: get the hardware ready, install Ubuntu, and prepare the base system for Kubernetes.
+
+![Building a Kubernetes Cluster with Kubespray: A Learning Journey - image 1](/blog/building-a-kubernetes1/image-1.png)
+
+## Background to the Research
+
+I’m currently in my final year of a **B.Sc. in Information Technology at the University of Vavuniya Sri Lanka, **where we are required to complete both a research project and an industrial training.
+
+From my first year, I was fascinated by **machine learning and data science**. Over three years, I worked on small projects in ML and analytics, constantly learning as a side passion. Like many students in IT, I struggled with **finding my niche , **starting with web development (frontend, backend, full stack), then legacy frameworks like Spring Boot, and sometimes even doubting whether I belonged in this field.
+
+A keynote speaker at an IEEE event once said:
+
+> “To be an IT professional is to adapt. Flexibility is your survival skill.”
+
+That stuck with me. By my third year, I grew interested in **DevOps and system design**. At the same time, I didn’t want to abandon ML entirely. That’s when I discovered **MLOps** , a fusion of DevOps and machine learning practices. It felt like the perfect direction to combine my skills.
+
+This is how the idea of building a **research cluster** became central to my project.
+
+## The Team and the Plan
+
+The cluster project started with four of my colleagues, guided by my **co-supervisor**.
+
+Together, we planned to build a **small, locally hosted cluster** — not just to test and deploy applications, but also to analyze performance, resource allocation, and the practicality of running workloads in this environment.
+
+**In the next post **, I’ll dive into the **hardware setup, first installation attempt, and the BIOS issue that forced us to switch systems**.

@@ -1,0 +1,22 @@
+---
+title: "Replay a real trace before you trust a scaling policy"
+date: "2026-05-31"
+category: "research-diaries"
+excerpt: "You can't A/B test autoscalers on production, and synthetic load lies. Trace-driven simulation is the middle path: real demand, simulated consequences."
+tags: ["Autoscaling", "Simulation", "Kubernetes"]
+readTime: "3 min read"
+---
+
+Suppose you've built a new scaling policy and you want to know if it's better than what you have. Your options look bad. Testing on production is testing on users. Generating synthetic load is easy but synthetic load is smooth and polite, while real demand is jagged, correlated, and rude; a policy that aces sine waves can faceplant on an actual Monday. And running two policies side by side on duplicated infrastructure costs real money for every experiment.
+
+The approach that threads this: trace-driven simulation. Record real demand (or use published cluster traces), then replay it against a simulated cluster governed by your policy, stepping through time. At each step: demand arrives from the trace, the policy observes what it would observe and decides, provisioning delays apply, and you record what happened. No cluster, no users, no cloud bill. An experiment that would take a week of wall-clock time runs in seconds, which means you can afford hundreds of them: every policy variant, every parameter setting, against every trace you have.
+
+The simulator itself is unglamorous, a loop and some bookkeeping, but two modeling choices decide whether its answers mean anything.
+
+Model the provisioning delay honestly. Real capacity arrives late: scheduling, image pulls, container startup, readiness. If your simulator grants capacity instantly, every policy looks great and reactive policies look perfect, because the lag is precisely their weakness. The delay term is where scaling policies differ, so it's the last thing to simplify away. Measure your actual pod-ready latency and use that distribution, not a guess.
+
+Replay demand, not the recorded response to it. The trace shows usage under whatever policy ran when it was recorded, including its throttling and its failures. Where possible, reconstruct offered load (what the workload wanted) rather than achieved usage (what it got), or at least know which one you have, because a policy evaluated against throttled demand inherits the old policy's ceiling.
+
+Output-side, resist the single score. Per-interval records of demand, provisioned capacity, and the gap let you compute the metrics that actually trade off against each other (violations on one side, wasted core-hours on the other) and, more importantly, let you look at the time series of a policy's worst hour. The plot of "here's where it fell behind and why" teaches more than any aggregate.
+
+The epistemics are worth stating plainly: simulation results are arguments, not proof. But they're arguments you can generate cheaply, at scale, against reality-shaped input, before anything touches production. That's a much better place to be wrong.

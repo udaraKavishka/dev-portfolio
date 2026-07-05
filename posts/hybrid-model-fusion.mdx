@@ -1,0 +1,20 @@
+---
+title: "Two-branch models: mixing time series with static context"
+date: "2026-04-28"
+category: "research-diaries"
+excerpt: "Some features change every minute, some never change at all. Feeding both through the same network layer serves neither. Hybrid architectures give each its own path."
+tags: ["Machine Learning", "Time Series", "Neural Networks"]
+readTime: "3 min read"
+---
+
+Suppose you're forecasting resource demand for workloads. Some of your information is temporal: the CPU usage curve over the last two hours, minute by minute. Some of it is static: what kind of job this is, how much memory it requested, which priority class it runs at. The static facts matter enormously (a batch job and a web service with identical recent curves have very different futures) but they don't vary over time.
+
+The lazy way to combine them is to staple the static features onto every time step and feed the whole thing into one recurrent network. It works, in the sense that the code runs. But it forces one architecture to do two unrelated jobs. The recurrent layers, built to track how things evolve, waste capacity re-reading facts that never evolve. Worse, static information gets diluted; the network must rediscover at every step that "this is a batch job" still holds, instead of just knowing it.
+
+The cleaner design is two branches. A recurrent branch (LSTM or similar) reads the time series alone and compresses its dynamics into a vector: momentum, cycles, recent shape. A small feedforward branch reads the static features once and embeds them into another vector: what this thing is. Then a fusion layer, often just concatenation followed by a dense layer or two, combines both vectors and produces the forecast.
+
+What the fusion layer buys you is learned interaction between the two kinds of knowledge. The same rising-usage pattern can mean "about to spike, scale now" for one workload class and "normal warm-up, ignore" for another. Neither branch alone can express that rule. The combination layer is exactly where such conditionals live, and in my experiments the two-branch design consistently beat both single-branch baselines: better than the LSTM that ignored static context, better than an MLP that flattened away the temporal structure. Neither result is surprising, which is rather the point. Each branch contributes information the other physically doesn't have.
+
+Practical notes if you build one. Watch the branch widths: if the static embedding is tiny and the temporal vector huge, the fusion layer can learn to mostly ignore the small one, so give static features enough dimensions to compete. Normalize the branches' outputs comparably for the same reason. And run the ablation (each branch alone versus combined) not as paper ceremony but as a sanity check: if the combined model doesn't beat both halves, your fusion isn't fusing, and that's a bug with an architecture-shaped cause.
+
+The pattern generalizes past infrastructure. Sensor streams plus device metadata, patient vitals plus demographics, price history plus company fundamentals. Wherever "what's happening" and "what this is" both matter, give them each their own path in.

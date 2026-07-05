@@ -1,0 +1,24 @@
+---
+title: "Scaling on where load is going, not where it's been"
+date: "2026-02-27"
+category: "research-diaries"
+excerpt: "Predictive autoscaling sounds fancy but the idea is simple: if your workload has a pattern, use it. The hard part is what happens when the prediction is wrong."
+tags: ["Kubernetes", "Autoscaling", "Machine Learning"]
+readTime: "4 min read"
+---
+
+Most infrastructure load has a shape. Builds pile up after standup and before release cutoffs. Shop traffic peaks in the evening. Batch jobs fire on cron schedules that someone wrote down years ago. Reactive autoscalers ignore all of this. They watch the current number and chase it.
+
+Predictive autoscaling is the obvious alternative: forecast the next few minutes of demand from history, and provision for the forecast instead of the present. If the model says CPU demand will double at 9:30, the pods are warm at 9:25. The spike lands on capacity that already exists.
+
+Simple in a sentence. The details are where it gets honest.
+
+First, the forecast horizon has to match your provisioning delay. If new pods take 60 seconds to become ready, a forecast 10 seconds ahead is useless and a forecast 30 minutes ahead is guessing. You want to predict just far enough ahead to cover scheduling, image pull, and startup, plus margin.
+
+Second, wrong predictions have asymmetric costs. Predict too high and you waste money for a few minutes. Predict too low and you're worse off than the reactive baseline, because you've suppressed the mechanism that would have caught the miss. This is why a sane predictive scaler never replaces the reactive one. It sits in front, and the reactive path stays as the safety net for whatever the model didn't see. Any design that removes the fallback is trusting a model with your uptime.
+
+Third, workloads drift. The pattern your model learned in March is stale by June: new services, new teams, a product launch, a changed release schedule. A model trained once and deployed forever degrades quietly, which is the worst way to degrade. You need either scheduled retraining or a model that keeps learning, and each option brings its own failure modes. Retraining can forget everything old. Continual learning can accumulate garbage. This trade-off is deep enough that I'll give it its own post.
+
+Is it worth the complexity? Depends entirely on the workload. Flat or gently varying load: no, the HPA is fine, keep your life simple. Spiky load with structure, where the spikes are expensive in either money or user pain: the numbers can get compelling, because you cut over-provisioning during quiet hours and cut SLA violations during bursts at the same time. Those are usually opposing goals. Prediction is the one lever that moves both.
+
+Start by checking whether your load even has a pattern. Pull two weeks of metrics and eyeball the daily curve. If Monday looks like Tuesday looks like Wednesday, you have signal worth modeling. If it looks like static, save yourself the trouble.

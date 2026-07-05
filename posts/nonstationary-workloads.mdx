@@ -1,0 +1,20 @@
+---
+title: "Non-stationary workloads break tidy models"
+date: "2026-05-22"
+category: "research-diaries"
+excerpt: "Forecasting assumes the future resembles the past. Infrastructure load keeps renegotiating that deal: teams ship, products launch, patterns move."
+tags: ["Time Series", "Machine Learning", "MLOps"]
+readTime: "3 min read"
+---
+
+Every forecasting model carries one load-bearing assumption: the process generating tomorrow's data resembles the process that generated yesterday's. Statisticians call this stationarity, and infrastructure workloads violate it as a lifestyle.
+
+Think about what actually drives load on a cluster. Teams ship features that change resource profiles. A product launch doubles traffic in a week and it never goes back. A batch pipeline gets rescheduled from 2am to 6am. A service gets rewritten in a faster language and its CPU signature transforms overnight. None of this is noise around a stable pattern. It's the pattern itself moving, and each move quietly invalidates some part of whatever a model learned.
+
+Drift comes in flavors worth distinguishing, because they hurt differently. Gradual drift, organic growth shifting the level and shape over months, degrades forecasts slowly; you notice as a metric that creeps. Sudden shifts, a launch or a migration, break the model overnight and are at least obvious. The sneaky one is recurring regime change: the workload alternates between modes (build-season versus quiet weeks, term time versus holidays), so a model trained on recent data alone keeps being freshly wrong every time an old mode returns.
+
+That last flavor is what makes the naive fix insufficient. "Just retrain on recent data" handles gradual drift adequately. But against recurring regimes it means the model perpetually forgets the mode it isn't currently in, relearning each one from scratch at every transition, and the transitions are exactly when forecasts matter most. Retraining frequency turns into a treadmill, and each retrain risks overwriting knowledge that was about to become relevant again.
+
+This is precisely the situation continual learning techniques are built for: update on new data while preserving performance on past regimes, via importance-weighted penalties on weights or replay buffers of old examples, both of which I've written about separately. Non-stationarity is the disease those methods treat. In my own experiments, the encouraging finding was that a model updated this way didn't just avoid forgetting older workload patterns; accuracy on them sometimes held up better than I had any right to expect, while a naively retrained baseline visibly lost them.
+
+Whatever your modeling choice, the operational requirement is the same: watch the residuals. The gap between forecast and reality, tracked over time, is your drift detector. Stable gap, healthy model. Widening gap, the world has moved and the model hasn't. Alert on it like you'd alert on disk usage, because a stale model silently making confident predictions is worse than no model, and it will not announce itself.

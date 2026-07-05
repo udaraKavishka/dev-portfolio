@@ -1,0 +1,24 @@
+---
+title: "Kubernetes requests vs limits, without the hand-waving"
+date: "2026-06-26"
+category: "devops-tools"
+excerpt: "One number is a promise to the scheduler, the other is a ceiling enforced at runtime. Confusing them produces both waste and mysterious throttling."
+tags: ["Kubernetes", "Capacity Planning", "DevOps"]
+readTime: "3 min read"
+---
+
+Requests and limits get explained in every Kubernetes intro and misunderstood in most clusters anyway, usually because the explanation stops before the consequences. The two numbers do unrelated jobs.
+
+A request is a claim used at scheduling time. When you request 500m CPU, the scheduler finds a node with 500m unclaimed and places you there, subtracting your claim from its ledger. That's the entire mechanism. The request doesn't reserve cycles at runtime, doesn't cap you, and isn't checked against your actual usage ever again. It's a seat reservation, and like seat reservations, the plane is full when the ledger says so, regardless of how many seats are physically empty. This is why clusters run out of "capacity" at 30% actual utilization: the scheduler sells requests, not usage.
+
+A limit is enforced at runtime, and the enforcement differs by resource in a way that matters. CPU over the limit gets throttled: the container stalls in small slices, which manifests as latency, not errors. Memory over the limit gets the process killed (OOMKilled), because memory can't be throttled, only denied. So a too-tight CPU limit produces a slow service with no obvious cause, while a too-tight memory limit produces restarts you'll at least see in the events.
+
+The practical questions fall out of the mechanics.
+
+Set requests from observed usage, around a high percentile of the real curve, because the request is what capacity planning actually consumes. Padding "to be safe" is buying insurance whose premium is invisible cluster waste; I've written before about how those paddings compound into phantom clusters.
+
+Memory limits: set them, usually equal to the request. That combination (request = limit) gives memory a predictable worst case, and predictable beats optimistic for a resource whose failure mode is a kill.
+
+CPU limits are genuinely contested territory. The case against: CPU is compressible, throttling hurts latency, and idle cycles a pod could safely burst into go wasted. The case for: multi-tenant fairness and protection from runaway neighbors. My take for typical service clusters is honest requests plus no CPU limit, letting burstable pods use idle capacity, unless tenancy or benchmarking consistency demands the cap. Reasonable people land elsewhere; unreasonable configs are the ones where the numbers were never derived from anything.
+
+The audit worth running quarterly: for each deployment, chart requested against actual usage. Wherever the ratio is embarrassing, someone typed a guess into YAML two years ago, and it's been billed monthly ever since.

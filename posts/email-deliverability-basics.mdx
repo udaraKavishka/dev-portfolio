@@ -1,0 +1,24 @@
+---
+title: "Email deliverability for product notifications, minus the folklore"
+date: "2026-06-20"
+category: "devops-tools"
+excerpt: "Sending email is one API call. Getting it into inboxes is DNS records, reputation, and a few habits that separate notifications from spam."
+tags: ["Email", "Backend", "Infrastructure"]
+readTime: "3 min read"
+---
+
+Transactional email looks solved: pick a provider, call their API, done. Then your password resets start landing in spam for some domains, and you discover the part of email nobody's tutorial covered: deliverability, the question of whether receiving servers trust you. Researching this properly for product notification work, here's the load-bearing 20%.
+
+Three DNS records do most of the trust work, and all three need to exist and agree.
+
+SPF is a DNS record listing which servers may send mail claiming to be from your domain. Your email provider gives you the value; you publish it. Without it, anyone can forge your From address, and receivers score you accordingly.
+
+DKIM is a cryptographic signature your provider attaches to each message, verified against a public key in your DNS. It proves the message wasn't altered and genuinely involves your domain. Providers hand you the key as a CNAME to add; it's ten minutes of work.
+
+DMARC ties them together: a policy record saying what receivers should do with mail that fails the other two checks, and where to send aggregate reports. Start at `p=none` (observe, don't enforce) and read the reports before tightening, because the reports will surprise you with legitimate senders you forgot about, like that one internal tool mailing from your domain.
+
+Since 2024, the large mailbox providers require this triad for bulk senders outright. It's not optional hardening anymore; it's table stakes.
+
+Beyond DNS, the factors that separate delivered from junked: sender reputation accrues to your domain and IP over time, which is why warming up a new domain gradually beats blasting from it on day one, and why keeping transactional mail (resets, receipts) on a separate subdomain from marketing mail is standard practice; the marketing side's complaints then can't poison the password resets. Bounce handling matters more than it seems: repeatedly mailing dead addresses marks you as careless, so process bounces and suppress hard failures. And the content level is mostly hygiene, not magic words: working unsubscribe for anything non-transactional, a plain-text part alongside HTML, honest subject lines.
+
+The mental model that organizes all of it: every receiving server is continuously scoring your domain's behavior, and inbox placement is the running total. There's no trick, just accumulated evidence that mail from you is wanted. Set the records, watch the reports, keep the list clean, and the score takes care of itself.
