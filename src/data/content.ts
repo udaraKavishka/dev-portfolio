@@ -94,7 +94,7 @@ export const projectsData: ProjectItem[] = [
         title: 'TrackNGo',
         description: 'A public transportation solution providing real time bus tracking, route guidance, fare estimation, and lost and found management to enhance commuter convenience and safety.',
         techStack: ['MongoDB', "Express.js", 'React', 'Node.js', 'Socket.io', 'JavaScript', 'Mongoose', 'JWT'],
-        githubUrl: 'https://github.com/udaraKavishka/IT3162-TrackNGO',
+        githubUrl: 'https://github.com/TrackNGo',
     },
     {
         id: 7,
