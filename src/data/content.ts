@@ -94,7 +94,7 @@ export const projectsData: ProjectItem[] = [
         title: 'TrackNGo',
         description: 'A public transportation solution providing real time bus tracking, route guidance, fare estimation, and lost and found management to enhance commuter convenience and safety.',
         techStack: ['MongoDB', "Express.js", 'React', 'Node.js', 'Socket.io', 'JavaScript', 'Mongoose', 'JWT'],
-        githubUrl: 'https://github.com/TrackNGo',
+        githubUrl: 'https://github.com/udaraKavishka/IT3162-TrackNGO',
     },
     {
         id: 7,
@@ -126,7 +126,21 @@ export const projectsData: ProjectItem[] = [
         githubUrl: 'https://github.com/udaraKavishka/modern-portfolio',
         liveUrl: 'https://udara-portfolio.vercel.app/'
     },
-    
+    // {
+    //     id: 11,
+    //     title: 'Predictive Kubernetes Autoscaler with Continual Learning',
+    //     description: 'Adaptive CPU autoscaling for Kubernetes CI/CD workloads using a hybrid LSTM+MLP forecasting model with Elastic Weight Consolidation and Experience Replay, so the model keeps adapting to non-stationary workloads without forgetting past patterns.',
+    //     techStack: ['Python', 'PyTorch', 'LSTM', 'Kubernetes', 'Prometheus', 'Grafana'],
+    //     githubUrl: 'https://github.com/udaraKavishka/predictive-k8s-autoscaler',
+    //     isOngoing: true,
+    // },
+    {
+        id: 11,
+        title: 'WhatsApp AI Workspace Chatbot',
+        description: 'A WhatsApp Cloud API webhook integration backed by a swappable AI chat backend, with signature validation, idempotency checks, and a local Gemini shim for development. Built to be reusable as a chatbot template for any business.',
+        techStack: ['Python', 'WhatsApp Cloud API', 'Meta Webhooks', 'Shell'],
+        githubUrl: 'https://github.com/udaraKavishka/whatsapp-ai-bot',
+    },
 ];
 
 export const skillsData = [

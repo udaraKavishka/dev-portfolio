@@ -61,7 +61,11 @@ export function getAllPosts(): Post[] {
             void content;
             return post;
         })
-        .sort((a, b) => (a.date < b.date ? 1 : -1));
+        .sort((a, b) => {
+            const dateDiff = new Date(b.date).getTime() - new Date(a.date).getTime();
+            if (dateDiff !== 0) return dateDiff;
+            return a.title.localeCompare(b.title);
+        });
 }
 
 export function getPostSlugs(): string[] {
@@ -76,4 +80,39 @@ export function getPostBySlug(slug: string): PostWithContent | null {
         }
     }
     return null;
+}
+
+export function getRelatedPosts(slug: string, limit = 3): Post[] {
+    const allPosts = getAllPosts();
+    const currentPost = allPosts.find((post) => post.slug === slug);
+
+    if (!currentPost) {
+        return [];
+    }
+
+    const currentTags = new Set(currentPost.tags ?? []);
+
+    const scored = allPosts
+        .filter((post) => post.slug !== slug)
+        .map((post) => {
+            const sharedTags = (post.tags ?? []).filter((tag) => currentTags.has(tag)).length;
+            const sameCategory = post.category && post.category === currentPost.category ? 1 : 0;
+            return { post, score: sharedTags * 2 + sameCategory };
+        })
+        .filter(({ score }) => score > 0)
+        .sort((a, b) => {
+            if (b.score !== a.score) return b.score - a.score;
+            return new Date(b.post.date).getTime() - new Date(a.post.date).getTime();
+        })
+        .map(({ post }) => post);
+
+    if (scored.length >= limit) {
+        return scored.slice(0, limit);
+    }
+
+    const fallback = allPosts.filter(
+        (post) => post.slug !== slug && !scored.some((related) => related.slug === post.slug)
+    );
+
+    return [...scored, ...fallback].slice(0, limit);
 }
