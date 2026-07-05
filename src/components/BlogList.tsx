@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import type { Post } from '@/lib/posts';
 import { CATEGORIES } from '@/lib/categories';
@@ -20,14 +20,10 @@ function formatDate(date: string) {
 }
 
 export default function BlogList({ posts }: BlogListProps) {
-    const [activeCategory, setActiveCategory] = useState<string | null>(null);
-
-    useEffect(() => {
-        const category = new URLSearchParams(window.location.search).get('category');
-        if (category) {
-            setActiveCategory(category);
-        }
-    }, []);
+    const [activeCategory, setActiveCategory] = useState<string | null>(() => {
+        if (typeof window === 'undefined') return null;
+        return new URLSearchParams(window.location.search).get('category');
+    });
 
     const filteredPosts = activeCategory
         ? posts.filter((post) => post.category === activeCategory)
