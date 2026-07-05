@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import styles from './Hero.module.css';
 import { heroData } from '@/data/content';
+import TerminalPrompt from './TerminalPrompt';
 
 export default function Hero() {
     const { name, tagline, bio, techStack, profileImage, socialLinks, roles } = heroData;
@@ -99,6 +100,7 @@ export default function Hero() {
                                 <FileText size={18} />
                                 <span>View My Resume</span>
                             </button>
+                            <TerminalPrompt name={name} roles={roles} bio={bio} />
                         </div>
                     </div>
 

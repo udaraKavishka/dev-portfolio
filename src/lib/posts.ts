@@ -24,6 +24,11 @@ export interface PostWithContent extends Post {
     content: string;
 }
 
+export interface SearchEntry {
+    slug: string;
+    body: string;
+}
+
 function parsePost(fileName: string): PostWithContent {
     const slug = fileName.replace(/\.mdx?$/, '');
     const fullPath = path.join(postsDirectory, fileName);
@@ -62,6 +67,28 @@ export function getAllPosts(): Post[] {
             return post;
         })
         .sort((a, b) => (a.date < b.date ? 1 : -1));
+}
+
+export function getSearchIndex(): SearchEntry[] {
+    if (!fs.existsSync(postsDirectory)) {
+        return [];
+    }
+
+    return fs
+        .readdirSync(postsDirectory)
+        .filter((fileName) => /\.mdx?$/.test(fileName))
+        .map((fileName) => {
+            const { slug, content } = parsePost(fileName);
+            const body = content
+                .replace(/```[\s\S]*?```/g, ' ')
+                .replace(/`[^`]*`/g, ' ')
+                .replace(/!?\[([^\]]*)\]\([^)]*\)/g, '$1')
+                .replace(/[#>*_~|-]/g, ' ')
+                .replace(/\s+/g, ' ')
+                .trim()
+                .toLowerCase();
+            return { slug, body };
+        });
 }
 
 export function getPostSlugs(): string[] {

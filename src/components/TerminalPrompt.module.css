@@ -1,0 +1,160 @@
+.terminal {
+    margin-top: 1.75rem;
+    padding: 1rem 1.1rem 1.1rem;
+    border: 1px solid var(--accent-secondary);
+    border-radius: var(--radius-sm);
+    background-color: var(--bg-primary);
+    box-shadow: 0 0 0 1px rgba(74, 222, 128, 0.08), 0 6px 20px rgba(0, 0, 0, 0.25);
+    font-family: var(--font-mono);
+    cursor: text;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: -0.25rem 0 0.9rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px dashed var(--border-color);
+}
+
+.headerDot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--accent-primary);
+    box-shadow: 0 0 6px var(--accent-primary);
+    flex-shrink: 0;
+}
+
+.headerLabel {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    letter-spacing: 0.02em;
+}
+
+.entry {
+    margin-bottom: 0.75rem;
+}
+
+.promptRow {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+}
+
+.prompt {
+    color: var(--accent-highlight);
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.echo {
+    color: var(--accent-tertiary);
+}
+
+.input {
+    flex: 1;
+    min-width: 0;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    caret-color: var(--accent-primary);
+    padding: 0;
+}
+
+.hint {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+.output {
+    margin: 0.35rem 0 0 1.5rem;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.who {
+    color: var(--accent-primary);
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.roles {
+    color: var(--accent-secondary);
+    font-size: 0.85rem;
+    margin: 0.15rem 0 0.5rem;
+}
+
+.bioLine {
+    color: var(--text-secondary);
+    line-height: 1.7;
+}
+
+.helpList {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.helpList li {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.helpCmd {
+    color: var(--accent-primary);
+    min-width: 6.5rem;
+    flex-shrink: 0;
+}
+
+.helpDesc {
+    color: var(--text-muted);
+}
+
+.error {
+    color: #ff6b6b;
+}
+
+.fun {
+    color: var(--accent-tertiary);
+}
+
+.helpHeading {
+    margin: 0.8rem 0 0.3rem;
+    color: var(--accent-secondary);
+    font-size: 0.82rem;
+    opacity: 0.85;
+}
+
+.historyList {
+    margin-left: 1.1rem;
+    color: var(--text-secondary);
+}
+
+.pre {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    white-space: pre;
+    overflow-x: auto;
+}
+
+@media (max-width: 640px) {
+    .helpList li {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .helpCmd {
+        min-width: 0;
+    }
+}
