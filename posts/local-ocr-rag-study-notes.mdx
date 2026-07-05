@@ -1,0 +1,22 @@
+---
+title: "Building a fully local OCR + RAG system for my study notes"
+date: "2026-06-08"
+category: "self-learn"
+excerpt: "Years of lecture slides, scanned pages, and handwritten notes, made searchable and questionable without a single API call leaving my machine."
+tags: ["RAG", "OCR", "Local AI", "Side Project"]
+readTime: "4 min read"
+---
+
+My university notes are a landfill: lecture slides as PDFs, scanned handouts, photos of whiteboards, my own handwriting in three notebooks. Before exams, "where did we cover this" was a physical search problem. So I built the obvious thing: OCR everything, index it, and put a local LLM on top so I can ask questions. The constraint I set myself was full locality, no cloud APIs, partly for cost, partly on principle, and partly to learn what local tooling can actually do in 2026.
+
+The pipeline has three stages, and each taught me something.
+
+OCR is the foundation and the bottleneck. Clean digital PDFs are easy (extract text directly, no OCR needed; checking for an embedded text layer first saves both time and errors). Scans and photos went through OCR, and quality varied enormously with input hygiene: deskewing pages and boosting contrast before recognition improved output more than switching engines did. Handwriting was the humbling part. My neat notes came through usably; my exam-week scrawl produced hash. I made peace with partial coverage: 80% of the corpus searchable beats 0%.
+
+Chunking mattered more than I expected, which everyone says and I now believe. Slides want page-level chunks (a slide is a natural unit of meaning). Continuous notes want overlapping windows of a few hundred tokens. Getting this wrong is invisible until retrieval quality mysteriously disappoints, because the failure lives in chunks that split concepts across boundaries. Every chunk carries metadata: source file, page, course. That metadata is what turns an answer into a citation I can check, and being able to check is what makes the tool trustworthy enough to use before an exam.
+
+The QA layer is a local embedding model plus a quantized local LLM for generation. Honest assessment: retrieval does the heavy lifting. Even when generation is mediocre, being pointed at the right three chunks with sources solves my actual problem, which was always "where is this," not "write me an essay." The LLM is a nice summarizer on top of a search engine that finally works.
+
+Does it beat rereading the material? For learning, no, and I don't use it that way. For recall under time pressure ("which lecture defined this term, and what exactly did the slide say"), it's transformative: seconds instead of half an hour of folder spelunking.
+
+The wider takeaway is how far local stacks have come. Embeddings, vector search, OCR, and a capable small LLM all run on a mid-range laptop now. For personal corpora (notes, journals, papers), the privacy-preserving version of RAG isn't a compromise anymore. It's just an evening project with rough edges.

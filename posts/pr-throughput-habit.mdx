@@ -1,0 +1,24 @@
+---
+title: "I set a goal of 40 PRs in a month. Here's what it actually optimized"
+date: "2026-05-01"
+category: "intern-diaries"
+excerpt: "A throughput target sounds like a vanity metric. Used carefully, it reshaped how I scoped work, and the side effects were the real prize."
+tags: ["Career", "Productivity", "Internship"]
+readTime: "3 min read"
+---
+
+A month into my internship I set myself a number: 40 merged PRs that month. I tracked it on a little dashboard in my notes. Saying it out loud sounds like the most gameable vanity metric in software, and it is, if you let it be. But the constraint changed my behavior in ways I mostly want to keep.
+
+The obvious criticism first: PR count measures activity, not value. One migration that takes a week can matter more than twenty typo fixes. If a team imposed this number on people, it would corrupt immediately; folks would slice work into confetti to hit it. Everything Goodhart warned about. I'd never suggest it as a management metric.
+
+As a private constraint, though, it pushed on exactly the things a junior engineer tends to do badly.
+
+It forced small scope. You don't merge 40 PRs by writing big ones. I had to learn to cut work into pieces that each stand alone, build green, and mean something by themselves. That skill (scoping) turned out to be the actual lesson. Ten small PRs get reviewed faster than one huge one, merge with fewer conflicts, and when one is wrong, the revert is surgical.
+
+It killed my perfectionism stall. Left alone, I'd polish a branch for days, expanding it as I noticed adjacent things to fix. A daily-ish shipping rhythm meant "adjacent thing" became "next PR" instead of scope creep. The branch in my head stopped growing.
+
+It made me confront review latency. When your throughput depends on reviews landing, you start writing PRs that are easy to review: clear descriptions, small diffs, screenshots for UI changes, a note on what to test. Reviewers respond to that. My review turnaround improved because I made reviewing me cheap.
+
+Did I hit 40? Close enough that the number stopped mattering, which I think is the healthy outcome. The count was scaffolding. What stayed after removing it: small PRs as a default, shipping as a rhythm rather than an event, and a habit of asking "what's the smallest complete piece of this?"
+
+If you try it, two guardrails. Keep it private, because the moment it's visible it starts steering you toward what's countable. And pair it with an honesty check: at week's end, would you defend each PR as worth someone's time to review? The day the honest answer is no, the metric has started using you.

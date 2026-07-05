@@ -12,6 +12,7 @@ import {
 export const heroData = {
     name: "Udara Nalawansa",
     roles: [
+        "Intern Software Engineer @ Xaventra",
         "Final Year Undergraduate",
         "DevOps Enthusiast",
         "Full Stack Developer",
@@ -20,7 +21,7 @@ export const heroData = {
         "MLOps Engineer"
     ],
     tagline: "Designing Scalable Systems Through Software, Cloud, and Automation",
-    bio: "DevOps engineer and full stack developer in Sri Lanka focused on cloud infrastructure, automation, continuous delivery, and MLOps. I design resilient CI/CD pipelines, build scalable applications, deploy containerized workloads, and implement infrastructure as code with tools such as Kubernetes, Docker, Terraform, AWS, and GitHub Actions.",
+    bio: "Intern Software Engineer at Xaventra and full stack developer in Sri Lanka focused on cloud infrastructure, automation, continuous delivery, and MLOps. I design resilient CI/CD pipelines, build scalable applications, deploy containerized workloads, and implement infrastructure as code with tools such as Kubernetes, Docker, Terraform, AWS, and GitHub Actions.",
     techStack: [
         { name: 'Docker', icon: '🐳' },
         { name: 'Kubernetes', icon: '☸️' },
@@ -185,6 +186,23 @@ export const skillsData = [
     { name: 'Figma', category: 'Tools' },
     { name: 'Trello', category: 'Tools' },
     { name: 'Huly', category: 'Tools' },
+];
+
+interface ExperienceItem {
+    role: string;
+    company: string;
+    period: string;
+    description?: string;
+    link?: string;
+}
+
+export const experienceData: ExperienceItem[] = [
+    {
+        role: 'Intern Software Engineer',
+        company: 'Xaventra',
+        period: 'Feb 2026 - Present',
+        description: 'Full stack development on a business services platform — building features and fixing bugs across Flask, FastAPI, and Next.js codebases, integrating WhatsApp Business API chatbots, email services, and RAG-based AI features, and working with production databases, migrations, and CI checks.',
+    },
 ];
 
 interface EducationItem {

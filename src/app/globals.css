@@ -1,26 +1,25 @@
 :root {
-  /* Rose Pine / Catppuccin inspired palette */
-  --bg-primary: #191724;
-  --bg-secondary: #1f1d2e;
-  --bg-tertiary: #26233a;
+  /* Simple black terminal palette */
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #111111;
+  --bg-tertiary: #171717;
 
-  --text-primary: #e0def4;
-  --text-secondary: #908caa;
-  --text-muted: #6e6a86;
+  --text-primary: #d4d4d4;
+  --text-secondary: #a3a3a3;
+  --text-muted: #737373;
 
-  --accent-primary: #ebbcba;
-  /* Rose */
-  --accent-secondary: #c4a7e7;
-  /* Iris */
-  --accent-tertiary: #9ccfd8;
-  /* Foam */
-  --accent-highlight: #f6c177;
-  /* Gold */
+  --accent-primary: #4ade80;
+  /* Terminal green */
+  --accent-secondary: #22c55e;
+  /* Dimmer green */
+  --accent-tertiary: #86efac;
+  /* Light green */
+  --accent-highlight: #4ade80;
 
-  --border-color: #403d52;
+  --border-color: #262626;
 
   --font-mono: 'JetBrains Mono', monospace;
-  --font-sans: 'Inter', sans-serif;
+  --font-sans: var(--font-mono);
 
   --radius-sm: 4px;
   --radius-md: 8px;
@@ -28,20 +27,20 @@
 }
 
 [data-theme='light'] {
-  --bg-primary: #faf4ed;
-  --bg-secondary: #fffaf3;
-  --bg-tertiary: #f2e9e1;
+  --bg-primary: #ffffff;
+  --bg-secondary: #fafafa;
+  --bg-tertiary: #f5f5f5;
 
-  --text-primary: #575279;
-  --text-secondary: #797593;
-  --text-muted: #9893a5;
+  --text-primary: #171717;
+  --text-secondary: #404040;
+  --text-muted: #737373;
 
-  --accent-primary: #d7827e;
-  --accent-secondary: #907aa9;
-  --accent-tertiary: #56949f;
-  --accent-highlight: #ea9d34;
+  --accent-primary: #16a34a;
+  --accent-secondary: #15803d;
+  --accent-tertiary: #22c55e;
+  --accent-highlight: #16a34a;
 
-  --border-color: #dfdad9;
+  --border-color: #e5e5e5;
 }
 
 * {

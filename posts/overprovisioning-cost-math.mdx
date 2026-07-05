@@ -1,0 +1,22 @@
+---
+title: "The quiet cost of overprovisioning"
+date: "2026-04-16"
+category: "research-diaries"
+excerpt: "Nobody gets paged for wasted cores. Do the arithmetic anyway: the gap between requested and used CPU is one of the biggest line items nobody owns."
+tags: ["Kubernetes", "Cost", "Capacity Planning"]
+readTime: "3 min read"
+---
+
+Underprovisioning announces itself. Pods get throttled, latency climbs, someone gets paged, there's a postmortem. Overprovisioning does the opposite: everything runs beautifully, dashboards are green, and money quietly leaves. No alert fires for waste, so waste accumulates.
+
+The arithmetic is worth doing once, concretely. Say a service requests 2 CPU cores per pod and typically uses 0.4. Ten replicas means 20 cores reserved, 4 used. On the cluster, those reserved cores are gone; the scheduler won't place other workloads on them regardless of actual usage. If a core costs, conservatively, $25 a month on a managed cloud, that one service is paying about $400 a month for capacity it touches only during spikes. Multiply across thirty services with similar habits and you're funding a phantom cluster.
+
+Public trace data from large operators backs this up at scale: across thousands of machines, actual utilization commonly sits far below allocation. This isn't a pathology of careless teams. It's the rational result of the incentives.
+
+Because here's the thing: every individual overprovisioning decision is defensible. The developer who requests 2 cores instead of 0.5 is buying insurance against the spike they saw once, and against the page they'd receive personally. The cost of the insurance is invisible and shared; the cost of the outage is visible and theirs. Given that trade, everyone rounds up. I would too.
+
+The standard mitigations each help and each has a catch. Rightsizing based on observed usage (there's tooling that recommends requests from historical percentiles) works until the workload changes, so it needs to rerun continuously, and it still has to leave headroom for the spikes that motivated the padding. Autoscaling attacks the problem differently: instead of one number that must cover both idle Tuesday nights and peak Monday mornings, replica count follows demand. That's real progress, but reactive scaling arrives late for sharp spikes, so teams keep minimum replicas high, and the padding sneaks back in through another door.
+
+Which is the genuinely interesting observation buried in this boring topic: waste and reliability are usually presented as a dial, more of one buys less of the other. What actually moves both at once is better information about the future. The more accurately you can anticipate load, the less insurance you need to carry against it. That's the honest economic argument for forecasting-based capacity work, and it's why I think the topic deserves more attention than "cost optimization" usually gets.
+
+Meanwhile, a cheap first step: graph requested versus used CPU per namespace. The gap is your number. Most teams have never looked at it.

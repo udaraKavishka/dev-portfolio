@@ -1,0 +1,20 @@
+---
+title: "Things Flask does that surprised me as a junior"
+date: "2026-07-01"
+category: "intern-diaries"
+excerpt: "Application context, blueprints as architecture, and decorators hiding everywhere: field notes from months inside a large production Flask codebase."
+tags: ["Flask", "Python", "Backend"]
+readTime: "3 min read"
+---
+
+Flask's reputation is "the simple one," and the hello-world earns it: five lines, a decorator, a dev server. Working daily inside a large production Flask codebase revised my picture considerably. Not that Flask is secretly complicated, but that its simplicity is a starter kit, and mature applications build a whole architecture on top that no tutorial shows you. Field notes from the gap.
+
+The context system is the real Flask. `request`, `current_app`, `g`: they look like globals and behave like magic until you learn they're proxies bound to the current request's context. The learning usually arrives as an error, "working outside of application context," thrown from a background job or a CLI script that touched something context-dependent. Understanding that Flask pushes and pops contexts per request, and that anything outside a request must create its own (`with app.app_context():`), converted a category of mystery crash into a category of understood requirement. Worth learning deliberately rather than by ambush.
+
+Blueprints are load-bearing, not organizational sugar. The docs present them as a way to group routes. In a real codebase they're the module system: each domain area is a blueprint with its own routes, templates, and helpers, registered onto the app at startup, often via an application factory. Tracing "where is this URL handled" means knowing the blueprint layout and the url_prefix conventions. The route table you see in hello-world doesn't exist anywhere in a big app; it's assembled at boot from a dozen files.
+
+Decorators accumulate into an invisible middleware stack. Auth checks, permission gates, logging, rate limits: all decorators stacked on view functions, plus `before_request` hooks doing app-wide work you can't see from any individual route. My debugging improved noticeably the day I started asking "what runs before this function body" as a first question instead of a last one. The function's code is the end of the request's journey, not the start.
+
+Extensions are conventions, not components. Flask-SQLAlchemy, Flask-Migrate, Flask-Login: each brings its own initialization pattern, its own context expectations, its own place state hides. A large app is really Flask plus eight extensions in a specific configuration that grew over years, which is why generic Flask advice sometimes bounces off: the interesting behavior lives in the seams between extensions.
+
+None of this is criticism. Flask chose to be minimal and let applications grow their own structure, and the codebase I work in is evidence the choice scales. But "simple framework" turned out to mean the framework is simple, and everything the application had to become instead is where the learning is.

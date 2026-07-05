@@ -1,0 +1,24 @@
+---
+title: "A magic link is not a session"
+date: "2026-03-08"
+category: "intern-diaries"
+excerpt: "Two tokens that look similar and do completely different jobs. Mixing them up produces auth bugs that are miserable to debug."
+tags: ["Authentication", "Security", "Backend"]
+readTime: "3 min read"
+---
+
+Passwordless login flows usually involve two different tokens, and I've watched confusion between them produce real bugs. They both travel as opaque strings. That's where the similarity ends.
+
+The magic-link token is a one-time credential. It goes into the login URL emailed to the user, and its only job is to prove that whoever clicked the link controls the mailbox. It should be single-use, expire quickly (minutes to an hour), and die the moment it's verified. Think of it as a key that dissolves in the lock.
+
+The session token is what the user gets after that verification succeeds, typically a JWT in a cookie. It's long-lived relative to the link, gets presented on every request, and carries the actual authenticated identity.
+
+Distinct lifetimes, distinct storage, distinct validation paths. Trouble starts when code blurs them: accepting a magic-link token as if it were a session, or letting a used link keep working because nobody marked it consumed. A link that works twice is a real vulnerability, since email gets forwarded, and corporate scanners follow URLs on the user's behalf before the user ever clicks.
+
+Two related habits worth adopting.
+
+Keep tokens out of visible URLs wherever you can. The magic link itself has no choice, that's the mechanism. But after verification, everything should move into the request body or an httpOnly cookie. URLs leak in ways nothing else does: browser history, server access logs, proxy logs, Referer headers, screenshots in bug reports. I've seen a session-relevant token sit in a query parameter where every page view wrote it to the access log. Nobody malicious found it. That's luck, not design.
+
+Make verification errors specific. When a link fails, "expired" and "invalid" are different situations with different correct responses. Expired means the user is legitimate but slow, so offer to resend. Invalid means the token was mangled, already used, or possibly forged, which deserves more caution and maybe a log entry. Collapsing both into "login failed, try again" feels tidy and helps no one. The user retries the same dead link, support can't tell what happened, and the log says nothing useful.
+
+And a boring rule that prevents entire bug categories: if the codebase already has JWT helpers, use them. A second, slightly different token decoder written for one new endpoint is how you get one path that checks expiry and one that forgets to. Auth code rots fastest when it's duplicated.

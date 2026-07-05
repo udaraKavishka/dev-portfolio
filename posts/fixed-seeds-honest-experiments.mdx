@@ -1,0 +1,30 @@
+---
+title: "Fixed seeds and honest experiments"
+date: "2026-05-19"
+category: "research-diaries"
+excerpt: "If your model comparison changes winners when the random seed changes, you don't have a comparison. Reproducibility is the cheapest rigor available."
+tags: ["Machine Learning", "Reproducibility", "Research"]
+readTime: "3 min read"
+---
+
+Run the same neural network training twice and you get two different models. Weight initialization is random, data shuffling is random, dropout is random, and some GPU operations are non-deterministic on top. Usually the two models perform similarly. Sometimes they don't, and that "sometimes" is where careless conclusions breed.
+
+The scenario that scared me straight: comparing architecture A against architecture B, A wins by a couple of percent, I start writing up why A's design is better. Then a rerun with different randomness flips the result. The difference I'd been explaining was seed noise wearing an architecture costume. Nothing was wrong with the code. Something was wrong with the method.
+
+Two practices fix this, and they're both cheap.
+
+Fix the seeds, everywhere. Python's `random`, NumPy, and your framework each keep separate generator state, so one line isn't enough:
+
+```python
+random.seed(42)
+np.random.seed(42)
+torch.manual_seed(42)
+```
+
+Plus your framework's deterministic-mode flags if exact repeatability matters (in PyTorch, `torch.use_deterministic_algorithms(True)`, at some speed cost). With seeds pinned, run twice, get identical curves. Now a change in results means a change in the experiment, which is the entire point: debugging becomes possible because the noise floor is zero.
+
+Then unfix them, deliberately. A pinned seed makes runs comparable but might make your conclusion a property of that seed. So the second practice: before believing any comparison, rerun it across several seeds (three to five is a common compromise between rigor and GPU budget) and look at mean and spread. If A beats B on every seed with a gap larger than the spread, that's a result. If the ranges overlap, you've learned the difference is smaller than the noise, which is also a result, just not the one you hoped to publish or ship.
+
+The unglamorous supporting habit is recording everything alongside the seed: config, dataset version, code commit, environment. A result you can't recreate three months later is a rumor with a graph. I keep each run's full config dumped as JSON next to its checkpoints, and it has saved me from myself more than once, usually when "wait, which normalization did that run use" would otherwise have been unanswerable.
+
+None of this is exciting. It's also the difference between "my experiments say" and "my experiments happened to show once." The seed you don't control is a variable you're silently letting vote on your conclusions.

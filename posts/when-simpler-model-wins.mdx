@@ -1,0 +1,20 @@
+---
+title: "When the simpler model wins"
+date: "2026-06-02"
+category: "research-diaries"
+excerpt: "Before celebrating a neural network's accuracy, make it beat a moving average. Baselines are the cheapest insurance against impressive-looking nonsense."
+tags: ["Machine Learning", "Time Series", "Research"]
+readTime: "3 min read"
+---
+
+There's a ritual step in forecasting work that's tempting to skip and fatal to skip: making your sophisticated model beat the dumb ones first.
+
+The dumb ones are dumber than people expect. Persistence: predict that the next value equals the current one. Seasonal persistence: predict that Monday 9am equals last Monday 9am. A moving average over the recent window. Maybe a small linear model. Each takes minutes to implement, has nothing to tune, and cannot fool you.
+
+Here's the uncomfortable truth from actually running these against neural networks on infrastructure metrics: the baselines are hard to beat. Load series are dominated by momentum and daily rhythm, and persistence captures momentum for free while seasonal persistence captures rhythm for free. A well-tuned LSTM does beat them, in my experience, but by honest single-digit margins on smooth workloads, earning its keep mainly on the hard parts: bursts, transitions, irregular patterns. Which is fine! The hard parts are where forecasting matters operationally. But you only learn where your model actually adds value by watching where the baseline stops keeping up.
+
+And sometimes the baseline just wins. A workload so dominated by weekly schedule that seasonal persistence matches the network. If a lookup table ties your neural net, deploy the lookup table: no training pipeline, no drift monitoring, no GPU bill, no explaining to anyone what the model is doing. Complexity is a cost you pay continuously, and accuracy parity means you're paying it for nothing. It stings for a day (I built all this for a tie?) and then it's just engineering: you now know the structure of your problem, which is what the exercise was for.
+
+The subtle service baselines provide is catching broken evaluations. If your fancy model beats persistence by 40%, the likely explanation isn't brilliance, it's a leak: test data seen in training, normalization computed over the future, windows that overlap the split. Baselines calibrate what "good" looks like on your data, and results wildly above that calibration are bug reports, not breakthroughs. I treat any too-good number as guilty until the pipeline proves innocent, and the baseline is what defines "too good."
+
+So the rule I hold myself to: no comparison table without a persistence row and a seasonal row, evaluated on exactly the same splits as everything else. It's an hour of work. Every conclusion downstream of it gets to mean something, which is a lot to buy for an hour.

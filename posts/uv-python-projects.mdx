@@ -1,0 +1,20 @@
+---
+title: "uv quietly fixed my Python project hygiene"
+date: "2026-06-30"
+category: "devops-tools"
+excerpt: "One fast tool for environments, dependencies, and running things, and the end of 'which pip am I using' as a debugging category."
+tags: ["Python", "Tools", "Developer Experience"]
+readTime: "3 min read"
+---
+
+My Python setup used to be a small ecosystem of mildly incompatible tools: pyenv for versions, venv for environments, pip plus requirements.txt for dependencies, and a background hum of "which Python is this actually running" whenever something misbehaved. uv replaced effectively all of it, and the change was less about speed (though the speed is absurd) and more about removing an entire category of confusion.
+
+The workflow now: `uv init` starts a project with a `pyproject.toml`. `uv add requests` declares a dependency, resolves it, and records the exact resolution in a lockfile. `uv run script.py` executes inside the project's environment, creating it on the fly if needed. The environment itself became something I never think about: no activate, no deactivate, no accidentally installing into the global interpreter because a shell forgot its state. `uv run` always means "this project's environment," and that guarantee retired the whole "wrong pip" class of bug from my life.
+
+The speed does matter, but in a specific way: resolution and installation are fast enough (tens of milliseconds to warm-install a package versus pip's tens of seconds) that recreating an environment from scratch stops being an event. Blow it away, `uv sync`, back in seconds. When cleanup is that cheap, environments stop accumulating archaeology, the same way disposable test clusters stopped me babying my Kubernetes setups.
+
+The lockfile deserves a sentence of appreciation. requirements.txt culture always had a hole in it: the file said `pandas`, reality installed whatever resolved that morning, and "works on my machine" grew in the gap. A lockfile pins the full transitive tree, so a colleague's `uv sync` (or CI's) produces my environment, byte-for-byte in dependency terms. For research code, where a result should be recreatable months later, this is the difference between an environment and a rumor of one.
+
+Two smaller features that turned out to be daily drivers: `uv python install 3.12` manages interpreter versions, quietly replacing pyenv, and `uvx` runs one-off tools (formatters, linters) in throwaway environments without polluting anything, which is how tools should always have worked.
+
+Honest caveats: it's newer than pip and moving fast, so occasional papercuts happen, and mixing it with an already-activated venv from another workflow can confuse both (the warning it prints about mismatched environments is worth heeding, not silencing). But the direction is unambiguous. Python packaging spent a decade as a hazing ritual. It's now just a tool that works, and I notice it about as often as I notice git working, which is the highest compliment infrastructure gets.

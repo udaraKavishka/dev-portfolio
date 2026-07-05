@@ -1,0 +1,20 @@
+---
+title: "What code reviewers actually check, observed from the receiving end"
+date: "2026-07-02"
+category: "intern-diaries"
+excerpt: "Months of having my PRs reviewed taught me the real checklist, and it isn't style. It's data, states, and whether the change can be trusted at 2am."
+tags: ["Code Review", "Internship", "Software Engineering"]
+readTime: "3 min read"
+---
+
+As an intern, I'm on the receiving end of a lot of code review, which turns out to be a course in what experienced engineers actually worry about. It isn't what I expected. Style and cleverness, the things juniors polish, barely come up. The comments cluster somewhere else entirely, and after months of them I can reconstruct the implicit checklist.
+
+What happens to existing data? My early PRs treated the database as if it started empty. Reviews kept asking the same shaped question: this works for new records, what about the years of old ones? Rows created before the field existed, values in formats the old code allowed, the record that's half-way through a workflow when the change deploys. New code meets old data on day one, and the meeting is where it breaks. I now write the "existing data" paragraph in my PR descriptions preemptively, and it has changed how I design, not just how I describe.
+
+Which states can this thing be in? Anything touching a workflow gets reviewed against its full state space: not the happy path, but the abandoned, the re-assigned, the completed-then-reopened. The bug class where a calculation trusted every upstream step to be finished (I've written about that one) is exactly what this question exists to catch. The reviewer isn't reading the code so much as enumerating the states the code silently assumed away.
+
+What does failure look like? Not "does it work" but "when it doesn't, what happens." Does the batch die on one bad row? Does the user see something actionable or a shrug? Is the log line findable and does it carry the ID you'd need at 2am? Reviewers read error paths with an attention I initially found puzzling, until I understood that they've all been the person paged, reading a log that said only "error."
+
+Does the change carry proof? A one-line fix with a "how I tested" note merges in hours. A larger PR with no evidence sits, accumulating gentle questions that are really one question: why should I believe this? The proof (test output, a screenshot, a reproduction of the bug before and after) does more for velocity than any amount of code quality.
+
+The pattern under all of it: reviewers spend their attention on what the diff doesn't show. The data that isn't in the fixture, the state that isn't in the demo, the failure that isn't in the happy path. Learning to review my own work that way, before anyone else does, might be the most transferable thing this internship has taught me.

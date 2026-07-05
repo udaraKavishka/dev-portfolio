@@ -1,0 +1,22 @@
+---
+title: "Catastrophic forgetting: when your model unlearns last month"
+date: "2026-03-23"
+category: "research-diaries"
+excerpt: "Retrain a neural network on new data and it can silently lose everything it knew before. For production models on drifting workloads, this is the central problem."
+tags: ["Machine Learning", "MLOps", "Continual Learning"]
+readTime: "3 min read"
+---
+
+Here's a failure mode that surprised me the first time I saw it happen with my own experiments, even though the literature has a name for it: catastrophic forgetting.
+
+The setup. You have a neural network in production making forecasts. The workload it models drifts, as workloads do, so a few months later accuracy has sagged and you retrain on recent data. New accuracy looks great. Then a situation resembling the old regime comes back (a quarterly job, a seasonal pattern, a service that was dormant) and the model is suddenly terrible at something it used to handle well. Retraining didn't add knowledge. It overwrote it.
+
+The reason is mundane once you see it. A network's knowledge is its weights. Training is an optimizer adjusting those weights to minimize error on whatever data it's currently shown. Train on only new data and the optimizer has no reason to preserve any weight configuration that mattered for the old data. Old knowledge isn't archived somewhere. It's painted over.
+
+"Catastrophic" is fair, because the loss isn't gradual. Performance on prior tasks can fall off a cliff after even brief fine-tuning on new ones.
+
+The obvious fix is retraining on all data, old and new together. Sometimes that's the right answer. But it gets expensive as history grows, sometimes the old raw data is gone (retention limits, privacy rules), and mixing everything equally dilutes the recent patterns you retrained to capture in the first place.
+
+The research field that tackles this properly is called continual learning: how does a model learn task B without forgetting task A, when task A's data is no longer fully available? Two families of ideas that I've found practical enough to actually use: regularization approaches, which identify the weights most important to old knowledge and penalize changing them (elastic weight consolidation is the canonical one), and replay approaches, which keep a small buffer of old examples and mix them into new training. Both deserve their own posts, and I'll write them.
+
+But the first step is just knowing this failure mode exists, because it hides well. Standard evaluation after retraining tests on recent data, and on recent data the retrained model shines. The forgetting only shows up if you also evaluate against the old regimes, which nobody does unless they've been burned. If your model retrains on a schedule, keep a held-out test set from each era and check them all. A model that aces June and flunks January is telling you something your deployment pipeline currently can't hear.

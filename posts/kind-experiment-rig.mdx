@@ -1,0 +1,30 @@
+---
+title: "A disposable Kubernetes lab with kind"
+date: "2026-05-10"
+category: "research-diaries"
+excerpt: "Multi-node clusters that build in a minute and delete without regret. For controller experiments and scaling tests, kind is the right size of tool."
+tags: ["Kubernetes", "Testing", "DevOps"]
+readTime: "3 min read"
+---
+
+When you're developing anything that talks to the Kubernetes API (an operator, a controller, a scaling policy), you need a cluster you can break. Not the shared dev cluster where your mistakes have witnesses. Something disposable. After trying the options, kind (Kubernetes-in-Docker) became my default lab, and the reasons are mundane in the best way.
+
+It's fast and it's honest. `kind create cluster` gives you a real kubeadm-built cluster in about a minute, each "node" a Docker container on your laptop. Real API server, real scheduler, real controller manager. The pieces your controller will interact with are the actual pieces, not simulations. And a multi-node topology is one small YAML file away:
+
+```yaml
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+  - role: control-plane
+  - role: worker
+  - role: worker
+  - role: worker
+```
+
+That multi-node bit matters for anything scheduling-related. Plenty of behavior you'd want to test (spreading, node pressure, what happens when capacity runs out) simply doesn't exist on a single-node setup.
+
+The workflow that makes it click is treating clusters as cattle at the smallest possible scale. Experiment, pollute the cluster with debris, and instead of cleaning up, `kind delete cluster && kind create cluster --config lab.yaml`. Two minutes to pristine. Once resets are that cheap, you stop being careful, and not being careful is precisely the freedom a lab is for. I keep the config file plus a bootstrap script (metrics-server, namespaces, a workload generator) in the repo, so the whole lab is reproducible by anyone, including me after a month away.
+
+Things worth knowing before you rely on it. Local images don't magically appear in the cluster; you `kind load docker-image myimage:dev` after each build, and forgetting this step is the classic kind confusion (ImagePullBackOff for an image that exists on your machine). Resource metrics need metrics-server installed with kubelet-insecure-tls flags. And the boundary of the tool: all "nodes" share your laptop's kernel and resources, so performance measurements mean little, and node-level behavior like memory pressure is only approximated. kind validates logic, not load.
+
+For scaling experiments specifically, that boundary shapes the method: use kind to prove the controller does the right thing (watches the right metrics, makes the right decisions, respects its limits), and use replayed traces plus simulation to evaluate whether the decisions are good. Logic in the lab, outcomes in the simulator. Between the two you cover more ground than either alone, without paying for a single cloud node.

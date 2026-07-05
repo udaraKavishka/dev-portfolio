@@ -1,0 +1,20 @@
+---
+title: "Terraform state mistakes I made so you don't have to"
+date: "2026-06-24"
+category: "devops-tools"
+excerpt: "State is the part of Terraform that tutorials wave past and incidents revolve around. Local state, manual console edits, and giant root modules: three lessons."
+tags: ["Terraform", "IaC", "DevOps"]
+readTime: "3 min read"
+---
+
+Terraform's config files get all the attention, but the state file is where the danger lives. State is Terraform's memory of what it created and how config maps to reality; every plan is a three-way comparison between config, state, and the real world. My early mistakes were all, in retrospect, failures to respect that file.
+
+Mistake one: local state past the first week. State on my laptop worked perfectly while the infrastructure was mine alone, which is exactly the trap. The moment a second person (or a CI job) runs Terraform, local state means two divergent memories of the same infrastructure, and the second apply operates on stale beliefs. Remote state with locking (S3 plus a lock, or any backend with locking built in) is not an "at scale" concern; it's a "more than one laptop" concern, and the migration is ten lines of backend config plus `terraform init -migrate-state`. Do it before the second person exists.
+
+Mistake two: touching resources in the cloud console. A quick manual tweak to a Terraform-managed resource feels harmless and creates drift: reality no longer matches state or config. The next plan either reverts your tweak (surprising whoever needed it) or errors confusingly. Worse is manual deletion, which leaves state describing a ghost. The discipline is binary: a resource is either Terraform's or it isn't, and if it's Terraform's, changes go through Terraform. For adopting existing resources, `terraform import` exists; for divorcing one, `terraform state rm`. Both beat pretending.
+
+Mistake three: one root module for everything. My first real project put networking, databases, and applications in a single state. Every plan walked the entire estate, taking minutes and producing walls of diff. Every apply carried blast radius spanning everything. And state corruption (which happens: interrupted applies, provider bugs) threatens the whole world at once. Splitting into separate states per layer (network, data, apps) with `terraform_remote_state` or data sources between them made plans fast, diffs readable, and mistakes local. The split is judgment; the need for some split arrives faster than you expect.
+
+The habits that survive from those lessons: remote locked state from day two, plans reviewed like PRs (the plan output is the change, read it), never applying without a plan file in automation, and treating any urge to open the console as a smell that the Terraform workflow is too slow, which is a fixable problem in a way that drift is not.
+
+State is unglamorous bookkeeping. So is double-entry accounting, and for the same reason: it's what makes the audit possible when something doesn't add up.

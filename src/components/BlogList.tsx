@@ -1,71 +1,84 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Calendar, ArrowRight } from 'lucide-react';
-import { SanityPost } from '@/lib/posts';
+import type { Post } from '@/lib/posts';
+import { CATEGORIES } from '@/lib/categories';
 import styles from './BlogList.module.css';
 
 interface BlogListProps {
-    posts: SanityPost[];
+    posts: Post[];
+}
+
+function formatDate(date: string) {
+    return new Date(date).toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+    });
 }
 
 export default function BlogList({ posts }: BlogListProps) {
-    if (posts.length === 0) {
-        return (
-            <div className={styles.empty}>
-                <p>No blog posts yet. Check back soon!</p>
-            </div>
-        );
-    }
+    const [activeCategory, setActiveCategory] = useState<string | null>(null);
+
+    useEffect(() => {
+        const category = new URLSearchParams(window.location.search).get('category');
+        if (category) {
+            setActiveCategory(category);
+        }
+    }, []);
+
+    const filteredPosts = activeCategory
+        ? posts.filter((post) => post.category === activeCategory)
+        : posts;
+
+    const setCategory = (slug: string | null) => {
+        setActiveCategory(slug);
+        window.history.replaceState(null, '', slug ? `/blog?category=${slug}` : '/blog');
+    };
 
     return (
-        <div className={styles.grid}>
-            {posts.map((post, index) => (
-                <motion.article
-                    key={post._id}
-                    className={styles.card}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1, duration: 0.5 }}
+        <div>
+            <div className={styles.filters}>
+                <button
+                    className={`${styles.filter} ${!activeCategory ? styles.filterActive : ''}`}
+                    onClick={() => setCategory(null)}
                 >
-                    <Link href={`/blog/${post.slug.current}`} className={styles.cardLink}>
-                        {post.mainImage?.asset?.url && (
-                            <div className={styles.imageContainer}>
-                                <Image
-                                    src={post.mainImage.asset.url}
-                                    alt={post.mainImage.alt || post.title}
-                                    fill
-                                    sizes="(max-width: 768px) 100vw, 350px"
-                                    className={styles.image}
-                                />
-                            </div>
-                        )}
-                        <div className={styles.cardContent}>
-                            <h2 className={styles.cardTitle}>{post.title}</h2>
-                            {post.excerpt && (
-                                <p className={styles.excerpt}>{post.excerpt}</p>
-                            )}
-                            <div className={styles.meta}>
-                                <div className={styles.metaItem}>
-                                    <Calendar size={16} />
-                                    <span>{new Date(post.publishedAt).toLocaleDateString()}</span>
-                                </div>
-                                {post.readTime && (
-                                    <div className={styles.metaItem}>
-                                        <span>• {post.readTime}</span>
-                                    </div>
-                                )}
-                            </div>
-                            <div className={styles.readMore}>
-                                Read more
-                                <ArrowRight size={16} />
-                            </div>
-                        </div>
-                    </Link>
-                </motion.article>
-            ))}
+                    all
+                </button>
+                {CATEGORIES.map((category) => (
+                    <button
+                        key={category.slug}
+                        className={`${styles.filter} ${activeCategory === category.slug ? styles.filterActive : ''}`}
+                        onClick={() => setCategory(category.slug)}
+                    >
+                        {category.label}
+                    </button>
+                ))}
+            </div>
+
+            {filteredPosts.length === 0 ? (
+                <div className={styles.empty}>
+                    <p>No posts in this category yet.</p>
+                </div>
+            ) : (
+                <div className={styles.list}>
+                    {filteredPosts.map((post, index) => (
+                        <motion.article
+                            key={post.slug}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: Math.min(index * 0.03, 0.6), duration: 0.4 }}
+                        >
+                            <Link href={`/blog/${post.slug}`} className={styles.row}>
+                                <span className={styles.rowTitle}>{post.title}</span>
+                                <span className={styles.rowDate}>{formatDate(post.date)}</span>
+                            </Link>
+                        </motion.article>
+                    ))}
+                </div>
+            )}
         </div>
     );
 }

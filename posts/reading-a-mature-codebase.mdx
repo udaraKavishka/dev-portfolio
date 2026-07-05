@@ -1,0 +1,20 @@
+---
+title: "How I learned to read a codebase I didn't write"
+date: "2026-03-20"
+category: "intern-diaries"
+excerpt: "Nothing at university prepares you for a codebase with years of history. Notes from my first months inside one."
+tags: ["Career", "Internship", "Software Engineering"]
+readTime: "3 min read"
+---
+
+University projects start from an empty folder. You know every line because you wrote every line. Then your first job hands you a codebase with years of history, thousands of files, and conventions nobody wrote down, and the skill you actually need (reading) is the one you never practiced.
+
+My first instinct was to read it like a book, from some imagined beginning. That failed within a day. There is no beginning. A working system is a web, not a narrative, and every file assumes you already understand three others.
+
+What worked instead was reading along the path of a single action. Pick something concrete the system does: a user submits a form, a scheduled job fires. Find the entry point, then follow the request through routing, validation, business logic, persistence, response. One traced path teaches you more about the architecture than a week of browsing folders, because it shows you how the layers actually talk to each other, not how the directory names claim they do.
+
+Git blame turned out to be a reading tool, not a blaming tool. When code looks strange, the commit that introduced it usually explains why, and sometimes links an issue with the whole discussion. "Weird" code is frequently a scar from a real incident. The strangeness is load-bearing. Knowing that stops you from "cleaning it up" and reintroducing a bug someone already paid to fix. The reverse lesson also holds: some code is just old, and its original reason has expired. Telling the two apart is half of maintenance, and blame history is your best evidence either way.
+
+Two habits compounded fastest for me. First, writing things down as I learned them: which config file controls what, how tests want to be run, where the bodies are buried in the data model. My notes from month one still answer questions in month five, and writing an explanation exposed every gap in my understanding while the gap was still cheap. Second, fixing small bugs early. A bug is a guided tour with a goal. You learn the exact slice of the system that matters, verify your understanding by changing it, and ship something real while you're at it.
+
+The thing I'd tell my day-one self: feeling lost in a mature codebase isn't a gap in your ability, it's the default state for everyone including the seniors, who are just better at navigating while lost. Nobody holds the whole system in their head. They hold a map of where to look.

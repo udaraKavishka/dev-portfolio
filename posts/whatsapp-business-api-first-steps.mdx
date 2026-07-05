@@ -1,0 +1,20 @@
+---
+title: "First steps with the WhatsApp Business API"
+date: "2026-06-11"
+category: "self-learn"
+excerpt: "The messaging part is easy. The Meta developer program, the 24-hour window, and template approvals are where the actual learning curve lives."
+tags: ["WhatsApp", "API", "Integrations"]
+readTime: "3 min read"
+---
+
+I spent a stretch of time researching what it takes to put a chatbot on WhatsApp through the official Business API. The technical surface is a normal webhook-plus-REST arrangement. The learning curve is everything around it: Meta's program structure, its messaging rules, and the approval gates. Here's the map I wish I'd had.
+
+The setup gauntlet comes first. You need a Meta developer account, a business app, and a WhatsApp Business account, then business verification for real usage. Each layer has its own dashboard, its own review process, and its own vocabulary. Budget calendar time for verification, not just work time; it proceeds at Meta's pace, not yours. The test number they provide lets you develop against a sandbox meanwhile, which is how the technical work and the bureaucratic work can proceed in parallel.
+
+The mechanics: inbound messages arrive at your webhook (which must answer a one-time verification challenge before Meta will trust it), and you send replies through the Cloud API with a bearer token. Messages are JSON with types for text, media, and interactive elements like buttons and list menus. Those interactive types are worth using early; buttons beat "reply 1 for yes" in every way, and they're barely more work.
+
+Then the rule that shapes every design decision: the 24-hour customer service window. When a user messages you, a window opens during which you may reply freely. Once it closes, you cannot send them arbitrary text. Outside the window, only pre-approved message templates are allowed, submitted through the dashboard and reviewed by Meta before use. This single constraint is the reason WhatsApp isn't email: you don't "send a follow-up next week" unless a template for exactly that purpose was approved in advance. Any bot architecture has to know, per conversation, whether the window is open and route accordingly.
+
+Template review itself is a minor discipline: templates are categorized (utility versus marketing, priced differently), placeholder variables are allowed but the surrounding copy is fixed, and rejections happen for vague or promotional phrasing in utility templates. Write them like the transactional notifications they're supposed to be.
+
+The overall shape of the experience: perhaps 30% code, 70% understanding a platform's rules and working within them. Which, I've come to accept, is what integrating with any large platform actually is. The documentation tells you the API. The constraints tell you the architecture.

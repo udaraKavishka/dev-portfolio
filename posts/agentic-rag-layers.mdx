@@ -1,0 +1,26 @@
+---
+title: "What an agentic layer actually adds to RAG"
+date: "2026-06-05"
+category: "self-learn"
+excerpt: "Plain RAG retrieves once and hopes. Agentic RAG lets the model decide what to search, judge what came back, and try again. The difference shows up on hard questions."
+tags: ["RAG", "LLM", "AI Engineering"]
+readTime: "3 min read"
+---
+
+Standard RAG is a fixed pipeline: embed the user's question, fetch the top-k most similar chunks, paste them into the prompt, generate. One retrieval, no judgment, straight line. It works well when questions are simple and documents cooperate. It fails in predictable ways: the question's wording doesn't match the document's wording, the answer needs facts from two different places, or the retrieved chunks are plausible-looking but wrong for the question.
+
+The agentic move is giving the model agency over its own retrieval. Instead of retrieval happening to the model, the model runs it: decides what to search for, looks at the results, decides whether they're good enough, and if not, searches differently. The pipeline becomes a loop with a judge inside.
+
+Concretely, the behaviors that matter, roughly in order of value per unit of effort:
+
+Query rewriting. Users ask "why is my deployment stuck," while the docs say "pod scheduling failures." An agent reformulates the question into search-shaped queries, often several, before touching the index. This alone fixes a large share of retrieval misses, because the embedding similarity between a question and its answer's phrasing is often mediocre.
+
+Relevance grading. After retrieval, the model inspects each chunk: does this actually bear on the question? Irrelevant chunks get dropped instead of polluting the context. This is the guard against the classic RAG failure where the top-k results are topically nearby but substantively useless, and the generator, given garbage, confidently summarizes garbage.
+
+Iterative retrieval. Multi-hop questions ("compare X's approach with Y's") need multiple searches, where later queries depend on earlier findings. A loop with memory handles this naturally; a single-shot pipeline structurally cannot.
+
+Honest failure. An agent that judges its evidence can conclude the corpus doesn't contain the answer and say so. Pipeline RAG always generates something, and "always generates something" is a hallucination policy.
+
+The costs are real and worth stating: every judgment step is another model call, so latency and spend multiply, and loops need budgets or a confused agent will search forever. My rule of thumb from building one for my own document collection: start with plain RAG, measure where it fails on your actual questions, then add agentic steps to attack those specific failures. Query rewriting first, grading second, iteration only if your questions genuinely need multiple hops. Each layer pays rent or gets removed.
+
+The framing I've settled on: plain RAG is a lookup with generation attached. Agentic RAG is a research assistant with a search tool. You don't always need the assistant. But when the questions get hard, the lookup was never going to be enough.

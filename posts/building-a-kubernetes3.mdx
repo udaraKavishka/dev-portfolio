@@ -1,0 +1,80 @@
+---
+title: "(III) Building a Kubernetes Cluster with Kubespray: A Learning Journey"
+date: "2025-11-01T01:36:00.000+05:30"
+category: "research-diaries"
+updated: "2025-12-05T21:18:07Z"
+readTime: "3 min read"
+mainImage: "/blog/building-a-kubernetes3/cover.png"
+---
+
+*If you haven’t checked the previous blog post, **[P](https://www.udaradev.me/blog/building-a-kubernetes2)*[art II](https://www.udaradev.me/blog/building-a-kubernetes2) *covers how the hardware was prepared and Ubuntu Server was successfully installed on all nodes. With the servers finally running, the next challenge was setting up a stable network so the cluster could communicate reliably.*
+
+*If the hardware setup was the first battle, networking was definitely the second. To run a Kubernetes cluster, we needed a clean lab network and static IPs for each node. Sounds simple, right? Not when every reboot wiped the configuration. In this post, I’ll explain how we assigned IPs, the commands we used, and the lessons we learned about keeping things stable.*
+
+## The Lab Network
+
+After setting up the hardware, the next step was to connect all nodes to a **stable network**. Our lab was already connected to the **university internet via Ethernet**, but to run a Kubernetes cluster, we needed **isolated static IPs** for each node. Static IPs are important because Kubernetes nodes must have **predictable addresses** to communicate reliably. Dynamic IPs (assigned via DHCP) can change after a reboot, which would break the cluster.
+
+We were assigned **five consecutive IP addresses**:
+
+```javascript
+192.168.1.201 – 192.168.1.206
+```
+
+With the guidance of a technical officer, we mapped each workstation to one of these static IPs.
+
+## Understanding the Technical Terms
+
+**1. IP Address:**
+An **IP (Internet Protocol) address** is a unique number assigned to each device on a network, allowing them to communicate. In our case, we used private IP addresses in the **192.168.x.x range**, common for local networks.
+
+**2. Network Interface:**
+Every device has a **network interface**, such as eth0 or enp0s3, representing a physical or virtual network adapter.
+
+**3. Subnet Mask (/24):**
+The /24 in 192.168.1.201/24 represents the subnet mask 255.255.255.0. This defines the range of IPs that are part of the same local network. All devices in this subnet can communicate directly without routing.
+
+**4. Static vs Dynamic IPs:**
+
+- **Dynamic IPs** are assigned by a DHCP server and can change after a reboot.
+- **Static IPs** remain constant, which is essential for nodes in a Kubernetes cluster.
+
+## Assigning Static IPs
+
+We used the following **Linux commands** to configure each node:
+
+```javascript
+// Display all network interfaces and their current IPs
+ip addr
+```
+
+This shows all network adapters (like eth0) and their assigned IP addresses.
+
+```javascript
+//Assign a static IP to the network interface eth0
+sudo ip addr add 192.168.1.201/24 dev eth0
+```
+
+Here:
+
+- sudo runs the command with administrative privileges.
+- ip addr add assigns the IP address to the interface.
+- /24 is the subnet mask.
+- dev eth0 specifies the network interface.
+```javascript
+//Bring the interface up to activate the new IP
+sudo ip link set eth0 up
+```
+
+
+Finally, to **verify the IP assignment**:
+
+```zh
+ip addr
+```
+
+This confirms that **eth0** now has the static **IP 192.168.1.201.** We repeated this process for all workstations, assigning them consecutive IPs.
+
+## Whats Next
+
+Once static IPs were assigned and verified, the next post is about the step to **enable passwordless SSH** between the master and worker nodes. This is required for **Kubespray** to deploy Kubernetes across the cluster without manual intervention on each node.

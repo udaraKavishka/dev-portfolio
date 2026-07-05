@@ -1,0 +1,20 @@
+---
+title: "Turning raw cluster traces into a training-ready time series"
+date: "2026-03-11"
+category: "research-diaries"
+excerpt: "The gap between a 40 GB dump of container metrics and a clean supervised dataset is bigger than any tutorial admits. Here's the pipeline that got me across."
+tags: ["Data Engineering", "Time Series", "Machine Learning"]
+readTime: "4 min read"
+---
+
+Every forecasting tutorial starts with a tidy CSV: one timestamp column, one value column, evenly spaced, no gaps. Real infrastructure data starts as tens of gigabytes of event logs where nothing is aligned and half the rows have problems. Getting from one to the other took me longer than training any model afterwards, so here's the pipeline, mistake by mistake.
+
+Step one is resampling onto a fixed grid. Raw samples arrive at irregular intervals, and every downstream tool assumes regular spacing. Pick an interval that matches your prediction horizon. I used five minutes; there's no point in 30-second granularity if you're forecasting the next quarter hour. Aggregate everything within each bucket, and think about which aggregate: mean smooths spikes away, max preserves them. For capacity work you usually care about the spikes, which is exactly what mean hides.
+
+Step two is gaps. Containers report nothing while rescheduling, agents drop samples, machines vanish from the dataset. Short gaps I filled by interpolation. Long gaps I refused to fill, because inventing an hour of fake load teaches the model fake patterns. Instead I split the series at long gaps and treated the pieces as separate sequences. Deciding where "short" ends was a judgment call; I used three intervals and I can't prove that's optimal.
+
+Step three, windowing. Supervised learning wants input-output pairs, so a continuous series becomes sliding windows: 24 steps of history in, next step out, slide forward, repeat. Two traps live here. Overlapping windows share most of their content, so a random train/test split leaks training data into your test set and inflates your accuracy. Split by time, always: train on the past, test on the future, the way the model will actually live. And normalize using statistics computed from the training portion only. Computing the mean over the full dataset lets information from the test period leak backwards. It's subtle, it's invisible in the code, and it makes results quietly wrong.
+
+Step four is deciding what a "unit" of data is. Per-container series are short and noisy because containers churn. Aggregating to machine level gives longer, stabler series but averages away the burstiness you may be studying. There's no correct answer, only a choice that has to match the question you're asking.
+
+The honest summary: this preprocessing was several hundred lines of code and most of my debugging time, versus a model definition that fit on one screen. When a forecasting result looks bad, my first suspect is no longer the model. It's something in this pipeline, usually a leak or a bad fill, lying about the data.

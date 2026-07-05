@@ -1,0 +1,24 @@
+---
+title: "Count SLA violations, not just forecast accuracy"
+date: "2026-04-22"
+category: "research-diaries"
+excerpt: "A forecasting model can win on RMSE and still run a worse cluster. Statistical accuracy and operational outcomes are cousins, not twins."
+tags: ["Autoscaling", "SRE", "Machine Learning"]
+readTime: "3 min read"
+---
+
+Here's a result that confused me until it taught me something: comparing two load-forecasting models, model A beat model B on every statistical metric, yet when I simulated actually scaling a cluster with each of them, B produced fewer starved workloads. The better forecaster was the worse autoscaler.
+
+The resolution is that accuracy metrics and operational outcomes measure different things. RMSE treats a 10% over-prediction and a 10% under-prediction identically. The cluster does not. Over-predict and you waste a little money; under-predict and workloads get throttled, requests queue, and someone's SLA burns. Model B happened to make its errors on the safe side more often. The average size of its errors was larger; the cost of them was smaller.
+
+So when the thing you ultimately care about is cluster behavior, evaluate cluster behavior. The metrics I now consider the real scoreboard:
+
+SLA violation count: in how many intervals did actual demand exceed what the scaler had provisioned? This is the "users felt it" number. Its severity cousin matters too: by how much, for how long. One brief 5% shortfall and a sustained 60% starvation are different events that a single count flattens.
+
+Over-provisioned core-hours: the integral of provisioned-minus-used over time. The money number. Any policy can drive violations to zero by provisioning triple demand; this metric is what keeps that trick honest. The pair of these two numbers is the actual trade-off, and reporting only one of them is how you fool yourself (or your readers).
+
+Scaling churn: how often does replica count change direction? A policy that flaps burns pod startup time and destabilizes everything downstream. Forecast jitter that's invisible in RMSE shows up here immediately.
+
+Getting these numbers requires simulation: replay a workload trace against your scaling policy, step by step, applying realistic provisioning delays (the pods you request now arrive a minute from now, not instantly). That delay term matters enormously, because it's exactly where reactive policies lose and where forecasting earns its keep. A simulator like this is a few hundred lines of code and it converts "my model has lower error" into "this policy would have caused 40% fewer violations at 12% less cost," which is a sentence that actually means something.
+
+The general principle travels well beyond autoscaling: optimize the metric you can compute, but evaluate on the outcome you actually want. Whenever the two disagree, the outcome is right.

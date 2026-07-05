@@ -1,0 +1,24 @@
+---
+title: "Chunking is most of RAG"
+date: "2026-03-03"
+category: "self-learn"
+excerpt: "Everyone tunes the model and the prompt. The decision that quietly determines answer quality is how you split documents before they ever reach the index."
+tags: ["RAG", "LLM", "AI Engineering"]
+readTime: "3 min read"
+---
+
+When a RAG system gives bad answers, the instinct is to blame the glamorous parts: the model is too small, the prompt needs work, maybe a fancier retriever. Having built a couple of these systems now, my experience is that the unglamorous first step, splitting documents into chunks, determines more of the final quality than any component downstream, and gets a fraction of the attention.
+
+The reason is structural. The chunk is the unit of everything: it's what gets embedded, what gets retrieved, and what the model actually reads. If the answer to a question is split across two chunks, retrieval must win twice and the model must stitch. If a chunk mixes three topics, its embedding is a muddy average that matches nothing well. No amount of model quality repairs context that arrived pre-broken.
+
+The failure modes are worth naming because they look different in the output.
+
+Chunks too small: retrieval returns crumbs. The sentence retrieved is relevant but its surrounding context (what "it" refers to, which section's assumptions apply) got amputated at the boundary. Answers come back technically sourced and subtly wrong.
+
+Chunks too large: retrieval returns haystacks. The relevant paragraph is in there somewhere, diluted by neighbors, and both the embedding match and the model's attention degrade. Costs rise too, since you're shipping padding to the context window.
+
+Boundaries ignoring structure: the classic. Fixed-size splitting that cuts mid-table, separates a heading from its section, or splits a code example from the sentence explaining it. Structure-aware splitting (by headings, paragraphs, slides, whatever units the source genuinely has) beats any fixed number, because documents already told you where their meaning boundaries are.
+
+What's worked for me as defaults: respect natural units first, subdivide oversized units with overlap second. Overlap (say 10-20%) is cheap insurance against boundary amputation. Attach metadata to every chunk (source, section, page) both for citations and because filtered retrieval ("only search the deployment docs") often fixes what better embeddings can't. And when sources are heterogeneous, chunk them differently: slides by page, prose by section, transcripts by speaker turn. One splitter for all formats is one format done adequately and the rest done badly. I learned that one from my own mixed corpus of slides and notes, where a single strategy quietly wrecked whichever format it wasn't designed for.
+
+The test that catches chunking problems early: skip generation entirely and read raw retrieval results for twenty real questions. If a human can't spot the answer in the returned chunks, the model can't either, and you've localized the problem to exactly the layer everyone skips.

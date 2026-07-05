@@ -1,0 +1,24 @@
+---
+title: "What public cluster traces teach you about real workloads"
+date: "2026-03-05"
+category: "research-diaries"
+excerpt: "Alibaba and Google have published traces from production clusters with thousands of machines. They are the closest most of us get to studying real load at scale."
+tags: ["Kubernetes", "Datasets", "Capacity Planning"]
+readTime: "3 min read"
+---
+
+If you want to study how workloads behave at scale, you have a problem: you probably don't run a ten-thousand-node cluster, and the companies that do won't show you their metrics. The workaround is public trace datasets. Alibaba has released cluster traces covering thousands of machines over multiple days, with per-container CPU and memory usage sampled over time. Google has published similar traces from Borg. They're free, they're real, and they're humbling.
+
+The first thing the data does is kill your clean mental model. Textbook load curves are smooth sinusoids with a nice daily peak. Real traces are jagged. Utilization jumps between samples, batch jobs slam in with vertical edges, and containers die mid-series without explanation. Long stretches of boredom, then chaos.
+
+A few things I learned from actually working with these traces rather than reading papers about them.
+
+Requested resources and used resources live in different universes. Containers routinely reserve several times the CPU they consume. You've probably seen this on your own cluster in miniature; the traces confirm it holds at warehouse scale. Whole percentage points of a datacenter sit idle because someone typed a conservative number into a YAML file.
+
+Machine-level aggregates hide everything interesting. Averaged across a node, utilization looks calm. At the container level you see the actual story: short-lived batch tasks with violent spikes sharing hardware with flat long-running services. Any analysis you do on averaged data will quietly miss the exact workloads that make scaling hard.
+
+The data is dirty, and cleaning it is the actual work. Gaps in timestamps, duplicate rows, containers that appear in one table but not another. My preprocessing scripts ended up longer than my analysis code, and I no longer think that ratio is unusual. It might just be what data work is.
+
+Practical notes if you try this: the traces are large, tens of gigabytes uncompressed, so don't load them into pandas in one gulp. Filter to a subset of machines first, work out your pipeline on that, then scale up. And read the schema documentation before writing any code. Column meanings are subtle, some metrics are normalized in non-obvious ways, and a wrong assumption there invalidates everything downstream.
+
+Even if you never build anything from them, spending a weekend inside one of these datasets recalibrates your intuition about what production load actually looks like. Mine needed it.

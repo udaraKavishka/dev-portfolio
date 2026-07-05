@@ -1,0 +1,20 @@
+---
+title: "What my first month in a production codebase actually taught me"
+date: "2026-04-07"
+category: "intern-diaries"
+excerpt: "Not the frameworks. The invisible stuff: commit discipline, asking questions with evidence, and how much process exists for reasons."
+tags: ["Internship", "Career", "Software Engineering"]
+readTime: "3 min read"
+---
+
+Before starting my internship I assumed the steep part of the learning curve would be technical: new framework, unfamiliar architecture, tools I hadn't used. A month in, the technical part turned out to be the manageable slope. The real curve was everything around the code.
+
+The first surprise was how much process guards a working product. Pre-commit hooks, linters, migration checks, review requirements. My student reflex read it all as friction; my student projects had none of it and "worked fine." What I slowly understood is that my projects worked fine because I was the only user and the only developer, and the code had a shelf life of one semester. Process is what lets twenty people change a live system, serving real customers, without stepping on each other. Every check I found annoying was a scar from an incident that preceded me. The friction is the point.
+
+The second lesson was how to ask questions. Early on I'd either burn hours stuck in silence, afraid of looking incapable, or ask instantly and get told things I could have found in two minutes. The balance that works: timebox the struggle, then ask while showing your work. "X fails when I do Y. I expected Z because of the docs. I've checked A and B. Am I misunderstanding something?" That kind of question takes a colleague thirty seconds to answer and, unexpectedly, builds credibility rather than spending it. Asking well turns out to be a technical skill.
+
+Third, small PRs are kindness in both directions. My instinct was to bundle a fix with the two other things I noticed nearby, to be "efficient." Reviewers experience that as a puzzle with three unrelated solutions tangled together. One concern per PR gets reviewed faster, merges sooner, and reverts cleanly if it goes wrong. Efficiency for the system, not for my ego.
+
+The quieter realization: reading code with a purpose beats reading code to "understand the system." A concrete first-week onboarding checklist (get the app running, trace one request, fix one small bug) taught me more than any amount of aimless browsing, and writing notes as I went meant every hard-won answer got paid for exactly once.
+
+And honestly, the biggest shift was emotional, not technical. Feeling lost stopped meaning "I'm behind" and started meaning "this is Tuesday." Everyone navigates a big system partially blind. The seniors just have better flashlights.

@@ -1,0 +1,20 @@
+---
+title: "Starting a backend side project in Go while working in Python"
+date: "2026-04-30"
+category: "self-learn"
+excerpt: "Learning a second backend language while employed with a first one is a strange kind of stereo vision. Notes from the early months."
+tags: ["Go", "Learning", "Side Projects"]
+readTime: "3 min read"
+---
+
+My day job is Python. As a side project, I started building a backend in Go, partly for the language on my CV, mostly out of curiosity about what web work feels like outside the dynamic-language bubble I trained in. A few months in, the interesting part isn't Go versus Python. It's what seeing both at once did to my understanding of each.
+
+The first shock was how much the compiler participates. Coming from Python, where a typo in a rarely-executed branch waits patiently for production, Go refuses to build until types line up, unused imports leave, and errors are at least acknowledged. Early on this felt like nagging. The reframe arrived after a day of chasing a Python bug that Go's compiler would have caught at save time: the nagging is a category of test I no longer have to write. Static typing isn't a style preference, it's moving a class of failure from runtime (where users live) to compile time (where I live).
+
+Error handling was the second adjustment, and the more philosophical one. Python's exceptions let errors travel invisibly upward until something, somewhere, cares. Go's `if err != nil` on every call felt absurdly repetitive for the first week. Then I noticed what it was doing to my designs: every failure point in a function is visible in its body, every "what if this fails" question gets answered at the call site, and reading a function tells you its complete failure story. My Python at work has since gotten more explicit about errors, which was not an outcome I predicted from a hobby project.
+
+Deployment is where Go quietly sells itself. The build produces one static binary. No interpreter on the server, no dependency resolution at deploy time, no virtual environments: copy the file, run the file. After living with Python deployment machinery professionally, the simplicity feels almost suspicious, like there must be a catch. (The catch is compile times exist and cross-compilation flags occasionally bite, and it's a small catch.)
+
+What I'd tell someone considering the same move: the second language's real gift is stereo vision. Concepts I'd absorbed as "how things are" (duck typing, exceptions, decorators everywhere) turned out to be choices with alternatives and costs, visible only from outside. The Go project makes me a better Python engineer at work, which is a strange but genuine return on investment.
+
+Would I choose Go over Python for a new service? Honest answer: it depends on the service, which is exactly the answer I couldn't have given with one language.

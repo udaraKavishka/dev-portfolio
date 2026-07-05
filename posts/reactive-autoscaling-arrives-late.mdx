@@ -1,0 +1,22 @@
+---
+title: "Why reactive autoscaling always arrives late"
+date: "2026-02-21"
+category: "research-diaries"
+excerpt: "The Kubernetes HPA scales on what already happened. For bursty workloads, that means the pain comes first and the pods come after."
+tags: ["Kubernetes", "Autoscaling", "DevOps"]
+readTime: "3 min read"
+---
+
+The Horizontal Pod Autoscaler has one job: watch a metric, compare it to a target, and adjust replicas. It does that job well. The problem is baked into the design, not the implementation. It reacts to load that already arrived.
+
+Walk through what actually happens when a spike hits. CPU usage climbs. The metrics pipeline scrapes it, which takes up to the scrape interval. The HPA control loop evaluates on its own cycle, every 15 seconds by default. Then it decides to scale, the scheduler places new pods, images pull if they're not cached, containers start, readiness probes pass. On a good day that whole chain costs you 30 to 90 seconds. On a bad day, minutes.
+
+For a slow, smooth ramp that's fine. The spike I care about is the other kind: a CI system where someone merges to main and twelve build jobs land in the same minute. By the time the new pods are ready, the queue has already backed up and half the jobs ran on starved CPU. Your users felt the spike. The autoscaler just cleaned up afterwards.
+
+People usually respond with one of two workarounds. Lower the CPU target so scaling triggers earlier, which is really just permanent overprovisioning wearing a disguise. Or set a high minimum replica count, which is the same thing without the disguise. Both work. Both mean you pay for capacity that idles most of the day, and the sizing number usually comes from someone's gut.
+
+The stabilization window makes it worse in the other direction. To avoid flapping, the HPA waits (five minutes by default) before scaling down. So after every burst you keep paying for peak capacity for a while. Bursty workloads hit this constantly: spike, overshoot, slow drain, repeat.
+
+None of this means the HPA is bad. It's a solid controller for the problem it was designed for. But it treats every workload as unpredictable, and most workloads aren't. Builds cluster around working hours. Batch jobs run on schedules. Traffic has a daily shape. There's a signal in the history, and a reactive controller throws that signal away.
+
+The interesting question is what it takes to scale on where the load is going instead of where it's been. Forecasting is a genuinely harder problem, and a wrong forecast can be worse than a slow reaction. I'll dig into that trade-off in a later post. For now the point is smaller: know which kind of workload you have. If your load is spiky and has a pattern, the HPA's lag isn't a tuning problem you can fix. It's the design.

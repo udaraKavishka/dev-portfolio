@@ -1,0 +1,20 @@
+---
+title: "Using cloud credits without burning them in a weekend"
+date: "2026-07-04"
+category: "self-learn"
+excerpt: "Student and trial credits die two ways: forgotten resources and oversized experiments. Habits for making a small budget last a whole project."
+tags: ["GCP", "Cloud", "Cost", "Students"]
+readTime: "3 min read"
+---
+
+Cloud credits for students and new accounts are generous right up until you learn how they actually disappear. Mine went toward GPU time for training experiments, and keeping the budget alive for the whole project meant learning cost discipline the way one learns most things: after a scare. The habits that resulted, in order of money saved.
+
+Billing alerts before anything else. The first ten minutes of a new project: create a budget, set alerts at 25/50/75/90%. Not because alerts stop spending, but because the default is discovering costs at the end of the month, and with a fixed credit pool, month-end discovery is an autopsy. This is the highest-value ten minutes in all of cloud usage and it's mostly clicking.
+
+The killer is the machine you forgot, not the machine you used. A GPU instance left running overnight costs the same as one training hard. My rule became mechanical: work sessions end by stopping the instance, and anything long-running must be a batch job with an endpoint, meaning it saves its outputs and shuts itself down (or at least logs loudly) when finished. Related habit: schedule a daily glance at the running-resources list. Instances are visible; the sneaky residue is disks, static IPs, and snapshots that outlive deleted machines and leak small money forever.
+
+Size experiments down before scaling up. My expensive early mistake pattern: debug the pipeline on the big GPU. Every crash, every misconfigured path, every "oh the data loader was wrong" cost premium hardware time to discover. The correction: everything runs first on the smallest data subset and cheapest machine that can execute the code at all, and only a pipeline that's boringly correct earns the real hardware. Debugging is CPU work that happens to involve a model; pay GPU prices only for training that will be kept. Spot/preemptible instances stack with this nicely for anything resumable, at a steep discount, provided checkpointing is solid, which it should be anyway for reasons I've written about.
+
+Know what's actually billing you. An hour reading the pricing pages of the three services you use beats any amount of general frugality, because cloud pricing is full of asymmetries (egress versus ingress, per-second versus per-hour minimums, storage classes) that turn identical work into different bills depending on arrangement.
+
+Credits are a real education budget. The discipline isn't about spending less of it; it's about making sure all of it converts into experiments rather than into a GPU heating an empty room.

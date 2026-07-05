@@ -1,0 +1,24 @@
+---
+title: "Expired is not invalid: the case for specific auth errors"
+date: "2026-05-16"
+category: "intern-diaries"
+excerpt: "Collapsing every login-link failure into one generic message feels safe and helps nobody. Different failures have different correct next steps."
+tags: ["Authentication", "UX", "Backend"]
+readTime: "3 min read"
+---
+
+There's a reflex in auth code to answer every failure with the same shrug: "Login failed. Please try again." One code path, one template, nothing leaked. I used to think of it as the safe default. Working on email login links convinced me it's mostly just lazy, and that the safety argument is thinner than it looks.
+
+Consider what can actually go wrong when someone clicks a login link. The token expired, because they opened the email a day late. The token was already used, possibly by their own mail client's link scanner. The token is malformed, from a mangled copy-paste. Or it's simply not a token we ever issued. These are different situations with different correct responses, for the user and for us.
+
+Expired deserves the gentlest treatment: this was a legitimate user holding a legitimate link, just late. The right response says so and offers a fresh link right there, one click. Telling this person "login failed, try again" sends them back to retry the same dead link, which fails identically, and now they think your product is broken. I've watched that loop in support tickets: user retries three times, gives up, writes in angry. The generic message manufactured that ticket.
+
+Already-used is subtler. It might be innocent (corporate mail scanners follow links before users do, a genuinely maddening problem for magic-link flows) or it might matter for security. Either way the user needs a new link, and we probably want a log entry with context.
+
+Malformed or unknown is where caution belongs. Here I'm fine with a vaguer message and a quiet log line, since detailed feedback mostly benefits people probing the endpoint.
+
+Which is the honest version of the security argument: be specific where specificity helps legitimate users, vague where it would help attackers. "This link has expired" reveals nothing exploitable; expiry is a property of a token the person already possesses. This isn't the username-enumeration case, where "wrong password" versus "no such account" leaks information about other people's accounts. A blanket policy of vagueness treats those two situations as identical when they aren't.
+
+There's an operational half too. When errors are distinguished in logs, support can answer "why couldn't I log in" by looking, and you can notice patterns: a spike in expired means links sit in inboxes too long (lifetime too short? emails delayed?), a spike in already-used points at scanner behavior worth engineering around. One generic error bucket means every one of those investigations starts blind.
+
+The message costs one conditional. The generic version saves you writing it exactly once, and pays for itself in confusion forever after.

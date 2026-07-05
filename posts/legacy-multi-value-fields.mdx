@@ -1,0 +1,22 @@
+---
+title: "The comma-separated email field, and other legacy data stories"
+date: "2026-05-25"
+category: "intern-diaries"
+excerpt: "Single-value fields holding multiple values are a rite of passage in older systems. Fixing them is a three-front job: validate, repair, and hunt assumptions."
+tags: ["Databases", "Data Quality", "Backend"]
+readTime: "3 min read"
+---
+
+Open a database that's been alive for years and look at the email column. Somewhere in there you'll find a row like `owner@company.com, accountant@firm.com,old-address@gmail.com`. One field, three addresses, two spacing styles. Nobody designed this. An old form didn't validate, a user had a reasonable need ("mail goes to both of us"), and the database said yes, as unconstrained text fields always do.
+
+I've dealt with this exact case, and the interesting part isn't the mess, it's how many fronts the cleanup turns out to have.
+
+Front one: stop the bleeding. Add validation at the entry points so new data can't take this shape. This is the easy 20%. It's also where teams often stop, which just freezes the existing mess in place while everyone continues to assume fields hold what their names promise.
+
+Front two: repair the history, carefully. Bulk-fixing existing rows means deciding, per row, which value survives. First in the list? The one that matches the record's other contact info? The most recently active? These are judgment calls, which is why the repair script needs a dry-run mode that prints every proposed change before touching anything (I've written separately about why that's non-negotiable). And some rows will resist automation entirely; a "needs manual review" bucket is an honest output, not a failure.
+
+Front three, the subtle one: find the code that already assumed the field was clean. Everything downstream was written believing one field means one email. The sender that now mails a malformed address. The uniqueness check comparing the whole string, happily allowing the same address to hide inside two different composites. The lookup by exact match that misses a customer because their address is in there, just not alone. These bugs predate your cleanup and will outlive it if the cleanup only touches data.
+
+There's a schema-shaped moral here, the one database courses teach as first normal form and real systems learn as archaeology: a field holding a delimited list is a table wearing a disguise. If people genuinely need multiple emails, model that (a related table, a properly typed array column), each address individually validated and queryable. The disguised version gives you all the complexity of the real model with none of the guarantees.
+
+And the general habit this taught me: in a mature system, treat every "obviously single-valued" text field as a suspect until you've run the query that checks. `WHERE email LIKE '%,%'` takes ten seconds and tells you which world you're living in.

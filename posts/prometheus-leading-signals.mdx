@@ -1,0 +1,22 @@
+---
+title: "Prometheus metrics that hint at load before it arrives"
+date: "2026-05-07"
+category: "research-diaries"
+excerpt: "CPU usage tells you about now. Queue depth, connection counts, and job schedules whisper about the next five minutes. Scaling systems should listen to the whispers."
+tags: ["Prometheus", "Monitoring", "Autoscaling"]
+readTime: "3 min read"
+---
+
+Most autoscaling watches CPU utilization, which is a lagging indicator by definition: by the time CPU is high, the load already arrived. If you're trying to act earlier, the interesting question is which metrics lead. From time spent staring at cluster dashboards, a few candidates consistently carry information about the near future.
+
+Queue depth is the classic. Whatever your system's queue is (message broker backlog, CI jobs pending, task queue length), a growing queue is future CPU spelled out explicitly. The work exists, it's enumerated, it just hasn't executed yet. If pending-jobs jumps by fifty, worker demand in the next minutes is not a forecast, it's arithmetic. Any scaler ignoring queue metrics in favor of CPU is refusing free information.
+
+Connection and session counts lead the resource cost of what those connections will do. New WebSocket connections, rising active sessions, login rate: each precedes the requests those users are about to generate. The lead time is short, seconds to a minute, but pod startup takes about that long, so it's exactly the lead you can use.
+
+Rate of change beats level. Two services at 50% CPU are not equivalent when one has been flat for an hour and the other climbed from 20% in two minutes. The derivative carries the urgency. PromQL's `deriv()` or a `rate()` over a short window turns your existing gauges into leading-ish indicators without collecting anything new.
+
+The calendar is a metric too, and it embarrasses me how long I took to treat it as one. Cron schedules, business hours, release-day rhythms: these are the strongest predictors most clusters have, and they're literally written down. Hour-of-day and day-of-week explain a large share of variance in any workload touched by humans. A model, or even a static schedule, that knows Monday 9am from Sunday 3am starts with an advantage no amount of CPU-watching provides.
+
+Upstream volume, finally: your service's future load is your caller's current load. If the frontend tier is spiking now, the API tier's spike is in transit. Cross-service correlation with a lag is crude to exploit by hand but real.
+
+The general test for any candidate: plot it against CPU shifted several minutes into the future and check the correlation. Strong correlation at a positive lag means the metric knows something early, and anything that knows something early is worth feeding to whatever makes your scaling decisions, whether that's a trained model or a human writing threshold rules.

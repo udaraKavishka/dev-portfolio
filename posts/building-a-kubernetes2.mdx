@@ -1,0 +1,48 @@
+---
+title: "(II)Building a Kubernetes Cluster with Kubespray: A Learning Journey"
+date: "2025-10-15T01:32:00.000+05:30"
+category: "research-diaries"
+updated: "2025-12-05T20:05:35Z"
+readTime: "3 min read"
+mainImage: "/blog/building-a-kubernetes2/cover.png"
+---
+
+If you haven’t checked the previous blog post, [Part I](https://www.udaradev.me/blog/building-a-kubernetes1) introduces the project and the motivation behind building a Kubernetes cluster for research. With the goals defined, the first practical step was setting up the hardware and operating systems.
+
+The excitement of unboxing our hardware quickly turned into frustration when the first roadblock appeared. Installing Ubuntu on Lenovo systems didn’t go as planned, and the BIOS had its own opinion on booting. Here’s the story of how we moved past the struggle, switched machines, and finally got our first servers running Ubuntu smoothly.
+
+## The Lab Setup
+
+The cluster was set up in a corner of the lab, away from regular lecture areas. To avoid disturbing ongoing classes, A Room divider was placed so that the regular sessions were not disturbed with us working in the lab.The workstations were arranged in a linear formation, making it easier to manage cabling and hardware connections.
+
+## The Equipment
+
+Initially, the available hardware included:
+
+- **5 Lenovo ThinkCentre workstations**
+- **CPU:** Intel i7 (2nd Gen)
+- **RAM:** 8GB (upgraded to 12GB for four worker nodes, 16GB for the master)
+- **Storage:** 512GB SSD on all Stations
+
+The cluster configuration plan:
+
+- **1 Master Node : **main server for cluster orchestration
+- **4 Worker Nodes : **to run workloads and applications
+
+The plan was simple: one master node to manage the cluster, and four worker nodes to run applications. [Ubuntu Server 24.04.3 LTS](https://ubuntu.com/download/server) was chosen for its **lightweight nature, stability, and widespread use** in server environments.
+
+## The First Roadblock
+
+Excitement quickly turned to frustration. The first Ubuntu installation seemed successful, but after rebooting, the system refused to recognize the operating system. Reinstalling multiple times had no effect the disk appeared as if it had no OS installed.
+
+Upon investigation, the problem was traced to the **legacy BIOS** of the Lenovo ThinkCentre systems. Even after changing the boot sequence from network to hard drive boot, the machines still failed to load Ubuntu. Bypassing the BIOS settings could have worked, but it would have created security risks, which were not acceptable for the cluster.
+
+## The Switch
+
+The solution was to replace the problematic hardware. The Lenovo machines were swapped out for **HP workstations with Intel i5, 7th Gen CPUs**, and the master node was switched to an **Acer system**. This hardware had modern BIOS support, allowing Ubuntu Server 24.04.3 LTS to install and run smoothly on all nodes.
+
+This step was crucial because a stable operating system is the foundation for any Kubernetes cluster. With the OS installed correctly, the cluster was now ready for **network configuration and further setup**.
+
+## Whats Next
+
+The next post is about how to assign **static IP addresses** for all nodes, ensuring reliable communication across the cluster. Once the network is stable, passwordless SSH can be configured to prepare for **Kubernetes deployment using Kubespray**.

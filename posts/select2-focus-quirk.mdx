@@ -1,0 +1,20 @@
+---
+title: "The select2 focus bug that wasn't my code"
+date: "2026-04-25"
+category: "intern-diaries"
+excerpt: "Sometimes a UI bug traces back to a years-old open issue in a library half the internet uses. Knowing when to stop debugging your own code is a skill."
+tags: ["Frontend", "Debugging", "jQuery"]
+readTime: "3 min read"
+---
+
+The requirement was small: when a form loads, focus the dropdown so keyboard users can start typing immediately. The dropdown was a select2, the enhanced select box that a huge share of admin panels still run on. I called `.focus()` on it. Nothing. Tried focusing the underlying select, the rendered span, tried `select2('open')` combined with focus. Each attempt produced a slightly different flavor of not-working.
+
+After too long treating this as a bug in my code, I searched the library's issue tracker and found select2 issue #5993: focus behavior broke after a jQuery version change, an interaction between how jQuery 3.6 handles focus events and how select2 fakes being a form control. Open for years, plenty of workarounds in the comments, no upstream fix. My bug wasn't mine at all.
+
+The eventual solution was one of the documented workarounds: trigger the focus through the events select2 actually listens to, rather than the standard DOM call, and accept the small delay it needs. Not elegant. Documented, reproducible, shipped.
+
+The debugging lesson matters more than the fix. I lost time because my search space was wrong: I assumed the bug was in the 10 lines I wrote, when it was in the 10,000 lines I imported. The heuristic I now apply: when a well-trodden operation (focusing an element!) misbehaves on a widely-used library, check the library's issues early. If the answer is a years-old thread with 50 participants, you've saved an afternoon. Given how many other people use these libraries, "someone has hit this before" is nearly always true.
+
+There's also a quieter lesson about dependency age. select2 depends on jQuery, and this bug came from movement between their versions. Codebases that hold a dependency stable for years exist in a specific compatibility snapshot, and issues that the wider world fixed or worked around long ago are still alive in that snapshot. When you google an error from an older stack, add the versions to the query, because the top results describe a world you're not in.
+
+And the meta-skill, which nobody teaches directly: developing a feel for when "this should obviously work, why doesn't it" means keep digging into your own code, versus when it means the platform beneath you is the problem. My rough rule now is fifteen focused minutes. If something trivial resists for longer than that, I start suspecting the ground.

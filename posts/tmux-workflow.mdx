@@ -1,0 +1,22 @@
+---
+title: "The tmux habits that actually stuck"
+date: "2026-06-29"
+category: "devops-tools"
+excerpt: "Not a plugin list. The small subset of tmux that survived contact with daily work: sessions per project, panes for context, and surviving SSH drops."
+tags: ["Tools", "Terminal", "Productivity"]
+readTime: "3 min read"
+---
+
+Every tmux guide is a tour of features. This is the opposite: after months of daily use, the small subset that actually survived, and why the rest didn't.
+
+The load-bearing habit is one session per project. `tmux new -s api`, `tmux new -s research`, each holding that project's editor, server, and scratch shells. Switching projects becomes `tmux attach -t api` instead of reconstructing a workspace, because the workspace never stopped existing. Detach at the end of the day, reattach tomorrow, and the working state (directories, running processes, scrollback) is exactly where I left it. This single feature is most of tmux's value, and it costs learning about three commands.
+
+The second habit that stuck: panes as short-lived context, windows as long-lived roles. A vertical split to watch logs while poking an endpoint, closed when the question's answered. Meanwhile window 1 is durably the editor, window 2 the server, window 3 the database shell. What didn't stick was elaborate pane geometries; anything past three panes became a screen of unreadable slivers, and I stopped.
+
+The third is the reason tmux is non-negotiable for remote work: sessions survive SSH disconnects. A long process started inside tmux on a remote machine keeps running when the connection drops; reattach and the scrollback is there too. I learned this one's value the hard way, from a long-running job whose only logs lived in a terminal that no longer existed after a dropped connection. Running remote work outside a multiplexer is volunteering to lose it. (Logging to files as well is the belt to this suspender; I've written about that separately.)
+
+Config-wise I changed almost nothing, deliberately: a saner prefix, mouse mode on, vi keys in copy mode, bigger scrollback. Every attempt at heavier customization taught me the same lesson: exotic muscle memory becomes a liability the moment you're on a machine that doesn't have your dotfiles. Boring config travels.
+
+A few aliases carry the daily load: `ta` for attach, `tls` for list-sessions, and a small shell function that attaches to a project session or creates it if missing, so "start working on X" is one command regardless of whether the session exists.
+
+That's the whole system. Sessions per project, panes as disposable context, everything remote inside tmux, config near stock. The features I don't use aren't features I haven't learned; they're features whose absence costs me nothing daily. That's the test that matters for tools.

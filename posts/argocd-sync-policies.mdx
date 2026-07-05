@@ -1,0 +1,20 @@
+---
+title: "ArgoCD sync policies worth understanding before you automate"
+date: "2026-06-22"
+category: "devops-tools"
+excerpt: "Auto-sync, prune, and self-heal are three separate decisions, not one checkbox. Each moves trust from humans to the repo, and each has a failure mode."
+tags: ["GitOps", "ArgoCD", "Kubernetes"]
+readTime: "3 min read"
+---
+
+Following up my earlier GitOps writing: the ArgoCD setting that deserves the most thought per character is the sync policy, because it decides how much of your deployment process runs without a human in the loop. It's commonly presented as one toggle (manual versus automated) but it's really three independent decisions stacked.
+
+Auto-sync is the base layer: when the repo changes, apply it. Without it, ArgoCD detects drift and waits for a human to press Sync, which makes Git a source of truth with an approval step. With it, merging to the tracked branch is deploying. That sentence should be read slowly, because it relocates your deployment gate into your merge gate. If merge requires review and CI, auto-sync is inheriting a real control. If people push directly to the tracked branch, auto-sync means push-to-prod, and you've automated the removal of your own safety net.
+
+Prune extends auto-sync to deletions: resources that exist in the cluster but no longer in Git get removed. Declaratively pure, practically the sharpest edge. A refactor that renames a file, a mistaken deletion in a fat-fingered commit, a template rendering differently than expected: prune executes all of them. I'd enable it (a GitOps setup that can't delete accumulates ghosts forever) but only with the repo protections above, and it's the reason sync windows and careful review of anything that removes manifests exist.
+
+Self-heal covers the reverse direction: when someone changes the cluster directly, ArgoCD reverts it to match Git. This is the option that ends kubectl-edit culture, which is precisely its value and its friction. The debugging workflow of "temporarily bump the replicas by hand" stops working; the fix reverts under your hands within seconds. That's correct behavior (the hand-edit was drift, and drift is how clusters become archaeology) but teams need to know it's coming, and the escape hatch (make the change in Git, even for experiments) needs to be fast enough to be usable.
+
+The combination I'd defend for most teams: all three enabled for stateless application workloads, backed by protected branches and honest review. More caution (manual sync, or auto without prune) for the scary categories: CRDs, operators, anything stateful, namespaces shared with things outside GitOps.
+
+The underlying principle: each toggle transfers trust from people to the repository. That transfer is the entire point of GitOps, but it only ends well if the repository deserves the trust. Harden the repo first. Then let the automation take the keys.

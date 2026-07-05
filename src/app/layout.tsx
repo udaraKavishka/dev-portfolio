@@ -1,13 +1,7 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { defaultDescription, SITE_NAME, SITE_URL } from "@/lib/seo";
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-sans",
-  display: "swap",
-});
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
@@ -83,12 +77,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" data-scroll-behavior="smooth" suppressHydrationWarning>
-      <head>
-        <link rel="preconnect" href="https://cdn.sanity.io" />
-        <link rel="dns-prefetch" href="https://cdn.sanity.io" />
-      </head>
+      <head />
       <body
-        className={`${inter.variable} ${jetbrainsMono.variable} antialiased`}
+        className={`${jetbrainsMono.variable} antialiased`}
       >
         {children}
       </body>
