@@ -1,153 +1,113 @@
 import Link from 'next/link';
-import { Calendar, Tag, ArrowLeft } from 'lucide-react';
-import { PortableText, type PortableTextComponents } from '@portabletext/react';
 import Image from 'next/image';
-import type { PortableTextBlock } from '@portabletext/types';
-import { client, urlFor } from '@/lib/sanity';
+import { Calendar, Tag, ArrowLeft } from 'lucide-react';
+import { MDXRemote } from 'next-mdx-remote/rsc';
+import remarkGfm from 'remark-gfm';
+import { notFound } from 'next/navigation';
+import { getAllPosts, getPostBySlug } from '@/lib/posts';
+import { CATEGORIES } from '@/lib/categories';
 import Navbar from '@/components/Navbar';
 import { ArticleSchema, BreadcrumbSchema } from '@/components/StructuredData';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { dracula } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import styles from './post.module.css';
 import type { Metadata } from 'next';
-import { absoluteUrl } from '@/lib/seo';
+import type { MDXComponents } from 'mdx/types';
+import { absoluteUrl, SITE_URL } from '@/lib/seo';
 
-export const revalidate = 60;
+const mdxComponents: MDXComponents = {
+    pre: (props) => {
+        const child = props.children as React.ReactElement<{ className?: string; children?: string }> | undefined;
+        const className = child?.props?.className ?? '';
+        const language = className.replace('language-', '') || 'text';
+        const code = typeof child?.props?.children === 'string' ? child.props.children : '';
 
-type CodeBlockValue = {
-    language?: string;
-    code?: string;
+        return (
+            <div className="my-10">
+                <SyntaxHighlighter language={language} style={dracula}>
+                    {code.replace(/\n$/, '')}
+                </SyntaxHighlighter>
+            </div>
+        );
+    },
+    img: ({ src, alt }) => {
+        if (!src || typeof src !== 'string') {
+            return null;
+        }
+        return (
+            <span className="my-8" style={{ display: 'block' }}>
+                <Image
+                    src={src}
+                    alt={alt || 'Blog image'}
+                    width={1200}
+                    height={800}
+                    sizes="(max-width: 800px) 100vw, 800px"
+                    className={styles.contentImage}
+                    style={{ width: '100%', height: 'auto' }}
+                />
+            </span>
+        );
+    },
 };
 
-type SanityImageValue = {
-    asset?: {
-        url?: string;
-        metadata?: {
-            dimensions?: {
-                width: number;
-                height: number;
-            };
-        };
-    };
-    alt?: string;
-};
-
-type SanityPost = {
-    title: string;
-    publishedAt: string;
-    _updatedAt?: string;
-    readTime?: string;
-    excerpt?: string;
-    seoTitle?: string;
-    seoDescription?: string;
-    mainImage?: {
-        asset?: {
-            url?: string;
-            metadata?: {
-                dimensions?: {
-                    width: number;
-                    height: number;
-                };
-            };
-        };
-        alt?: string;
-    };
-    body: PortableTextBlock[];
-    tags?: string[];
-};
-
-const Code = ({ value }: { value: CodeBlockValue }) => (
-    <div className="my-10">
-        <SyntaxHighlighter language={value?.language ?? 'text'} style={dracula}>
-            {value?.code ?? ''}
-        </SyntaxHighlighter>
-    </div>
-);
-
-export async function generateStaticParams() {
-    const posts = await client.fetch<Array<{ slug: string }>>(
-        `*[_type == "post"]{ "slug": slug.current }`
-    );
-    return posts.map((post) => ({
+export function generateStaticParams() {
+    return getAllPosts().map((post) => ({
         slug: post.slug,
     }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
     const { slug } = await params;
-    
-    try {
-        const post = await client.fetch<SanityPost | null>(
-            `*[_type == "post" && slug.current == $slug][0]{
-                title,
-                excerpt,
-                seoTitle,
-                seoDescription,
-                publishedAt,
-                mainImage {
-                    asset->{url},
-                    alt
-                },
-                tags
-            }`,
-            { slug }
-        );
+    const post = getPostBySlug(slug);
 
-        if (!post) {
-            return {
-                title: 'Post Not Found',
-                description: 'The requested blog post could not be found.',
-            };
-        }
-
-        const postUrl = absoluteUrl(`/blog/${slug}`);
-        const imageUrl = post.mainImage?.asset?.url || '/screenshot.png';
-        const title = post.seoTitle || post.title;
-        const description = post.seoDescription || post.excerpt || `Read ${post.title} by Udara Nalawansa, DevOps engineer in Sri Lanka.`;
-        
+    if (!post) {
         return {
-            title,
-            description: description,
-            authors: [{ name: 'Udara Nalawansa', url: absoluteUrl('/') }],
-            openGraph: {
-                type: 'article',
-                url: postUrl,
-                title,
-                description: description,
-                publishedTime: post.publishedAt,
-                authors: ['Udara Nalawansa'],
-                images: [
-                    {
-                        url: imageUrl,
-                        width: 1200,
-                        height: 630,
-                        alt: post.mainImage?.alt || post.title,
-                    }
-                ],
-                siteName: 'Udara Nalawansa Blog',
-            },
-            twitter: {
-                card: 'summary_large_image',
-                title,
-                description: description,
-                images: [{ url: imageUrl, alt: post.mainImage?.alt || post.title }],
-                creator: '@udaranalawansa',
-            },
-            alternates: {
-                canonical: postUrl,
-            },
-            other: {
-                'article:author': 'https://udaradev.me',
-                'article:section': 'Technology',
-            },
-        };
-    } catch (error) {
-        console.error('Error generating metadata:', error);
-        return {
-            title: 'Blog Post',
-            description: 'Read the latest from Udara Nalawansa',
+            title: 'Post Not Found',
+            description: 'The requested blog post could not be found.',
         };
     }
+
+    const postUrl = absoluteUrl(`/blog/${slug}`);
+    const imageUrl = post.mainImage || '/screenshot.png';
+    const title = post.seoTitle || post.title;
+    const description = post.seoDescription || post.excerpt || `Read ${post.title} by Udara Nalawansa, DevOps engineer in Sri Lanka.`;
+
+    return {
+        title,
+        description: description,
+        authors: [{ name: 'Udara Nalawansa', url: absoluteUrl('/') }],
+        openGraph: {
+            type: 'article',
+            url: postUrl,
+            title,
+            description: description,
+            publishedTime: post.date,
+            authors: ['Udara Nalawansa'],
+            images: [
+                {
+                    url: imageUrl,
+                    width: 1200,
+                    height: 630,
+                    alt: post.mainImageAlt || post.title,
+                }
+            ],
+            siteName: 'Udara Nalawansa Blog',
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title,
+            description: description,
+            images: [{ url: imageUrl, alt: post.mainImageAlt || post.title }],
+            creator: '@udaranalawansa',
+        },
+        alternates: {
+            canonical: postUrl,
+        },
+        other: {
+            'article:author': SITE_URL,
+            'article:section': 'Technology',
+        },
+    };
 }
 
 export default async function BlogPost({
@@ -156,73 +116,25 @@ export default async function BlogPost({
     params: Promise<{ slug: string }>;
 }) {
     const { slug } = await params;
-    const post = await client.fetch<SanityPost | null>(
-        `*[_type == "post" && slug.current == $slug][0]{
-            title,
-            publishedAt,
-            _updatedAt,
-            readTime,
-            excerpt,
-            seoTitle,
-            seoDescription,
-            mainImage {
-                asset->{url, metadata{dimensions}},
-                alt
-            },
-            body[]{
-                ...,
-                asset->{url, metadata{dimensions}}
-            },
-            tags
-        }`,
-        { slug }
-    );
+    const post = getPostBySlug(slug);
 
     if (!post) {
-        return <div>Post not found</div>;
+        notFound();
     }
-
-    const components: PortableTextComponents = {
-        types: {
-            image: ({ value }: { value: SanityImageValue }) => {
-                if (!value?.asset) {
-                    return null;
-                }
-
-                const dimensions = value.asset.metadata?.dimensions;
-                const width = dimensions?.width ?? 1200;
-                const height = dimensions?.height ?? 800;
-
-                return (
-                    <div className="my-8">
-                        <Image
-                            src={urlFor(value).width(width).height(height).fit('max').url()}
-                            alt={value.alt || 'Blog image'}
-                            width={width}
-                            height={height}
-                            sizes="(max-width: 800px) 100vw, 800px"
-                            className={styles.contentImage}
-                        />
-                    </div>
-                );
-            },
-            code: Code,
-        }
-    };
 
     return (
         <>
             <BreadcrumbSchema items={[
-                { name: 'Home', url: 'https://udaradev.me' },
+                { name: 'Home', url: SITE_URL },
                 { name: 'Blog', url: '/blog' },
                 { name: post.title, url: `/blog/${slug}` }
             ]} />
-            <ArticleSchema 
+            <ArticleSchema
                 title={post.title}
-                publishedAt={post.publishedAt}
-                modifiedAt={post._updatedAt}
+                publishedAt={post.date}
+                modifiedAt={post.updated}
                 excerpt={post.excerpt}
-                imageUrl={post.mainImage?.asset?.url}
+                imageUrl={post.mainImage ? absoluteUrl(post.mainImage) : undefined}
                 tags={post.tags}
                 slug={slug}
             />
@@ -240,12 +152,20 @@ export default async function BlogPost({
                             <div className={styles.meta}>
                                 <div className={styles.metaItem}>
                                     <Calendar size={16} />
-                                    <span>{new Date(post.publishedAt).toLocaleDateString()}</span>
+                                    <span>{new Date(post.date).toLocaleDateString()}</span>
                                 </div>
                                 {post.readTime && (
                                     <div className={styles.metaItem}>
                                         <span>• {post.readTime}</span>
                                     </div>
+                                )}
+                                {post.category && (
+                                    <Link
+                                        href={`/blog?category=${post.category}`}
+                                        className={styles.categoryChip}
+                                    >
+                                        {CATEGORIES.find((c) => c.slug === post.category)?.label ?? post.category}
+                                    </Link>
                                 )}
                                 {post.tags && post.tags.length > 0 && (
                                     <div className={styles.tags}>
@@ -260,11 +180,11 @@ export default async function BlogPost({
                             </div>
                         </header>
 
-                        {post.mainImage?.asset?.url && (
+                        {post.mainImage && (
                             <div className={styles.mainImageContainer}>
                                 <Image
-                                    src={post.mainImage.asset.url}
-                                    alt={post.mainImage.alt || post.title}
+                                    src={post.mainImage}
+                                    alt={post.mainImageAlt || post.title}
                                     fill
                                     sizes="(max-width: 800px) 100vw, 800px"
                                     className={styles.mainImage}
@@ -274,7 +194,11 @@ export default async function BlogPost({
                         )}
 
                         <div className={styles.content}>
-                            <PortableText value={post.body} components={components} />
+                            <MDXRemote
+                                source={post.content}
+                                components={mdxComponents}
+                                options={{ mdxOptions: { remarkPlugins: [remarkGfm] } }}
+                            />
                         </div>
                     </article>
                 </div>
