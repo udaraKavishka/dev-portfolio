@@ -20,7 +20,7 @@ export const heroData = {
         "MLOps Engineer"
     ],
     tagline: "Designing Scalable Systems Through Software, Cloud, and Automation",
-    bio: "Passionate about software engineering, cloud infrastructure, automation, continuous delivery, and MLOps, with a focus on designing resilient CI/CD pipelines, building scalable and maintainable applications, deploying containerized workloads, and implementing infrastructure as code. Actively developing machine learning driven solutions that combine solid engineering practices with data driven insights, reflecting a strong dedication to technology, innovation, and effective problem solving.",
+    bio: "DevOps engineer and full stack developer in Sri Lanka focused on cloud infrastructure, automation, continuous delivery, and MLOps. I design resilient CI/CD pipelines, build scalable applications, deploy containerized workloads, and implement infrastructure as code with tools such as Kubernetes, Docker, Terraform, AWS, and GitHub Actions.",
     techStack: [
         { name: 'Docker', icon: '🐳' },
         { name: 'Kubernetes', icon: '☸️' },
@@ -67,8 +67,8 @@ export const projectsData: ProjectItem[] = [
     {
         id: 3,
         title: 'DevOps and AI: Building Production-Ready RAG Systems',
-        description: 'DevOps &U+0078  AI project implementing a RAG-based API with FastAPI and a local LLM. Designed to evolve into a production-ready system with Docker, Kubernetes, and automated workflows.',
-        techStack: ['FastApi', 'Kubernetes', 'ChromaDB', 'Ollama', 'tinyllma', 'SwaggerUI', 'Docker'],
+        description: 'DevOps and AI project implementing a RAG-based API with FastAPI and a local LLM. Designed to evolve into a production-ready system with Docker, Kubernetes, and automated workflows.',
+        techStack: ['FastAPI', 'Kubernetes', 'ChromaDB', 'Ollama', 'TinyLlama', 'Swagger UI', 'Docker'],
         githubUrl: 'https://github.com/udaraKavishka/devops-ai-rag-api',
         // isOngoing: true
     },
@@ -98,7 +98,7 @@ export const projectsData: ProjectItem[] = [
     {
         id: 7,
         title: 'CeylonRoots',
-        description: 'A travel platform that showcases Sri Lanka s cultural heritage while offering features like itinerary customization, bookings, and customer support with smooth frontend and backend integration.',
+        description: "A travel platform that showcases Sri Lanka's cultural heritage while offering features like itinerary customization, bookings, and customer support with smooth frontend and backend integration.",
         techStack: ['Next.js', 'React', 'Spring Boot', 'Java', 'MySQL', 'Tailwind'],
         githubUrl: 'https://github.com/udaraKavishka/CeylonRoots',
     },
@@ -114,7 +114,7 @@ export const projectsData: ProjectItem[] = [
         id: 9,
         title: 'Efficient Campus Navigation — Smart Shortest Path System for University of Vavuniya',
         description: 'A smart navigation system for the University of Vavuniya campus that predicts travel times and computes the shortest paths, enhancing efficiency for students, staff, and visitors.(Incharge of the Model)',
-        techStack: ['Python', 'Pandas', 'NumPy', 'scikit-learn (Random Forest)', 'NetworkX', 'Tkinter', 'Pillow (PIL)', 'Dijkstra', 's', 'Algorithm'],
+        techStack: ['Python', 'Pandas', 'NumPy', 'scikit-learn (Random Forest)', 'NetworkX', 'Tkinter', 'Pillow (PIL)', 'Dijkstra Algorithm'],
         githubUrl: 'https://github.com/DilmyPerera/Efficient-Campus-Navigation',
     },
     {

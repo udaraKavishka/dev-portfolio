@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import { defaultDescription, SITE_NAME, SITE_URL } from "@/lib/seo";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -15,44 +16,22 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://udaradev.me'),
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: 'Udara Nalawansa | DevOps Engineer & Full Stack Developer',
+    default: 'Udara Nalawansa | DevOps Engineer in Sri Lanka',
     template: '%s | Udara Nalawansa'
   },
-  description: 'DevOps Engineer and Full Stack Developer specializing in cloud infrastructure, CI/CD pipelines, Kubernetes, Docker, AWS, and MLOps. Based in Sri Lanka with expertise in scalable systems and automation.',
-  keywords: [
-    'DevOps Engineer',
-    'Full Stack Developer',
-    'Cloud Engineer',
-    'Kubernetes Expert',
-    'Docker Containerization',
-    'AWS Cloud',
-    'CI/CD Pipelines',
-    'MLOps Engineer',
-    'Software Engineer Sri Lanka',
-    'DevOps Sri Lanka',
-    'Terraform Infrastructure',
-    'Jenkins Automation',
-    'Python Developer',
-    'Go Developer',
-    'React Developer',
-    'Next.js Developer',
-    'University of Jaffna',
-    'Infrastructure as Code',
-    'Cloud Native Development',
-    'Microservices Architecture'
-  ],
-  authors: [{ name: 'Udara Nalawansa', url: 'https://udaradev.me' }],
+  description: defaultDescription,
+  authors: [{ name: 'Udara Nalawansa', url: SITE_URL }],
   creator: 'Udara Nalawansa',
   publisher: 'Udara Nalawansa',
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://udaradev.me',
-    siteName: 'Udara Nalawansa Portfolio',
-    title: 'Udara Nalawansa | DevOps Engineer & Full Stack Developer',
-    description: 'DevOps Engineer specializing in cloud infrastructure, CI/CD pipelines, Kubernetes, Docker, and scalable system architecture. Passionate about automation and MLOps.',
+    url: SITE_URL,
+    siteName: SITE_NAME,
+    title: 'Udara Nalawansa | DevOps Engineer in Sri Lanka',
+    description: defaultDescription,
     images: [
       {
         url: '/screenshot.png',
@@ -64,8 +43,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Udara Nalawansa | DevOps Engineer',
-    description: 'DevOps Engineer specializing in cloud infrastructure, Kubernetes, Docker, and CI/CD automation',
+    title: 'Udara Nalawansa | DevOps Engineer in Sri Lanka',
+    description: defaultDescription,
     images: ['/screenshot.png'],
     creator: '@udaranalawansa'
   },
@@ -86,7 +65,7 @@ export const metadata: Metadata = {
   },
   manifest: '/site.webmanifest',
   alternates: {
-    canonical: 'https://udaradev.me',
+    canonical: SITE_URL,
   },
 };
 
@@ -103,7 +82,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" data-scroll-behavior="smooth">
+    <html lang="en" data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://cdn.sanity.io" />
         <link rel="dns-prefetch" href="https://cdn.sanity.io" />

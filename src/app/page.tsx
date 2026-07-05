@@ -11,24 +11,25 @@ import HomeBlog from '@/components/HomeBlog';
 import { PersonSchema, WebsiteSchema, ProfilePageSchema, ProjectsSchema } from '@/components/StructuredData';
 import { client } from '@/lib/sanity';
 import { projectsData } from '@/data/content';
+import { defaultDescription, SITE_URL } from '@/lib/seo';
 
 export const metadata: Metadata = {
-  title: 'Udara Nalawansa | DevOps & Cloud Engineer Portfolio',
-  description: 'Portfolio of Udara Nalawansa — final year IT student at University of Jaffna specializing in DevOps, cloud infrastructure, Kubernetes, CI/CD automation, and MLOps.',
+  title: 'DevOps Engineer in Sri Lanka',
+  description: defaultDescription,
   alternates: {
-    canonical: 'https://udaradev.me',
+    canonical: SITE_URL,
   },
   openGraph: {
-    title: 'Udara Nalawansa | DevOps & Cloud Engineer Portfolio',
-    description: 'DevOps Engineer portfolio showcasing cloud infrastructure projects, CI/CD pipelines, Kubernetes deployments, and technical blog posts.',
-    url: 'https://udaradev.me',
+    title: 'Udara Nalawansa | DevOps Engineer in Sri Lanka',
+    description: defaultDescription,
+    url: SITE_URL,
     type: 'website',
     images: [
       {
         url: '/screenshot.png',
         width: 1200,
         height: 630,
-        alt: 'Udara Nalawansa — DevOps & Cloud Engineer Portfolio',
+        alt: 'Udara Nalawansa DevOps and cloud engineer portfolio',
       },
     ],
   },
@@ -43,6 +44,8 @@ async function getPosts() {
         slug,
         publishedAt,
         readTime,
+        seoTitle,
+        seoDescription,
         mainImage {
           asset->{
             url
@@ -66,7 +69,7 @@ export default async function Home() {
     <>
       <PersonSchema />
       <WebsiteSchema />
-      <ProfilePageSchema />
+      <ProfilePageSchema projects={projectsData} posts={posts} />
       <ProjectsSchema projects={projectsData} />
       <Navbar />
       <main>

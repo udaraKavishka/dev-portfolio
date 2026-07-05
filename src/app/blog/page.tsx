@@ -4,38 +4,27 @@ import BlogList from '@/components/BlogList';
 import Navbar from '@/components/Navbar';
 import styles from './blog.module.css';
 import type { Metadata } from 'next';
-import { BlogListingSchema } from '@/components/StructuredData';
+import { BlogListingSchema, BreadcrumbSchema } from '@/components/StructuredData';
+import { absoluteUrl } from '@/lib/seo';
 
 export const metadata: Metadata = {
-    title: 'Blog | DevOps Tutorials & Cloud Engineering',
-    description: 'Technical articles about DevOps, cloud infrastructure, Kubernetes, Docker, CI/CD pipelines, MLOps, and software engineering best practices by Udara Nalawansa',
-    keywords: [
-        'DevOps Blog',
-        'Cloud Engineering Tutorials',
-        'Kubernetes Guide',
-        'Docker Tutorial',
-        'CI/CD Best Practices',
-        'Infrastructure as Code',
-        'AWS Tutorials',
-        'MLOps',
-        'Technical Blog',
-        'Software Engineering'
-    ],
+    title: 'DevOps and Cloud Engineering Blog',
+    description: 'DevOps and cloud engineering articles by Udara Nalawansa covering Kubernetes, Docker, CI/CD pipelines, Terraform, AWS, MLOps, and software engineering.',
     openGraph: {
-        title: 'Blog | DevOps Tutorials & Cloud Engineering',
-        description: 'Technical articles about DevOps, cloud infrastructure, and software engineering',
-        url: 'https://udaradev.me/blog',
+        title: 'DevOps and Cloud Engineering Blog | Udara Nalawansa',
+        description: 'Technical articles about DevOps, cloud infrastructure, Kubernetes, Docker, CI/CD, Terraform, and MLOps.',
+        url: absoluteUrl('/blog'),
         type: 'website',
         images: ['/screenshot.png'],
     },
     twitter: {
         card: 'summary_large_image',
-        title: 'Blog | DevOps Tutorials & Cloud Engineering',
-        description: 'Technical articles about DevOps, cloud infrastructure, and software engineering',
+        title: 'DevOps and Cloud Engineering Blog | Udara Nalawansa',
+        description: 'Technical articles about DevOps, cloud infrastructure, Kubernetes, Docker, CI/CD, Terraform, and MLOps.',
         images: ['/screenshot.png'],
     },
     alternates: {
-        canonical: 'https://udaradev.me/blog',
+        canonical: absoluteUrl('/blog'),
     },
 };
 
@@ -48,10 +37,13 @@ export default async function Blog() {
         slug,
         publishedAt,
         readTime,
+        seoTitle,
+        seoDescription,
         mainImage {
             asset -> {
                 url
-            }
+            },
+            alt
         },
         excerpt,
         tags
@@ -59,6 +51,10 @@ export default async function Blog() {
 
     return (
         <>
+            <BreadcrumbSchema items={[
+                { name: 'Home', url: '/' },
+                { name: 'Blog', url: '/blog' },
+            ]} />
             <BlogListingSchema />
             <Navbar />
             <main className={styles.blog}>
@@ -66,7 +62,7 @@ export default async function Blog() {
                 <header className={styles.header}>
                     <h1 className={styles.title}>Blog</h1>
                     <p className={styles.subtitle}>
-                        Thoughts, tutorials, and insights .
+                        DevOps, cloud infrastructure, Kubernetes, CI/CD, Terraform, and MLOps notes from my engineering work.
                     </p>
                 </header>
                 <BlogList posts={posts} />

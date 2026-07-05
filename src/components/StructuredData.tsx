@@ -1,13 +1,28 @@
+import { absoluteUrl, defaultDescription, PERSON_ID, PERSON_NAME, SITE_NAME, SITE_URL, WEBSITE_ID } from '@/lib/seo';
+
+function JsonLd({ schema }: { schema: Record<string, unknown> }) {
+  const json = JSON.stringify(schema).replace(/</g, '\\u003c');
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: json }}
+    />
+  );
+}
+
 export function PersonSchema() {
   const schema = {
     "@context": "https://schema.org",
     "@type": "Person",
-    name: "Udara Nalawansa",
-    url: "https://udaradev.me",
+    "@id": PERSON_ID,
+    name: PERSON_NAME,
+    alternateName: "Udara Kavishka Nalawansa",
+    url: SITE_URL,
     email: "hello@udaradev.me",
-    image: "https://udaradev.me/profile.jpg",
+    image: absoluteUrl('/profile.jpg'),
     jobTitle: "DevOps Engineer",
-    description: "DevOps Engineer and Full Stack Developer specializing in cloud infrastructure, CI/CD pipelines, Kubernetes, Docker, and MLOps",
+    description: defaultDescription,
     alumniOf: {
       "@type": "CollegeOrUniversity",
       name: "University of Jaffna",
@@ -44,59 +59,83 @@ export function PersonSchema() {
     }
   };
 
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
-  );
+  return <JsonLd schema={schema} />;
 }
 
 export function WebsiteSchema() {
   const schema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "Udara Nalawansa Portfolio",
-    url: "https://udaradev.me",
-    description: "Professional portfolio showcasing DevOps engineering projects, cloud infrastructure work, and software development",
+    "@id": WEBSITE_ID,
+    name: SITE_NAME,
+    url: SITE_URL,
+    description: "Professional portfolio showcasing DevOps engineering projects, cloud infrastructure work, Kubernetes deployments, CI/CD automation, and software development.",
     author: {
       "@type": "Person",
-      name: "Udara Nalawansa"
+      "@id": PERSON_ID,
+      name: PERSON_NAME
     },
     inLanguage: "en-US"
   };
 
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
-  );
+  return <JsonLd schema={schema} />;
 }
 
-export function ProfilePageSchema() {
+type ProfilePageSchemaProps = {
+  projects: ProjectItem[];
+  posts?: Array<{
+    title: string;
+    slug?: { current?: string };
+    publishedAt?: string;
+  }>;
+};
+
+export function ProfilePageSchema({ projects, posts = [] }: ProfilePageSchemaProps) {
   const schema = {
     "@context": "https://schema.org",
     "@type": "ProfilePage",
+    "@id": `${SITE_URL}/#profile-page`,
+    url: SITE_URL,
+    name: "Udara Nalawansa - DevOps Engineer Portfolio",
+    isPartOf: {
+      "@id": WEBSITE_ID
+    },
     mainEntity: {
       "@type": "Person",
-      name: "Udara Nalawansa",
+      "@id": PERSON_ID,
+      name: PERSON_NAME,
       alternateName: "Udara Kavishka Nalawansa",
-      description: "DevOps Engineer and Full Stack Developer",
-      image: "https://udaradev.me/profile.jpg",
+      description: defaultDescription,
+      image: absoluteUrl('/profile.jpg'),
       sameAs: [
         "https://github.com/udaraKavishka",
         "https://www.linkedin.com/in/udaranalawansa/"
       ]
-    }
+    },
+    hasPart: [
+      ...projects.slice(0, 6).map((project) => ({
+        "@type": "SoftwareSourceCode",
+        name: project.title,
+        description: project.description,
+        programmingLanguage: project.techStack,
+        codeRepository: project.githubUrl,
+        ...(project.liveUrl && { url: project.liveUrl }),
+        author: { "@id": PERSON_ID }
+      })),
+      ...posts
+        .filter((post) => post.slug?.current)
+        .slice(0, 3)
+        .map((post) => ({
+          "@type": "BlogPosting",
+          headline: post.title,
+          url: absoluteUrl(`/blog/${post.slug?.current}`),
+          datePublished: post.publishedAt,
+          author: { "@id": PERSON_ID }
+        }))
+    ]
   };
 
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
-  );
+  return <JsonLd schema={schema} />;
 }
 
 type ArticleSchemaProps = {
@@ -113,40 +152,37 @@ export function ArticleSchema({ title, publishedAt, modifiedAt, excerpt, imageUr
   const schema = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
+    "@id": `${absoluteUrl(`/blog/${slug}`)}#article`,
     headline: title,
     description: excerpt || title,
     datePublished: publishedAt,
     author: {
       "@type": "Person",
-      name: "Udara Nalawansa",
-      url: "https://udaradev.me"
+      "@id": PERSON_ID,
+      name: PERSON_NAME,
+      url: SITE_URL
     },
     publisher: {
       "@type": "Person",
-      name: "Udara Nalawansa",
-      url: "https://udaradev.me",
+      "@id": PERSON_ID,
+      name: PERSON_NAME,
+      url: SITE_URL,
       logo: {
         "@type": "ImageObject",
-        url: "https://udaradev.me/favicon.png"
+        url: absoluteUrl('/favicon.png')
       }
     },
-    image: imageUrl || "https://udaradev.me/screenshot.png",
-    url: `https://udaradev.me/blog/${slug}`,
+    image: imageUrl || absoluteUrl('/screenshot.png'),
+    url: absoluteUrl(`/blog/${slug}`),
     mainEntityOfPage: {
       "@type": "WebPage",
-      "@id": `https://udaradev.me/blog/${slug}`
+      "@id": absoluteUrl(`/blog/${slug}`)
     },
     keywords: tags?.join(", ") || "DevOps, Cloud Engineering, Software Development",
     dateModified: modifiedAt || publishedAt,
   };
-  const json = JSON.stringify(schema).replace(/</g, '\\u003c');
 
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: json }}
-    />
-  );
+  return <JsonLd schema={schema} />;
 }
 
 type BreadcrumbItem = { name: string; url: string };
@@ -159,18 +195,11 @@ export function BreadcrumbSchema({ items }: { items: BreadcrumbItem[] }) {
       "@type": "ListItem",
       position: index + 1,
       name: item.name,
-      item: item.url
+      item: absoluteUrl(item.url)
     }))
   };
-  // JSON.stringify with unicode escaping for < prevents </script> injection
-  const json = JSON.stringify(schema).replace(/</g, '\\u003c');
 
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: json }}
-    />
-  );
+  return <JsonLd schema={schema} />;
 }
 
 type ProjectItem = {
@@ -198,46 +227,35 @@ export function ProjectsSchema({ projects }: { projects: ProjectItem[] }) {
         ...(project.liveUrl && { url: project.liveUrl }),
         author: {
           "@type": "Person",
-          name: "Udara Nalawansa",
-          url: "https://udaradev.me"
+          "@id": PERSON_ID,
+          name: PERSON_NAME,
+          url: SITE_URL
         }
       }
     }))
   };
-  const json = JSON.stringify(schema).replace(/</g, '\\u003c');
 
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: json }}
-    />
-  );
+  return <JsonLd schema={schema} />;
 }
 
 export function BlogListingSchema() {
   const schema = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    "@id": "https://udaradev.me/blog",
+    "@id": absoluteUrl('/blog'),
     name: "DevOps & Cloud Engineering Blog",
-    description: "Technical articles about DevOps, cloud infrastructure, Kubernetes, Docker, CI/CD, and MLOps by Udara Nalawansa",
-    url: "https://udaradev.me/blog",
+    description: "Technical articles about DevOps, cloud infrastructure, Kubernetes, Docker, CI/CD, and MLOps by Udara Nalawansa.",
+    url: absoluteUrl('/blog'),
     author: {
       "@type": "Person",
-      name: "Udara Nalawansa",
-      url: "https://udaradev.me"
+      "@id": PERSON_ID,
+      name: PERSON_NAME,
+      url: SITE_URL
     },
     isPartOf: {
-      "@type": "WebSite",
-      url: "https://udaradev.me"
+      "@id": WEBSITE_ID
     }
   };
-  const json = JSON.stringify(schema).replace(/</g, '\\u003c');
 
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: json }}
-    />
-  );
+  return <JsonLd schema={schema} />;
 }

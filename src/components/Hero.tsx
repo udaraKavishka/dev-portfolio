@@ -112,7 +112,7 @@ export default function Hero() {
                             <div className={styles.profileImage}>
                                 <Image
                                     src={profileImage}
-                                    alt="Profile"
+                                    alt="Udara Nalawansa, DevOps engineer and full stack developer"
                                     fill
                                     loading="eager"
                                     priority

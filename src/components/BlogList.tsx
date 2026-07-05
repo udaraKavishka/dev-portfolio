@@ -35,7 +35,7 @@ export default function BlogList({ posts }: BlogListProps) {
                             <div className={styles.imageContainer}>
                                 <Image
                                     src={post.mainImage.asset.url}
-                                    alt={post.title}
+                                    alt={post.mainImage.alt || post.title}
                                     fill
                                     sizes="(max-width: 768px) 100vw, 350px"
                                     className={styles.image}

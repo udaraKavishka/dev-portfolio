@@ -15,6 +15,8 @@ export interface SanityPost {
     };
     publishedAt: string;
     readTime?: string;
+    seoTitle?: string;
+    seoDescription?: string;
     mainImage?: {
         asset: {
             url: string;

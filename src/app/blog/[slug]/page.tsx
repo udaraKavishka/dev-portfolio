@@ -10,6 +10,7 @@ import SyntaxHighlighter from 'react-syntax-highlighter';
 import { dracula } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import styles from './post.module.css';
 import type { Metadata } from 'next';
+import { absoluteUrl } from '@/lib/seo';
 
 export const revalidate = 60;
 
@@ -37,6 +38,8 @@ type SanityPost = {
     _updatedAt?: string;
     readTime?: string;
     excerpt?: string;
+    seoTitle?: string;
+    seoDescription?: string;
     mainImage?: {
         asset?: {
             url?: string;
@@ -47,6 +50,7 @@ type SanityPost = {
                 };
             };
         };
+        alt?: string;
     };
     body: PortableTextBlock[];
     tags?: string[];
@@ -77,9 +81,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
             `*[_type == "post" && slug.current == $slug][0]{
                 title,
                 excerpt,
+                seoTitle,
+                seoDescription,
                 publishedAt,
                 mainImage {
-                    asset->{url}
+                    asset->{url},
+                    alt
                 },
                 tags
             }`,
@@ -93,26 +100,19 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
             };
         }
 
-        const postUrl = `https://udaradev.me/blog/${slug}`;
+        const postUrl = absoluteUrl(`/blog/${slug}`);
         const imageUrl = post.mainImage?.asset?.url || '/screenshot.png';
-        const description = post.excerpt || `Read "${post.title}" by Udara Nalawansa - DevOps Engineer`;
+        const title = post.seoTitle || post.title;
+        const description = post.seoDescription || post.excerpt || `Read ${post.title} by Udara Nalawansa, DevOps engineer in Sri Lanka.`;
         
         return {
-            title: post.title,
+            title,
             description: description,
-            keywords: [
-                ...(post.tags || []),
-                'DevOps',
-                'Cloud Engineering',
-                'Software Development',
-                'Tutorial',
-                'Tech Blog'
-            ],
-            authors: [{ name: 'Udara Nalawansa', url: 'https://udaradev.me' }],
+            authors: [{ name: 'Udara Nalawansa', url: absoluteUrl('/') }],
             openGraph: {
                 type: 'article',
                 url: postUrl,
-                title: post.title,
+                title,
                 description: description,
                 publishedTime: post.publishedAt,
                 authors: ['Udara Nalawansa'],
@@ -121,16 +121,16 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
                         url: imageUrl,
                         width: 1200,
                         height: 630,
-                        alt: post.title,
+                        alt: post.mainImage?.alt || post.title,
                     }
                 ],
                 siteName: 'Udara Nalawansa Blog',
             },
             twitter: {
                 card: 'summary_large_image',
-                title: post.title,
+                title,
                 description: description,
-                images: [imageUrl],
+                images: [{ url: imageUrl, alt: post.mainImage?.alt || post.title }],
                 creator: '@udaranalawansa',
             },
             alternates: {
@@ -163,8 +163,11 @@ export default async function BlogPost({
             _updatedAt,
             readTime,
             excerpt,
+            seoTitle,
+            seoDescription,
             mainImage {
-                asset->{url, metadata{dimensions}}
+                asset->{url, metadata{dimensions}},
+                alt
             },
             body[]{
                 ...,
@@ -211,8 +214,8 @@ export default async function BlogPost({
         <>
             <BreadcrumbSchema items={[
                 { name: 'Home', url: 'https://udaradev.me' },
-                { name: 'Blog', url: 'https://udaradev.me/blog' },
-                { name: post.title, url: `https://udaradev.me/blog/${slug}` }
+                { name: 'Blog', url: '/blog' },
+                { name: post.title, url: `/blog/${slug}` }
             ]} />
             <ArticleSchema 
                 title={post.title}
@@ -261,7 +264,7 @@ export default async function BlogPost({
                             <div className={styles.mainImageContainer}>
                                 <Image
                                     src={post.mainImage.asset.url}
-                                    alt={post.title}
+                                    alt={post.mainImage.alt || post.title}
                                     fill
                                     sizes="(max-width: 800px) 100vw, 800px"
                                     className={styles.mainImage}
