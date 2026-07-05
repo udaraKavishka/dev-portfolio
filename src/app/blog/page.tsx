@@ -1,5 +1,4 @@
-import { client } from '@/lib/sanity';
-import { SanityPost } from '@/lib/posts';
+import { getAllPosts } from '@/lib/posts';
 import BlogList from '@/components/BlogList';
 import Navbar from '@/components/Navbar';
 import styles from './blog.module.css';
@@ -28,26 +27,8 @@ export const metadata: Metadata = {
     },
 };
 
-export const revalidate = 60; // Revalidate every 60 seconds
-
-export default async function Blog() {
-    const posts = await client.fetch<SanityPost[]>(`*[_type == "post"] | order(publishedAt desc){
-        _id,
-        title,
-        slug,
-        publishedAt,
-        readTime,
-        seoTitle,
-        seoDescription,
-        mainImage {
-            asset -> {
-                url
-            },
-            alt
-        },
-        excerpt,
-        tags
-    }`);
+export default function Blog() {
+    const posts = getAllPosts();
 
     return (
         <>
@@ -60,9 +41,9 @@ export default async function Blog() {
             <main className={styles.blog}>
             <div className={styles.container}>
                 <header className={styles.header}>
-                    <h1 className={styles.title}>Blog</h1>
+                    <h1 className={styles.title}>blog</h1>
                     <p className={styles.subtitle}>
-                        DevOps, cloud infrastructure, Kubernetes, CI/CD, Terraform, and MLOps notes from my engineering work.
+                        notes from my internship, research, and self-learning. devops, kubernetes, ML, and the bugs in between.
                     </p>
                 </header>
                 <BlogList posts={posts} />
