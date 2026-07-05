@@ -57,6 +57,13 @@
     color: var(--accent-primary);
 }
 
+.pinIcon {
+    display: inline-block;
+    vertical-align: -1px;
+    margin-right: 0.5rem;
+    color: var(--accent-primary);
+}
+
 .rowDate {
     font-family: var(--font-mono);
     font-size: 0.85rem;

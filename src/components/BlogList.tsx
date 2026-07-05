@@ -1,8 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { Pin } from 'lucide-react';
 import type { Post } from '@/lib/posts';
 import { CATEGORIES } from '@/lib/categories';
 import styles from './BlogList.module.css';
@@ -20,18 +21,18 @@ function formatDate(date: string) {
 }
 
 export default function BlogList({ posts }: BlogListProps) {
-    const [activeCategory, setActiveCategory] = useState<string | null>(null);
+    const [activeCategory, setActiveCategory] = useState<string | null>(() => {
+        if (typeof window === 'undefined') return null;
+        return new URLSearchParams(window.location.search).get('category');
+    });
 
-    useEffect(() => {
-        const category = new URLSearchParams(window.location.search).get('category');
-        if (category) {
-            setActiveCategory(category);
-        }
-    }, []);
-
-    const filteredPosts = activeCategory
-        ? posts.filter((post) => post.category === activeCategory)
-        : posts;
+    const filteredPosts = (
+        activeCategory
+            ? posts.filter((post) => post.category === activeCategory)
+            : posts
+    )
+        .slice()
+        .sort((a, b) => Number(b.pinned ?? false) - Number(a.pinned ?? false));
 
     const setCategory = (slug: string | null) => {
         setActiveCategory(slug);
@@ -72,7 +73,10 @@ export default function BlogList({ posts }: BlogListProps) {
                             transition={{ delay: Math.min(index * 0.03, 0.6), duration: 0.4 }}
                         >
                             <Link href={`/blog/${post.slug}`} className={styles.row}>
-                                <span className={styles.rowTitle}>{post.title}</span>
+                                <span className={styles.rowTitle}>
+                                    {post.pinned && <Pin size={13} className={styles.pinIcon} />}
+                                    {post.title}
+                                </span>
                                 <span className={styles.rowDate}>{formatDate(post.date)}</span>
                             </Link>
                         </motion.article>

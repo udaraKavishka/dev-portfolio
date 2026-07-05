@@ -10,6 +10,7 @@ export interface Post {
     date: string;
     updated?: string;
     category?: string;
+    pinned?: boolean;
     excerpt?: string;
     tags?: string[];
     readTime?: string;
@@ -35,6 +36,7 @@ function parsePost(fileName: string): PostWithContent {
         date: data.date ?? '',
         updated: data.updated,
         category: data.category,
+        pinned: data.pinned === true,
         excerpt: data.excerpt,
         tags: data.tags,
         readTime: data.readTime,
