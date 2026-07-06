@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, useLayoutEffect, useRef } from 'react';
+import { useState, useLayoutEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Pin } from 'lucide-react';
 import type { Post } from '@/lib/posts';
@@ -35,7 +35,17 @@ export default function BlogList({ posts }: BlogListProps) {
         }
     };
 
-    const restoringRef = useRef(false);
+    // Known at first render so we can skip the entrance animation when restoring
+    // (a replayed stagger would shift rows under the restored offset).
+    const [restoring] = useState(() => {
+        if (typeof window === 'undefined') return false;
+        try {
+            return sessionStorage.getItem(storageKey) !== null;
+        } catch {
+            return false;
+        }
+    });
+
     useLayoutEffect(() => {
         let saved: { slug: string; top: number } | null = null;
         try {
@@ -45,7 +55,6 @@ export default function BlogList({ posts }: BlogListProps) {
             saved = null;
         }
         if (!saved) return;
-        restoringRef.current = true;
 
         let userScrolled = false;
         const stop = () => {
@@ -75,6 +84,8 @@ export default function BlogList({ posts }: BlogListProps) {
             window.removeEventListener('touchmove', stop);
             window.removeEventListener('keydown', stop);
         };
+        // Restore only on the initial mount for this component instance.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const filteredPosts = (
@@ -119,7 +130,7 @@ export default function BlogList({ posts }: BlogListProps) {
                     {filteredPosts.map((post, index) => (
                         <motion.article
                             key={post.slug}
-                            initial={restoringRef.current ? false : { opacity: 0, y: 10 }}
+                            initial={restoring ? false : { opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: Math.min(index * 0.03, 0.6), duration: 0.4 }}
                         >
