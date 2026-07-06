@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useLayoutEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Pin } from 'lucide-react';
 import type { Post } from '@/lib/posts';
@@ -25,6 +25,57 @@ export default function BlogList({ posts }: BlogListProps) {
         if (typeof window === 'undefined') return null;
         return new URLSearchParams(window.location.search).get('category');
     });
+
+    const storageKey = `blog-scroll:${activeCategory ?? 'all'}`;
+    const rememberPost = (slug: string) => (e: React.MouseEvent<HTMLElement>) => {
+        try {
+            const top = e.currentTarget.getBoundingClientRect().top;
+            sessionStorage.setItem(storageKey, JSON.stringify({ slug, top }));
+        } catch {
+        }
+    };
+
+    const restoringRef = useRef(false);
+    useLayoutEffect(() => {
+        let saved: { slug: string; top: number } | null = null;
+        try {
+            const raw = sessionStorage.getItem(storageKey);
+            saved = raw ? JSON.parse(raw) : null;
+        } catch {
+            saved = null;
+        }
+        if (!saved) return;
+        restoringRef.current = true;
+
+        let userScrolled = false;
+        const stop = () => {
+            userScrolled = true;
+        };
+        const applyAnchor = () => {
+            if (userScrolled || !saved) return;
+            const el = document.querySelector<HTMLElement>(`[data-slug="${saved.slug}"]`);
+            if (!el) return;
+            const delta = el.getBoundingClientRect().top - saved.top;
+            if (Math.abs(delta) > 1) {
+                window.scrollBy({ top: delta, behavior: 'instant' as ScrollBehavior });
+            }
+        };
+
+        window.addEventListener('wheel', stop, { passive: true });
+        window.addEventListener('touchmove', stop, { passive: true });
+        window.addEventListener('keydown', stop);
+
+        applyAnchor();
+        const raf = requestAnimationFrame(applyAnchor);
+        document.fonts?.ready.then(applyAnchor).catch(() => {});
+
+        return () => {
+            cancelAnimationFrame(raf);
+            window.removeEventListener('wheel', stop);
+            window.removeEventListener('touchmove', stop);
+            window.removeEventListener('keydown', stop);
+        };
+    }, []);
 
     const filteredPosts = (
         activeCategory
@@ -68,11 +119,16 @@ export default function BlogList({ posts }: BlogListProps) {
                     {filteredPosts.map((post, index) => (
                         <motion.article
                             key={post.slug}
-                            initial={{ opacity: 0, y: 10 }}
+                            initial={restoringRef.current ? false : { opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: Math.min(index * 0.03, 0.6), duration: 0.4 }}
                         >
-                            <Link href={`/blog/${post.slug}`} className={styles.row}>
+                            <Link
+                                href={`/blog/${post.slug}`}
+                                className={styles.row}
+                                data-slug={post.slug}
+                                onClick={rememberPost(post.slug)}
+                            >
                                 <span className={styles.rowTitle}>
                                     {post.pinned && <Pin size={13} className={styles.pinIcon} />}
                                     {post.title}
