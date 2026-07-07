@@ -96,6 +96,11 @@ export default function BlogList({ posts }: BlogListProps) {
         .slice()
         .sort((a, b) => Number(b.pinned ?? false) - Number(a.pinned ?? false));
 
+    const categoryCounts = CATEGORIES.reduce<Record<string, number>>((acc, category) => {
+        acc[category.slug] = posts.filter((post) => post.category === category.slug).length;
+        return acc;
+    }, {});
+
     const setCategory = (slug: string | null) => {
         setActiveCategory(slug);
         window.history.replaceState(null, '', slug ? `/blog?category=${slug}` : '/blog');
@@ -108,7 +113,7 @@ export default function BlogList({ posts }: BlogListProps) {
                     className={`${styles.filter} ${!activeCategory ? styles.filterActive : ''}`}
                     onClick={() => setCategory(null)}
                 >
-                    all
+                    all ({posts.length})
                 </button>
                 {CATEGORIES.map((category) => (
                     <button
@@ -116,7 +121,7 @@ export default function BlogList({ posts }: BlogListProps) {
                         className={`${styles.filter} ${activeCategory === category.slug ? styles.filterActive : ''}`}
                         onClick={() => setCategory(category.slug)}
                     >
-                        {category.label}
+                        {category.label} ({categoryCounts[category.slug]})
                     </button>
                 ))}
             </div>
