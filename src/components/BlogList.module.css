@@ -1,3 +1,72 @@
+.guide {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.1rem;
+    align-items: center;
+    margin-bottom: 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--text-muted);
+}
+
+.kbd {
+    display: inline-block;
+    min-width: 1.2rem;
+    text-align: center;
+    padding: 0.05rem 0.35rem;
+    margin-right: 0.2rem;
+    border: 1px solid var(--border-color);
+    border-bottom-width: 2px;
+    border-radius: 4px;
+    background-color: var(--bg-tertiary);
+    color: var(--accent-primary);
+    font-size: 0.72rem;
+    line-height: 1.4;
+}
+
+/* No hardware keyboard on touch devices — hide the hint. */
+@media (hover: none) and (pointer: coarse) {
+    .guide {
+        display: none;
+    }
+}
+
+.search {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 0.55rem 0.9rem;
+    margin-bottom: 1.25rem;
+    transition: border-color 0.2s ease;
+}
+
+.search:focus-within {
+    border-color: var(--accent-primary);
+}
+
+.searchIcon {
+    color: var(--text-muted);
+    flex-shrink: 0;
+}
+
+.searchInput {
+    flex: 1;
+    min-width: 0;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    caret-color: var(--accent-primary);
+}
+
+.searchInput::placeholder {
+    color: var(--text-muted);
+}
+
 .filters {
     display: flex;
     flex-wrap: wrap;
@@ -46,11 +115,46 @@
     background-color: var(--bg-secondary);
 }
 
+.rowActive {
+    background-color: rgba(74, 222, 128, 0.1);
+    box-shadow: inset 3px 0 0 var(--accent-primary);
+}
+
+.rowActive .rowTitle {
+    color: var(--accent-primary);
+}
+
+.rowMain {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    min-width: 0;
+}
+
 .rowTitle {
     font-family: var(--font-mono);
     font-size: 1rem;
     color: var(--text-primary);
     transition: color 0.15s ease;
+}
+
+.rowSnippet {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+.snippetTag {
+    color: var(--accent-secondary);
+    opacity: 0.8;
+}
+
+.mark {
+    background-color: rgba(74, 222, 128, 0.22);
+    color: var(--accent-primary);
+    border-radius: 2px;
+    padding: 0 1px;
 }
 
 .row:hover .rowTitle {

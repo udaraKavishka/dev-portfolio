@@ -1,4 +1,4 @@
-import { getAllPosts } from '@/lib/posts';
+import { getAllPosts, getSearchIndex } from '@/lib/posts';
 import BlogList from '@/components/BlogList';
 import Navbar from '@/components/Navbar';
 import styles from './blog.module.css';
@@ -29,6 +29,7 @@ export const metadata: Metadata = {
 
 export default function Blog() {
     const posts = getAllPosts();
+    const searchIndex = getSearchIndex();
 
     return (
         <>
@@ -46,7 +47,7 @@ export default function Blog() {
                         notes from my internship, research, and self-learning. devops, kubernetes, ML, and the bugs in between.
                     </p>
                 </header>
-                <BlogList posts={posts} />
+                <BlogList posts={posts} searchIndex={searchIndex} />
             </div>
             </main>
         </>
