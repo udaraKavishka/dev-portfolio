@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, useLayoutEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Pin, Search } from 'lucide-react';
 import type { Post, SearchEntry } from '@/lib/posts';
@@ -112,6 +113,64 @@ export default function BlogList({ posts, searchIndex }: BlogListProps) {
         setSelectedIndex(0);
     }
 
+    // Keep the highlighted row in view.
+    useEffect(() => {
+        rowRefs.current[selectedIndex]?.scrollIntoView({ block: 'nearest' });
+    }, [selectedIndex]);
+
+    useEffect(() => {
+        const isTyping = () => {
+            const el = document.activeElement;
+            return el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement;
+        };
+
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape' && isTyping()) {
+                setQuery('');
+                searchRef.current?.blur();
+                return;
+            }
+
+            if (isTyping()) {
+                // Let Enter in the search box open the first result.
+                if (e.key === 'Enter' && document.activeElement === searchRef.current) {
+                    if (filteredPosts.length > 0) {
+                        router.push(`/blog/${filteredPosts[0].slug}`);
+                    }
+                }
+                return;
+            }
+
+            if (e.key === '/') {
+                e.preventDefault();
+                searchRef.current?.focus();
+                return;
+            }
+
+            if (filteredPosts.length === 0) return;
+
+            if (e.key === 'j' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                setSelectedIndex((i) => Math.min(i + 1, filteredPosts.length - 1));
+            } else if (e.key === 'k' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                setSelectedIndex((i) => Math.max(i - 1, 0));
+            } else if (e.key === 'g' || e.key === 'Home') {
+                e.preventDefault();
+                setSelectedIndex(0);
+            } else if (e.key === 'G' || e.key === 'End') {
+                e.preventDefault();
+                setSelectedIndex(filteredPosts.length - 1);
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                router.push(`/blog/${filteredPosts[selectedIndex].slug}`);
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [filteredPosts, selectedIndex, router]);
+
     const storageKey = `blog-scroll:${activeCategory ?? 'all'}`;
     const rememberPost = (slug: string) => (e: React.MouseEvent<HTMLElement>) => {
         try {
@@ -174,14 +233,6 @@ export default function BlogList({ posts, searchIndex }: BlogListProps) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const filteredPosts = (
-        activeCategory
-            ? posts.filter((post) => post.category === activeCategory)
-            : posts
-    )
-        .slice()
-        .sort((a, b) => Number(b.pinned ?? false) - Number(a.pinned ?? false));
-
     const categoryCounts = CATEGORIES.reduce<Record<string, number>>((acc, category) => {
         acc[category.slug] = posts.filter((post) => post.category === category.slug).length;
         return acc;
@@ -240,27 +291,48 @@ export default function BlogList({ posts, searchIndex }: BlogListProps) {
                 </div>
             ) : (
                 <div className={styles.list}>
-                    {filteredPosts.map((post, index) => (
-                        <motion.article
-                            key={post.slug}
-                            initial={restoring ? false : { opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: Math.min(index * 0.03, 0.6), duration: 0.4 }}
-                        >
-                            <Link
-                                href={`/blog/${post.slug}`}
-                                className={styles.row}
-                                data-slug={post.slug}
-                                onClick={rememberPost(post.slug)}
+                    {filteredPosts.map((post, index) => {
+                        const q = query.trim().toLowerCase();
+                        const inTitle =
+                            !!q &&
+                            (post.title.toLowerCase().includes(q) ||
+                                (post.excerpt?.toLowerCase().includes(q) ?? false));
+                        const snippet =
+                            q && !inTitle ? bodySnippet(bodyMap.get(post.slug) ?? '', q) : null;
+
+                        return (
+                            <motion.article
+                                key={post.slug}
+                                initial={restoring ? false : { opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: Math.min(index * 0.03, 0.6), duration: 0.4 }}
                             >
-                                <span className={styles.rowTitle}>
-                                    {post.pinned && <Pin size={13} className={styles.pinIcon} />}
-                                    {post.title}
-                                </span>
-                                <span className={styles.rowDate}>{formatDate(post.date)}</span>
-                            </Link>
-                        </motion.article>
-                    ))}
+                                <Link
+                                    href={`/blog/${post.slug}`}
+                                    ref={(el) => {
+                                        rowRefs.current[index] = el;
+                                    }}
+                                    className={`${styles.row} ${index === selectedIndex ? styles.rowActive : ''}`}
+                                    data-slug={post.slug}
+                                    onMouseEnter={() => setSelectedIndex(index)}
+                                    onClick={rememberPost(post.slug)}
+                                >
+                                    <span className={styles.rowMain}>
+                                        <span className={styles.rowTitle}>
+                                            {post.pinned && <Pin size={13} className={styles.pinIcon} />}
+                                            {q && inTitle ? highlight(post.title, q) : post.title}
+                                        </span>
+                                        {snippet && (
+                                            <span className={styles.rowSnippet}>
+                                                <span className={styles.snippetTag}>match:</span> {snippet}
+                                            </span>
+                                        )}
+                                    </span>
+                                    <span className={styles.rowDate}>{formatDate(post.date)}</span>
+                                </Link>
+                            </motion.article>
+                        );
+                    })}
                 </div>
             )}
         </div>
