@@ -4,7 +4,7 @@ import { Calendar, Tag, ArrowLeft } from 'lucide-react';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import remarkGfm from 'remark-gfm';
 import { notFound } from 'next/navigation';
-import { getAllPosts, getPostBySlug } from '@/lib/posts';
+import { getAllPosts, getPostBySlug, getRelatedPosts } from '@/lib/posts';
 import { CATEGORIES } from '@/lib/categories';
 import Navbar from '@/components/Navbar';
 import { ArticleSchema, BreadcrumbSchema } from '@/components/StructuredData';
@@ -122,6 +122,8 @@ export default async function BlogPost({
         notFound();
     }
 
+    const relatedPosts = getRelatedPosts(slug);
+
     return (
         <>
             <BreadcrumbSchema items={[
@@ -201,6 +203,30 @@ export default async function BlogPost({
                             />
                         </div>
                     </article>
+
+                    {relatedPosts.length > 0 && (
+                        <section className={styles.related}>
+                            <h2 className={styles.relatedTitle}>Related Posts</h2>
+                            <div className={styles.relatedList}>
+                                {relatedPosts.map((relatedPost) => (
+                                    <Link
+                                        key={relatedPost.slug}
+                                        href={`/blog/${relatedPost.slug}`}
+                                        className={styles.relatedRow}
+                                    >
+                                        <span className={styles.relatedRowTitle}>{relatedPost.title}</span>
+                                        <span className={styles.relatedRowDate}>
+                                            {new Date(relatedPost.date).toLocaleDateString('en-US', {
+                                                month: 'short',
+                                                day: 'numeric',
+                                                year: 'numeric',
+                                            })}
+                                        </span>
+                                    </Link>
+                                ))}
+                            </div>
+                        </section>
+                    )}
                 </div>
             </main>
         </>
