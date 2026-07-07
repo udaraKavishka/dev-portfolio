@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useLayoutEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Pin } from 'lucide-react';
 import type { Post } from '@/lib/posts';
@@ -25,6 +25,68 @@ export default function BlogList({ posts }: BlogListProps) {
         if (typeof window === 'undefined') return null;
         return new URLSearchParams(window.location.search).get('category');
     });
+
+    const storageKey = `blog-scroll:${activeCategory ?? 'all'}`;
+    const rememberPost = (slug: string) => (e: React.MouseEvent<HTMLElement>) => {
+        try {
+            const top = e.currentTarget.getBoundingClientRect().top;
+            sessionStorage.setItem(storageKey, JSON.stringify({ slug, top }));
+        } catch {
+        }
+    };
+
+    // Known at first render so we can skip the entrance animation when restoring
+    // (a replayed stagger would shift rows under the restored offset).
+    const [restoring] = useState(() => {
+        if (typeof window === 'undefined') return false;
+        try {
+            return sessionStorage.getItem(storageKey) !== null;
+        } catch {
+            return false;
+        }
+    });
+
+    useLayoutEffect(() => {
+        let saved: { slug: string; top: number } | null = null;
+        try {
+            const raw = sessionStorage.getItem(storageKey);
+            saved = raw ? JSON.parse(raw) : null;
+        } catch {
+            saved = null;
+        }
+        if (!saved) return;
+
+        let userScrolled = false;
+        const stop = () => {
+            userScrolled = true;
+        };
+        const applyAnchor = () => {
+            if (userScrolled || !saved) return;
+            const el = document.querySelector<HTMLElement>(`[data-slug="${saved.slug}"]`);
+            if (!el) return;
+            const delta = el.getBoundingClientRect().top - saved.top;
+            if (Math.abs(delta) > 1) {
+                window.scrollBy({ top: delta, behavior: 'instant' as ScrollBehavior });
+            }
+        };
+
+        window.addEventListener('wheel', stop, { passive: true });
+        window.addEventListener('touchmove', stop, { passive: true });
+        window.addEventListener('keydown', stop);
+
+        applyAnchor();
+        const raf = requestAnimationFrame(applyAnchor);
+        document.fonts?.ready.then(applyAnchor).catch(() => {});
+
+        return () => {
+            cancelAnimationFrame(raf);
+            window.removeEventListener('wheel', stop);
+            window.removeEventListener('touchmove', stop);
+            window.removeEventListener('keydown', stop);
+        };
+        // Restore only on the initial mount for this component instance.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const filteredPosts = (
         activeCategory
@@ -73,11 +135,16 @@ export default function BlogList({ posts }: BlogListProps) {
                     {filteredPosts.map((post, index) => (
                         <motion.article
                             key={post.slug}
-                            initial={{ opacity: 0, y: 10 }}
+                            initial={restoring ? false : { opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: Math.min(index * 0.03, 0.6), duration: 0.4 }}
                         >
-                            <Link href={`/blog/${post.slug}`} className={styles.row}>
+                            <Link
+                                href={`/blog/${post.slug}`}
+                                className={styles.row}
+                                data-slug={post.slug}
+                                onClick={rememberPost(post.slug)}
+                            >
                                 <span className={styles.rowTitle}>
                                     {post.pinned && <Pin size={13} className={styles.pinIcon} />}
                                     {post.title}
