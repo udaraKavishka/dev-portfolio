@@ -1,5 +1,6 @@
 import { MetadataRoute } from 'next'
 import { getAllPosts } from '@/lib/posts'
+import { getAllCaseStudies } from '@/lib/projects'
 import { SITE_URL } from '@/lib/seo'
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -27,5 +28,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.7,
     }))
 
-  return [...staticPages, ...blogPages]
+  const projectPages: MetadataRoute.Sitemap = getAllCaseStudies()
+    .filter((project) => project.date)
+    .map((project) => ({
+      url: `${SITE_URL}/projects/${project.slug}`,
+      lastModified: new Date(project.date),
+      changeFrequency: 'monthly' as const,
+      priority: 0.7,
+    }))
+
+  return [...staticPages, ...blogPages, ...projectPages]
 }

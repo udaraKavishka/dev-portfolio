@@ -1,0 +1,26 @@
+---
+title: "Flask CRUD API with Docker & Postgres"
+date: "2025-03-15"
+excerpt: "A containerized user-management REST API with Postgres persistence and automated CI health/E2E checks — built to practice the full path from code to a verified, running container."
+techStack: ["Python", "Flask", "Flask-SQLAlchemy", "PostgreSQL", "Docker", "Docker Compose", "GitHub Actions"]
+githubUrl: "https://github.com/udaraKavishka/flask-crud-api"
+---
+
+## Problem
+
+A CRUD API is a common enough exercise that it's easy to stop at "the endpoints work locally." I wanted to go further and treat this as a small end-to-end DevOps exercise: not just writing the API, but making sure it's provable that the container actually starts, connects to its database, and serves correct responses — automatically, on every change.
+
+## Architecture / Approach
+
+- **Flask + Flask-SQLAlchemy** implement the user-management CRUD endpoints against a relational schema.
+- **PostgreSQL** provides persistence, run as a separate service rather than SQLite, so the setup matches how a real deployment would be composed.
+- **Docker Compose** wires the API and database together with defined service dependencies and environment variables, so `docker compose up` reproduces the full stack identically on any machine.
+- **GitHub Actions** runs a CI pipeline on every push: it builds the Docker image, brings up the Compose stack, waits for a health check to pass, and then runs end-to-end requests against the running container to confirm the API actually works — not just that it builds.
+
+## My Contribution
+
+I wrote the Compose service definitions (API + Postgres, with proper `depends_on` and health checks so the API doesn't start before the database is ready), and built the GitHub Actions workflow that turns "does it build" into "does it actually serve correct responses when running" by scripting E2E requests against the live container in CI.
+
+## Outcome
+
+Every push is verified against a real running instance of the API and database, not just a build step — the kind of health-check-then-E2E pattern that catches the class of bugs ("builds fine, crashes on startup because of a missing env var") that unit tests alone miss. This project is a compact demonstration of the Docker Compose + CI health-check pattern I reuse when standing up small services.

@@ -1,0 +1,25 @@
+---
+title: "URL Shortener (Go)"
+date: "2025-01-20"
+excerpt: "A fast URL-shortening service in Go and Gin, using Redis for low-latency lookups instead of a relational database — chosen deliberately for the access pattern."
+techStack: ["Go", "Gin Web Framework", "Redis", "Docker"]
+githubUrl: "https://github.com/udaraKavishka/URL-Shortner"
+---
+
+## Problem
+
+URL shortening is a well-worn exercise, but it's a good forcing function for a specific infrastructure decision: the read path (redirect lookups) massively outweighs the write path (creating a short link), and needs to be fast. I used this project to practice picking the right storage for an access pattern rather than defaulting to a relational database out of habit.
+
+## Architecture / Approach
+
+- **Go + Gin** implement the HTTP layer: an endpoint to create a short link and a redirect endpoint that resolves it.
+- **Redis** is the store, not Postgres or MySQL — short-link lookups are simple key-to-URL reads that need to be fast and don't need relational queries, joins, or complex indexing, so an in-memory key-value store is a better fit than paying for a relational engine's overhead.
+- **Docker** packages the service so it can be run and reasoned about the same way in development as in any deployment target.
+
+## My Contribution
+
+I made the explicit call to use Redis instead of a relational database for this workload, and structured the Gin handlers so link creation and redirect resolution are cleanly separated, keeping the redirect path — the one that matters for latency — minimal.
+
+## Outcome
+
+The result is a small, fast service that reflects a real infrastructure trade-off (choosing storage based on access pattern, not by default) rather than just reproducing a tutorial. It's a compact example I point to when talking about matching data stores to read/write patterns.

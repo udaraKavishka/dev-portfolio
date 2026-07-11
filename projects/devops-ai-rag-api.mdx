@@ -1,0 +1,30 @@
+---
+title: "DevOps and AI: Building Production-Ready RAG Systems"
+date: "2025-06-01"
+excerpt: "Designing a containerized, Kubernetes-ready RAG API around a local LLM, with the DevOps practices needed to take it from a script to a deployable service."
+techStack: ["FastAPI", "Kubernetes", "ChromaDB", "Ollama", "TinyLlama", "Swagger UI", "Docker"]
+githubUrl: "https://github.com/udaraKavishka/devops-ai-rag-api"
+isOngoing: true
+---
+
+## Problem
+
+Most RAG (Retrieval-Augmented Generation) tutorials stop at "it works on my machine": a notebook, a hardcoded vector store, and a hosted LLM API key. None of that survives contact with a real deployment target. I wanted to build a RAG service the way I'd actually ship one at work — as a containerized API with a defined interface, running against a local model so it isn't dependent on an external LLM provider, and structured so it could be deployed to Kubernetes rather than just run locally.
+
+## Architecture / Approach
+
+The system is split into clearly separated concerns:
+
+- **FastAPI** exposes the RAG endpoints (ingest, query) with OpenAPI/Swagger docs generated automatically, so the API contract is self-documenting from day one.
+- **ChromaDB** handles vector storage and similarity search for retrieved context, running as its own service rather than embedded in the API process — this keeps the API stateless and makes the vector store independently scalable or swappable later.
+- **Ollama + TinyLlama** serve the generation step locally, avoiding a hard dependency on a hosted LLM API and keeping the whole stack runnable offline.
+- **Docker** packages each service (API, vector store, model runtime) so the stack is reproducible across machines.
+- **Kubernetes** is the deployment target being built toward: the services are being structured so each one becomes its own deployment/service manifest, with the API able to scale independently of the model runtime.
+
+## My Contribution
+
+I designed the service boundaries (API vs. vector store vs. model runtime) and containerized each piece individually rather than bundling everything into one image — this was a deliberate choice so that, in Kubernetes, the model runtime (the heaviest, GPU/CPU-hungry piece) can be scaled and scheduled separately from the lightweight FastAPI layer. I also set up the Swagger/OpenAPI documentation as part of the API itself, so the contract is verifiable without needing to read the source.
+
+## Outcome
+
+The project currently runs as a fully containerized local stack with a documented API surface, and is the vehicle I'm using to learn and demonstrate Kubernetes deployment patterns (multi-service manifests, resource limits, service discovery) rather than treating "Kubernetes" as a checkbox on a resume. It's an ongoing project — the next milestone is a working Kubernetes deployment with the services split across pods as designed.
