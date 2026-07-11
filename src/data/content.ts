@@ -48,6 +48,7 @@ interface ProjectItem {
     githubUrl: string;
     liveUrl?: string;
     isOngoing?: boolean;
+    caseStudySlug?: string;
 }
 
 export const projectsData: ProjectItem[] = [
@@ -64,6 +65,7 @@ export const projectsData: ProjectItem[] = [
         description: 'A simple and fast URL shortening service built with Go, Gin, and Redis. This project provides endpoints for generating short links and redirecting to the original URLs.',
         techStack: ['Go', 'Gin Web Framework', 'Redis', 'Docker'],
         githubUrl: 'https://github.com/udaraKavishka/URL-Shortner',
+        caseStudySlug: 'url-shortener-go',
     },
     {
         id: 3,
@@ -71,6 +73,7 @@ export const projectsData: ProjectItem[] = [
         description: 'DevOps and AI project implementing a RAG-based API with FastAPI and a local LLM. Designed to evolve into a production-ready system with Docker, Kubernetes, and automated workflows.',
         techStack: ['FastAPI', 'Kubernetes', 'ChromaDB', 'Ollama', 'TinyLlama', 'Swagger UI', 'Docker'],
         githubUrl: 'https://github.com/udaraKavishka/devops-ai-rag-api',
+        caseStudySlug: 'devops-ai-rag-api',
         // isOngoing: true
     },
     {
@@ -88,6 +91,7 @@ export const projectsData: ProjectItem[] = [
         description: 'Built a containerized CRUD REST API for user management using Flask and SQLAlchemy, with Postgres persistence via Docker Compose and automated CI health/E2E checks.',
         techStack: ['Python', "Flask", 'Flask-SQLAlchemy', 'PostgreSQL', 'Docker', 'Docker Compose', 'GitHub Actions'],
         githubUrl: 'https://github.com/udaraKavishka/flask-crud-api',
+        caseStudySlug: 'flask-crud-api',
     },
     {
         id: 6,
