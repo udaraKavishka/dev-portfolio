@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Menu, X, Moon, Sun } from 'lucide-react';
 import styles from './Navbar.module.css';
+import { applyTheme, getTheme, toggleTheme as toggleThemeState, THEME_EVENT, type Theme } from '@/lib/theme';
 
 export default function Navbar() {
     const router = useRouter();
@@ -21,12 +22,28 @@ export default function Navbar() {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
+    // Sync from the shared theme source: apply the stored/current theme on mount,
+    // and follow any change made elsewhere (e.g. the terminal `theme` command).
     useEffect(() => {
-        document.documentElement.setAttribute('data-theme', theme);
-    }, [theme]);
+        let initial = getTheme();
+        try {
+            const stored = localStorage.getItem('theme') as Theme | null;
+            if (stored === 'dark' || stored === 'light') initial = stored;
+        } catch {
+            /* ignore */
+        }
+
+        const onThemeChange = (e: Event) => {
+            setTheme((e as CustomEvent<Theme>).detail);
+        };
+        window.addEventListener(THEME_EVENT, onThemeChange);
+        // applyTheme dispatches THEME_EVENT synchronously, syncing state via the listener above.
+        applyTheme(initial);
+        return () => window.removeEventListener(THEME_EVENT, onThemeChange);
+    }, []);
 
     const toggleTheme = () => {
-        setTheme(theme === 'dark' ? 'light' : 'dark');
+        setTheme(toggleThemeState());
     };
 
     const navLinks = [
