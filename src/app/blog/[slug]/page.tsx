@@ -8,47 +8,12 @@ import { getAllPosts, getPostBySlug, getRelatedPosts } from '@/lib/posts';
 import { CATEGORIES } from '@/lib/categories';
 import Navbar from '@/components/Navbar';
 import { ArticleSchema, BreadcrumbSchema } from '@/components/StructuredData';
-import SyntaxHighlighter from 'react-syntax-highlighter';
-import { dracula } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { createMdxComponents } from '@/lib/mdx-components';
 import styles from './post.module.css';
 import type { Metadata } from 'next';
-import type { MDXComponents } from 'mdx/types';
 import { absoluteUrl, SITE_URL } from '@/lib/seo';
 
-const mdxComponents: MDXComponents = {
-    pre: (props) => {
-        const child = props.children as React.ReactElement<{ className?: string; children?: string }> | undefined;
-        const className = child?.props?.className ?? '';
-        const language = className.replace('language-', '') || 'text';
-        const code = typeof child?.props?.children === 'string' ? child.props.children : '';
-
-        return (
-            <div className="my-10">
-                <SyntaxHighlighter language={language} style={dracula}>
-                    {code.replace(/\n$/, '')}
-                </SyntaxHighlighter>
-            </div>
-        );
-    },
-    img: ({ src, alt }) => {
-        if (!src || typeof src !== 'string') {
-            return null;
-        }
-        return (
-            <span className="my-8" style={{ display: 'block' }}>
-                <Image
-                    src={src}
-                    alt={alt || 'Blog image'}
-                    width={1200}
-                    height={800}
-                    sizes="(max-width: 800px) 100vw, 800px"
-                    className={styles.contentImage}
-                    style={{ width: '100%', height: 'auto' }}
-                />
-            </span>
-        );
-    },
-};
+const mdxComponents = createMdxComponents(styles.contentImage);
 
 export function generateStaticParams() {
     return getAllPosts().map((post) => ({
