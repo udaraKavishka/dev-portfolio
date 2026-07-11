@@ -98,6 +98,15 @@
     word-break: break-word;
 }
 
+.projectTitle a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.projectTitle a:hover {
+    text-decoration: underline;
+}
+
 .links {
     display: flex;
     gap: 0.5rem;

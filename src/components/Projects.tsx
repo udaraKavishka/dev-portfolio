@@ -1,7 +1,8 @@
 'use client';
 
+import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { ExternalLink, Github, ArrowRight } from 'lucide-react';
+import { ExternalLink, Github, ArrowRight, FileText } from 'lucide-react';
 import styles from './Projects.module.css';
 import { projectsData } from '@/data/content';
 
@@ -39,8 +40,25 @@ export default function Projects() {
                                 )}
                             </div>
                             <div className={styles.cardHeader}>
-                                <h3 className={styles.projectTitle}>{project.title}</h3>
+                                <h3 className={styles.projectTitle}>
+                                    {project.caseStudySlug ? (
+                                        <Link href={`/projects/${project.caseStudySlug}`}>
+                                            {project.title}
+                                        </Link>
+                                    ) : (
+                                        project.title
+                                    )}
+                                </h3>
                                 <div className={styles.links}>
+                                    {project.caseStudySlug && (
+                                        <Link
+                                            href={`/projects/${project.caseStudySlug}`}
+                                            className={styles.iconLink}
+                                            aria-label="Read Case Study"
+                                        >
+                                            <FileText size={18} />
+                                        </Link>
+                                    )}
                                     {project.githubUrl && (
                                         <a
                                             href={project.githubUrl}

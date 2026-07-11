@@ -241,6 +241,41 @@ export function ProjectsSchema({ projects }: { projects: ProjectItem[] }) {
   return <JsonLd schema={schema} />;
 }
 
+type CaseStudySchemaProps = {
+  title: string;
+  excerpt?: string;
+  techStack: string[];
+  githubUrl?: string;
+  liveUrl?: string;
+  slug: string;
+};
+
+export function CaseStudySchema({ title, excerpt, techStack, githubUrl, liveUrl, slug }: CaseStudySchemaProps) {
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "CreativeWork",
+    "@id": `${absoluteUrl(`/projects/${slug}`)}#case-study`,
+    name: title,
+    description: excerpt || title,
+    url: absoluteUrl(`/projects/${slug}`),
+    about: {
+      "@type": "SoftwareSourceCode",
+      name: title,
+      programmingLanguage: techStack,
+      ...(githubUrl && { codeRepository: githubUrl }),
+      ...(liveUrl && { url: liveUrl }),
+    },
+    author: {
+      "@type": "Person",
+      "@id": PERSON_ID,
+      name: PERSON_NAME,
+      url: SITE_URL
+    }
+  };
+
+  return <JsonLd schema={schema} />;
+}
+
 export function BlogListingSchema() {
   const schema = {
     "@context": "https://schema.org",
