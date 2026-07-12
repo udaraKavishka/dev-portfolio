@@ -1,0 +1,65 @@
+---
+title: "ParaWrite — Sentence-by-Sentence Paraphrasing Tool"
+date: "2025-10-20"
+excerpt: "A production-grade manual paraphrasing tool: a configurable sentence-splitting engine, Web Worker processing for large documents, and a Python extraction backend for OCR fallback — built solo, end to end."
+techStack: ["React", "TypeScript", "Vite", "Web Workers", "Python", "FastAPI", "Supabase", "GitHub Actions"]
+githubUrl: "https://github.com/udaraKavishka/ParaWrite"
+liveUrl: "https://parawrite.udaradev.me"
+---
+
+<div style={{overflowX: 'auto', margin: '1.5rem 0'}}>
+<svg viewBox="0 0 640 240" width="100%" style={{minWidth: '560px', fontFamily: 'var(--font-mono)'}}>
+  <rect x="10" y="15" width="180" height="55" rx="4" fill="none" stroke="var(--accent-primary)" strokeWidth="1.5" />
+  <text x="100" y="38" textAnchor="middle" fill="var(--text-primary)" fontSize="12">Upload / paste text</text>
+  <text x="100" y="55" textAnchor="middle" fill="var(--text-muted)" fontSize="10">txt · docx · pdf · md</text>
+
+  <line x1="100" y1="70" x2="100" y2="100" stroke="var(--accent-tertiary)" strokeWidth="1.5" markerEnd="url(#arrow2)" />
+
+  <rect x="10" y="105" width="180" height="55" rx="4" fill="none" stroke="var(--accent-primary)" strokeWidth="1.5" />
+  <text x="100" y="128" textAnchor="middle" fill="var(--text-primary)" fontSize="12">Web Worker</text>
+  <text x="100" y="145" textAnchor="middle" fill="var(--text-muted)" fontSize="10">sentence splitter engine</text>
+
+  <line x1="190" y1="132" x2="250" y2="132" stroke="var(--accent-tertiary)" strokeWidth="1.5" markerEnd="url(#arrow2)" />
+
+  <rect x="255" y="105" width="190" height="55" rx="4" fill="none" stroke="var(--accent-primary)" strokeWidth="1.5" />
+  <text x="350" y="122" textAnchor="middle" fill="var(--text-primary)" fontSize="12">Sentence-by-sentence editor</text>
+  <text x="350" y="140" textAnchor="middle" fill="var(--text-muted)" fontSize="10">context preview + auto-save</text>
+  <text x="350" y="153" textAnchor="middle" fill="var(--text-muted)" fontSize="9">30s localStorage snapshots</text>
+
+  <line x1="450" y1="132" x2="510" y2="132" stroke="var(--accent-tertiary)" strokeWidth="1.5" markerEnd="url(#arrow2)" />
+
+  <rect x="515" y="105" width="115" height="55" rx="4" fill="none" stroke="var(--accent-primary)" strokeWidth="1.5" />
+  <text x="572" y="128" textAnchor="middle" fill="var(--text-primary)" fontSize="12">Export</text>
+  <text x="572" y="145" textAnchor="middle" fill="var(--text-muted)" fontSize="10">txt · docx · md</text>
+
+  <line x1="200" y1="160" x2="200" y2="195" stroke="var(--border-color)" strokeWidth="1.5" />
+  <rect x="10" y="200" width="380" height="35" rx="4" fill="none" stroke="var(--border-color)" strokeWidth="1" strokeDasharray="4 3" />
+  <text x="200" y="222" textAnchor="middle" fill="var(--accent-tertiary)" fontSize="10">fallback: Python extraction service (OCR retry for scanned PDFs)</text>
+
+  <defs>
+    <marker id="arrow2" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="var(--accent-tertiary)" />
+    </marker>
+  </defs>
+</svg>
+</div>
+
+## Problem
+
+Automated paraphrasing tools rewrite text for you and get the tone wrong more often than not. What I actually wanted while editing my own writing was control: see one sentence at a time with surrounding context, rewrite it myself, and move on — without losing my place or my work if the browser crashed. That's a deceptively hard product to build well: correct sentence splitting alone breaks on abbreviations, decimals, citations, and quotes long before you get to auto-save, exports, or performance on a 30,000-sentence document.
+
+## Architecture / Approach
+
+- **A configurable sentence-splitting engine** runs in three modes (strict/balanced/loose) with four domain profiles (academic, legal, technical, medical), each tuned to a different set of abbreviation and citation patterns (`Dr.`, `et al.`, `v.`, `Inc.`, decimals, ellipses) so the same core engine doesn't mis-split a citation the way it would a casual sentence.
+- **A Web Worker** runs the splitting engine off the main thread, so a 30,000-sentence document doesn't freeze the UI — the app stays responsive while it processes in the background.
+- **Auto-save with crash recovery** snapshots the editing session to `localStorage` every 30 seconds with a 7-day retention window, so a browser crash mid-edit doesn't cost hours of work.
+- **A Python (FastAPI) extraction backend** handles PDF/DOCX parsing server-side as a fallback path, with an OCR retry mode (`pytesseract`) for scanned PDFs that the client-side `pdf-parse` library can't read — kept as a separate service behind a CORS-configured API rather than bundled into the frontend, so it can be deployed and scaled independently.
+- **Multi-format export** (TXT, DOCX, Markdown) preserves the original paragraph structure rather than flattening everything to plain text.
+
+## My Contribution
+
+I designed and built the whole system solo: the splitting engine and its 15+ edge-case rules, the Web Worker integration, the auto-save/crash-recovery layer, readability metrics (Flesch Reading Ease/Grade Level), and the multi-format export pipeline on the frontend; and the FastAPI extraction service with OCR fallback, CORS configuration, and Supabase-backed logging on the backend. I also set up a CI workflow that lints and tests both the frontend splitter suite and the backend service on every push, and wrote a deterministic test suite (18 cases, 100% pass rate) covering the abbreviation and citation edge cases the splitter has to get right.
+
+## Outcome
+
+ParaWrite runs in production at parawrite.udaradev.me, processing sentences at roughly 88,000/second with no UI freeze even on large documents. Building the domain-profile splitting logic taught me more about the actual shape of "what counts as a sentence" than I expected going in — abbreviations, citations, and decimals turn out to be the majority of the hard cases, not the exception.

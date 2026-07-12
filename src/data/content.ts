@@ -45,7 +45,7 @@ interface ProjectItem {
     title: string;
     description: string;
     techStack: string[];
-    githubUrl: string;
+    githubUrl?: string;
     liveUrl?: string;
     isOngoing?: boolean;
     caseStudySlug?: string;
@@ -58,6 +58,7 @@ export const projectsData: ProjectItem[] = [
         description: 'Taskflow is an efficient and user-friendly task management system designed to help individuals and teams organize, track, and manage their tasks seamlessly.',
         techStack: ['Node.js', 'Express.js', 'MongoDB', 'React', 'Redux', 'Material UI', 'JWT',],
         githubUrl: 'https://github.com/udaraKavishka/IT22242024taskflow',
+        caseStudySlug: 'taskflow',
     },
     {
         id: 2,
@@ -83,7 +84,7 @@ export const projectsData: ProjectItem[] = [
         techStack: ['Next.js', 'React', 'TypeScript', 'CSS Modules'],
         githubUrl: 'https://github.com/udaraKavishka/ParaWrite',
         liveUrl: 'https://parawrite.udaradev.me',
-
+        caseStudySlug: 'parawrite',
     },
     {
         id: 5,
@@ -99,6 +100,7 @@ export const projectsData: ProjectItem[] = [
         description: 'A public transportation solution providing real time bus tracking, route guidance, fare estimation, and lost and found management to enhance commuter convenience and safety.',
         techStack: ['MongoDB', "Express.js", 'React', 'Node.js', 'Socket.io', 'JavaScript', 'Mongoose', 'JWT'],
         githubUrl: 'https://github.com/TrackNGo',
+        caseStudySlug: 'trackngo',
     },
     {
         id: 7,
@@ -106,6 +108,7 @@ export const projectsData: ProjectItem[] = [
         description: "A travel platform that showcases Sri Lanka's cultural heritage while offering features like itinerary customization, bookings, and customer support with smooth frontend and backend integration.",
         techStack: ['Next.js', 'React', 'Spring Boot', 'Java', 'MySQL', 'Tailwind'],
         githubUrl: 'https://github.com/udaraKavishka/CeylonRoots',
+        caseStudySlug: 'ceylonroots',
     },
     {
         id: 8,
@@ -114,6 +117,7 @@ export const projectsData: ProjectItem[] = [
         techStack: ['Next.js', 'React', 'TypeScript', 'CSS Modules', 'Vercel'],
         githubUrl: 'https://github.com/udaraKavishka/dev-portfolio',
         liveUrl: 'https://udaradev.me',
+        caseStudySlug: 'dev-portfolio',
     },
     {
         id: 9,
@@ -121,6 +125,7 @@ export const projectsData: ProjectItem[] = [
         description: 'A smart navigation system for the University of Vavuniya campus that predicts travel times and computes the shortest paths, enhancing efficiency for students, staff, and visitors.(Incharge of the Model)',
         techStack: ['Python', 'Pandas', 'NumPy', 'scikit-learn (Random Forest)', 'NetworkX', 'Tkinter', 'Pillow (PIL)', 'Dijkstra Algorithm'],
         githubUrl: 'https://github.com/DilmyPerera/Efficient-Campus-Navigation',
+        caseStudySlug: 'efficient-campus-navigation',
     },
     {
         id: 10,
@@ -128,7 +133,8 @@ export const projectsData: ProjectItem[] = [
         description: 'A sleek, fully responsive personal portfolio website built to showcase projects, skills, and technology interests with modern UI design and smooth navigation.',
         techStack: ['React', 'Tailwind CSS', 'Figma', 'React Scroll', 'SVG Icons'],
         githubUrl: 'https://github.com/udaraKavishka/modern-portfolio',
-        liveUrl: 'https://udara-portfolio.vercel.app/'
+        liveUrl: 'https://udara-portfolio.vercel.app/',
+        caseStudySlug: 'modern-portfolio',
     },
     // {
     //     id: 11,
@@ -144,6 +150,15 @@ export const projectsData: ProjectItem[] = [
         description: 'A WhatsApp Cloud API webhook integration backed by a swappable AI chat backend, with signature validation, idempotency checks, and a local Gemini shim for development. Built to be reusable as a chatbot template for any business.',
         techStack: ['Python', 'WhatsApp Cloud API', 'Meta Webhooks', 'Shell'],
         githubUrl: 'https://github.com/udaraKavishka/whatsapp-ai-bot',
+        caseStudySlug: 'whatsapp-ai-bot',
+    },
+    {
+        id: 12,
+        title: 'DocMind — Fully Local, Multilingual Agentic RAG System',
+        description: 'A privacy-first RAG system that answers questions over your documents in Sinhala, Tamil, and English, using hybrid retrieval, cross-encoder reranking, and a self-critique loop — entirely on local models with zero cloud calls.',
+        techStack: ['Go', 'Python', 'Ollama', 'LangGraph', 'ChromaDB', 'Streamlit', 'Tesseract OCR'],
+        caseStudySlug: 'local-ocr-rag',
+        isOngoing: true,
     },
 ];
 

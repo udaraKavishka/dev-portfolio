@@ -1,0 +1,26 @@
+---
+title: "Modern Portfolio — Earlier Personal Website"
+date: "2025-03-04"
+excerpt: "An earlier responsive portfolio built with React and Tailwind CSS, later reused as the base for other personal sites — the predecessor to the Next.js site you're on now."
+techStack: ["React", "Tailwind CSS", "Figma", "React Scroll", "SVG Icons"]
+githubUrl: "https://github.com/udaraKavishka/modern-portfolio"
+liveUrl: "https://udara-portfolio.vercel.app/"
+---
+
+## Problem
+
+Before this current Next.js site existed, I needed a personal portfolio that was fast to build, easy to reskin, and simple enough to hand off as a base for other people's personal sites — a plain React + Tailwind SPA rather than a full framework, since a single-page portfolio doesn't need server rendering or file-based routing.
+
+## Architecture / Approach
+
+- **React + Tailwind CSS** build a fully responsive single-page layout — hero, projects, skills, contact — with `react-scroll` handling smooth in-page navigation instead of client-side routing.
+- **Figma** was used to design the layout and spacing system before implementation, so the Tailwind utility classes followed a defined design rather than being tuned ad hoc in the browser.
+- **A minimal-dependency approach**: SVG icons instead of an icon library, and no state-management or data-fetching libraries, since a static portfolio doesn't need them.
+
+## My Contribution
+
+I designed and built the site solo end to end — the Figma layout, the responsive Tailwind implementation, and the smooth-scroll navigation — and later reused its structure as a starting template for other personal portfolio sites, which is part of why it's set up with minimal dependencies and a straightforward component layout: it was built to be forked and reskinned, not just used once.
+
+## Outcome
+
+The site shipped and ran as my portfolio before this one, and its component structure became a reusable template for later personal sites. It's the project that pushed me toward the current Next.js setup — once the portfolio needed a blog and SEO metadata, a plain client-rendered SPA stopped being the right tool, which is why the current site (see the case study on this very site) moved to Next.js with server-side rendering and file-based content.

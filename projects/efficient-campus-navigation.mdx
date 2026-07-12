@@ -1,0 +1,57 @@
+---
+title: "Efficient Campus Navigation — Smart Shortest Path System"
+date: "2024-06-19"
+excerpt: "A university group project predicting travel times and computing shortest campus paths — I was in charge of the machine learning model behind the travel-time predictions."
+techStack: ["Python", "Pandas", "NumPy", "scikit-learn (Random Forest)", "NetworkX", "Tkinter", "Pillow (PIL)", "Dijkstra Algorithm"]
+githubUrl: "https://github.com/DilmyPerera/Efficient-Campus-Navigation"
+---
+
+<div style={{overflowX: 'auto', margin: '1.5rem 0'}}>
+<svg viewBox="0 0 640 200" width="100%" style={{minWidth: '560px', fontFamily: 'var(--font-mono)'}}>
+  <rect x="20" y="20" width="170" height="55" rx="4" fill="none" stroke="var(--accent-primary)" strokeWidth="1.5" />
+  <text x="105" y="43" textAnchor="middle" fill="var(--text-primary)" fontSize="12">Campus map graph</text>
+  <text x="105" y="60" textAnchor="middle" fill="var(--text-muted)" fontSize="10">nodes/edges via NetworkX</text>
+
+  <line x1="190" y1="47" x2="250" y2="47" stroke="var(--accent-tertiary)" strokeWidth="1.5" markerEnd="url(#arrow6)" />
+
+  <rect x="255" y="20" width="170" height="55" rx="4" fill="none" stroke="var(--accent-primary)" strokeWidth="1.5" />
+  <text x="340" y="40" textAnchor="middle" fill="var(--text-primary)" fontSize="12">Random Forest model</text>
+  <text x="340" y="57" textAnchor="middle" fill="var(--text-muted)" fontSize="10">predicted edge travel time</text>
+
+  <line x1="425" y1="47" x2="485" y2="47" stroke="var(--accent-tertiary)" strokeWidth="1.5" markerEnd="url(#arrow6)" />
+
+  <rect x="490" y="20" width="130" height="55" rx="4" fill="none" stroke="var(--accent-primary)" strokeWidth="1.5" />
+  <text x="555" y="40" textAnchor="middle" fill="var(--text-primary)" fontSize="12">Dijkstra</text>
+  <text x="555" y="57" textAnchor="middle" fill="var(--text-muted)" fontSize="10">shortest path</text>
+
+  <line x1="555" y1="75" x2="555" y2="105" stroke="var(--border-color)" strokeWidth="1.5" />
+  <rect x="380" y="110" width="240" height="55" rx="4" fill="none" stroke="var(--accent-primary)" strokeWidth="1.5" />
+  <text x="500" y="133" textAnchor="middle" fill="var(--text-primary)" fontSize="12">Tkinter + Pillow GUI</text>
+  <text x="500" y="150" textAnchor="middle" fill="var(--text-muted)" fontSize="10">route drawn on campus map image</text>
+
+  <defs>
+    <marker id="arrow6" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="var(--accent-tertiary)" />
+    </marker>
+  </defs>
+</svg>
+</div>
+
+## Problem
+
+Dijkstra's algorithm alone finds the shortest path by distance, but distance isn't the same as travel time — footpaths get crowded at different times, some routes are longer but faster, and a static shortest-distance path can be the wrong recommendation in practice. This was a five-person university team project for the University of Vavuniya campus, and my part was making the pathfinding travel-time-aware rather than distance-only.
+
+## Architecture / Approach
+
+- **A graph model of the campus** (`NetworkX`) represents buildings and paths as nodes and weighted edges.
+- **A Random Forest regression model** (`scikit-learn`) predicts travel time per edge from historical/simulated movement data, rather than using raw physical distance as the edge weight.
+- **Dijkstra's algorithm** runs shortest-path search over the graph using the model's predicted travel times as edge weights, so the "shortest" path optimizes for time, not just distance.
+- **A Tkinter + Pillow desktop GUI** lets a user enter source and destination, then draws the computed path as a red line over the campus map image with the total distance/time shown.
+
+## My Contribution
+
+I was in charge of the machine learning side of the project: training the Random Forest model that predicts travel time for each edge in the campus graph, and integrating its output as the edge-weighting function that Dijkstra's algorithm actually searches over — the piece that turns "shortest distance" into "fastest predicted route." The rest of the team built the graph data, the GUI, and the map integration around that.
+
+## Outcome
+
+The system was nominated for Best Final Year Project at the University of Vavuniya. It's a compact example of a pattern I still reach for: don't optimize a search algorithm over a naive metric (raw distance) when you can train a small model to predict the metric you actually care about (travel time) and feed that into the same well-understood algorithm instead.

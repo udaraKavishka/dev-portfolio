@@ -1,0 +1,58 @@
+---
+title: "TaskFlow — Task Management System (MERN Stack)"
+date: "2024-04-26"
+excerpt: "A Trello-style task management system built with a partner — I owned the entire backend: authentication, boards, lists, cards, labels, checklists, comments, and attachments."
+techStack: ["Node.js", "Express.js", "MongoDB", "Mongoose", "React", "Redux", "Material UI", "JWT"]
+githubUrl: "https://github.com/udaraKavishka/IT22242024taskflow"
+---
+
+<div style={{overflowX: 'auto', margin: '1.5rem 0'}}>
+<svg viewBox="0 0 640 220" width="100%" style={{minWidth: '560px', fontFamily: 'var(--font-mono)'}}>
+  <rect x="10" y="20" width="150" height="60" rx="4" fill="none" stroke="var(--accent-primary)" strokeWidth="1.5" />
+  <text x="85" y="45" textAnchor="middle" fill="var(--text-primary)" fontSize="12">React + Redux</text>
+  <text x="85" y="62" textAnchor="middle" fill="var(--text-muted)" fontSize="10">boards / cards UI</text>
+
+  <line x1="160" y1="50" x2="230" y2="50" stroke="var(--accent-tertiary)" strokeWidth="1.5" markerEnd="url(#arrow)" />
+
+  <rect x="235" y="20" width="170" height="60" rx="4" fill="none" stroke="var(--accent-primary)" strokeWidth="1.5" />
+  <text x="320" y="45" textAnchor="middle" fill="var(--text-primary)" fontSize="12">Express REST API</text>
+  <text x="320" y="62" textAnchor="middle" fill="var(--text-muted)" fontSize="10">JWT auth middleware</text>
+
+  <line x1="405" y1="50" x2="475" y2="50" stroke="var(--accent-tertiary)" strokeWidth="1.5" markerEnd="url(#arrow)" />
+
+  <rect x="480" y="20" width="150" height="60" rx="4" fill="none" stroke="var(--accent-primary)" strokeWidth="1.5" />
+  <text x="555" y="45" textAnchor="middle" fill="var(--text-primary)" fontSize="12">MongoDB</text>
+  <text x="555" y="62" textAnchor="middle" fill="var(--text-muted)" fontSize="10">Mongoose models</text>
+
+  <line x1="320" y1="80" x2="320" y2="120" stroke="var(--border-color)" strokeWidth="1.5" />
+  <rect x="60" y="120" width="520" height="80" rx="4" fill="none" stroke="var(--border-color)" strokeWidth="1" strokeDasharray="4 3" />
+  <text x="320" y="140" textAnchor="middle" fill="var(--accent-tertiary)" fontSize="11">controllers/services split, one pair per resource</text>
+  <text x="320" y="162" textAnchor="middle" fill="var(--text-muted)" fontSize="10">board · list · card · label · member · checklist · comment · attachment · date</text>
+  <text x="320" y="184" textAnchor="middle" fill="var(--text-muted)" fontSize="10">verifyToken guard applied globally, per-route ownership checks in services</text>
+
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="var(--accent-tertiary)" />
+    </marker>
+  </defs>
+</svg>
+</div>
+
+## Problem
+
+TaskFlow was a university group project: a Trello-style task manager with boards, lists, cards, and full collaboration features (labels, checklists, due dates, attachments, comments). With a two-person team, the work needed a clean split — rather than both of us touching the same layers, I took ownership of the entire backend API so the frontend developer could build against a stable, versioned contract instead of the two of us stepping on each other's routes.
+
+## Architecture / Approach
+
+- **Express.js + MongoDB/Mongoose** provide the REST API and schema for boards, lists, cards, and every sub-resource attached to a card (labels, members, checklists, comments, attachments, due dates).
+- **JWT authentication** is applied through a `verifyToken` middleware registered globally across protected routes, so every controller can trust `req.user` without re-checking auth per endpoint.
+- **A controller/service split per resource** — each of the nine resource types (board, list, card, label, member, checklist, comment, attachment, date) gets its own controller and service pair, keeping request handling separate from the Mongoose queries and business rules underneath it.
+- **React + Redux Toolkit** on the frontend consumes this API for drag-and-drop boards (`react-beautiful-dnd`), styled with Material UI and styled-components.
+
+## My Contribution
+
+I built the backend from the ground up: user registration/login with JWT and bcrypt password hashing, the full board → list → card hierarchy with ordering logic (reordering lists and cards without breaking sibling positions), and every card sub-feature — labels, member assignment, checklists with completable items, due dates, comments, and attachments — each as its own routed resource with dedicated controllers and services. I also handled the recurring class of bugs that comes with a card-based UI: fixing broken axios calls from the frontend, correcting list/card reordering after a drag-and-drop, and getting global token verification working consistently across every route.
+
+## Outcome
+
+A complete, working task-management REST API with 9+ resource types, JWT-secured throughout, that the frontend could build a full drag-and-drop board experience against. Splitting ownership this way — one person per layer instead of both people touching everything — meant the API contract stayed stable while the UI was being built, which is the same reason I reach for a clear frontend/backend split on any team project since.

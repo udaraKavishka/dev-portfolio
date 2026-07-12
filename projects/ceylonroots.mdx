@@ -1,0 +1,56 @@
+---
+title: "CeylonRoots — Sri Lanka Travel Platform"
+date: "2025-04-12"
+excerpt: "A travel platform that started as a Spring Boot/MySQL group project and was rebuilt solo into a dual-app Next.js + Flask architecture, with a content-managed blog and destination system."
+techStack: ["Next.js", "React", "TypeScript", "Flask", "Python", "Tailwind CSS"]
+githubUrl: "https://github.com/udaraKavishka/CeylonRoots"
+---
+
+<div style={{overflowX: 'auto', margin: '1.5rem 0'}}>
+<svg viewBox="0 0 640 220" width="100%" style={{minWidth: '560px', fontFamily: 'var(--font-mono)'}}>
+  <rect x="20" y="20" width="220" height="60" rx="4" fill="none" stroke="var(--accent-primary)" strokeWidth="1.5" />
+  <text x="130" y="43" textAnchor="middle" fill="var(--text-primary)" fontSize="12">Next.js public site</text>
+  <text x="130" y="60" textAnchor="middle" fill="var(--text-muted)" fontSize="10">blog · destinations · packages</text>
+
+  <rect x="400" y="20" width="220" height="60" rx="4" fill="none" stroke="var(--accent-primary)" strokeWidth="1.5" />
+  <text x="510" y="43" textAnchor="middle" fill="var(--text-primary)" fontSize="12">Flask admin app</text>
+  <text x="510" y="60" textAnchor="middle" fill="var(--text-muted)" fontSize="10">content CRUD, subdomain-routed</text>
+
+  <line x1="240" y1="50" x2="400" y2="50" stroke="var(--accent-tertiary)" strokeWidth="1.5" markerStart="url(#arrow4)" markerEnd="url(#arrow4)" />
+  <text x="320" y="42" textAnchor="middle" fill="var(--text-muted)" fontSize="9">shared DB</text>
+
+  <line x1="130" y1="80" x2="130" y2="115" stroke="var(--border-color)" strokeWidth="1.5" />
+  <line x1="510" y1="80" x2="510" y2="115" stroke="var(--border-color)" strokeWidth="1.5" />
+  <rect x="60" y="120" width="520" height="60" rx="4" fill="none" stroke="var(--accent-primary)" strokeWidth="1.5" />
+  <text x="320" y="145" textAnchor="middle" fill="var(--text-primary)" fontSize="12">Database + migrations</text>
+  <text x="320" y="163" textAnchor="middle" fill="var(--text-muted)" fontSize="10">blog posts, destinations, testimonials, submissions</text>
+
+  <text x="320" y="205" textAnchor="middle" fill="var(--text-muted)" fontSize="9">CI: ruff · pyright · djlint pre-commit + integrity workflow on every push</text>
+
+  <defs>
+    <marker id="arrow4" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="var(--accent-tertiary)" />
+    </marker>
+  </defs>
+</svg>
+</div>
+
+## Problem
+
+CeylonRoots began as a university group project — a Spring Boot/MySQL travel-booking platform with a full team split across frontend, backend, and design. After that phase wrapped, I kept building on it alone, and the direction changed: instead of a generic booking app, I turned it into a content-driven Sri Lanka travel site — a public blog and destination guide backed by an admin system content editors could actually use, without needing to touch code to publish a post.
+
+## Architecture / Approach
+
+- **Next.js (App Router)** serves the public site — blog, destinations, travel packages, testimonials — with SEO-oriented routing and dynamic metadata.
+- **A separate Flask admin app** (`backend-flask/`) handles content management: blog post authoring, destination/package editing, gallery and testimonial moderation, all through server-rendered admin templates rather than a bolted-on CMS.
+- **Subdomain-based routing** in Next.js middleware separates the public site from the admin surface, so `admin.` traffic resolves to the Flask-managed views while the main domain stays the fast, content-focused frontend.
+- **A shared database** backs both apps, with the Flask side owning migrations and the Next.js side reading published content.
+- **CI enforces backend hygiene** — a pre-commit-based GitHub Actions job runs ruff (lint + format), pyright (type checking), and djlint (template linting) on every push to `backend-flask/`, replacing an earlier Prettier-based setup that didn't actually check Python.
+
+## My Contribution
+
+I rebuilt the project from its original team-based Spring Boot/MySQL form into the current architecture entirely solo: designing the Flask admin app's models, views, and Jinja templates for every content type (blog, destinations, packages, gallery, testimonials, submissions), wiring up the Next.js middleware for subdomain-based admin routing, and setting up the CI pipeline (ruff/pyright/djlint pre-commit) that replaced a redundant Prettier + npm-audit setup with checks that actually catch Python bugs. I also wrote the site's travel blog content and migrated the testimonials system to be frontend-managed rather than hardcoded.
+
+## Outcome
+
+What started as a team exercise in a Spring Boot CRUD app became a solo-run, content-managed travel site with over 450 commits — a dual-app architecture where a non-technical content editor can publish a blog post through the Flask admin without a deploy, while the Next.js frontend stays fast and SEO-focused. It's the project where I learned the most about maintaining a codebase alone after a team disbands: the CI and pre-commit hooks exist specifically because there's no second reviewer catching mistakes anymore.

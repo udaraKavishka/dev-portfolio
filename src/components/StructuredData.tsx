@@ -122,7 +122,7 @@ export function ProfilePageSchema({ projects, posts = [] }: ProfilePageSchemaPro
         name: project.title,
         description: project.description,
         programmingLanguage: project.techStack,
-        codeRepository: project.githubUrl,
+        ...(project.githubUrl && { codeRepository: project.githubUrl }),
         ...(project.liveUrl && { url: project.liveUrl }),
         author: { "@id": PERSON_ID }
       })),
@@ -209,7 +209,7 @@ type ProjectItem = {
   title: string;
   description: string;
   techStack: string[];
-  githubUrl: string;
+  githubUrl?: string;
   liveUrl?: string;
 };
 
@@ -226,7 +226,7 @@ export function ProjectsSchema({ projects }: { projects: ProjectItem[] }) {
         name: project.title,
         description: project.description,
         programmingLanguage: project.techStack,
-        codeRepository: project.githubUrl,
+        ...(project.githubUrl && { codeRepository: project.githubUrl }),
         ...(project.liveUrl && { url: project.liveUrl }),
         author: {
           "@type": "Person",

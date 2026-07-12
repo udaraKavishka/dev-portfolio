@@ -1,0 +1,88 @@
+---
+title: "DocMind — Fully Local, Multilingual Agentic RAG System"
+date: "2026-05-05"
+excerpt: "A privacy-first RAG system that answers questions over your documents in Sinhala, Tamil, and English — hybrid retrieval, cross-encoder reranking, and a self-critique loop, all running on local models with zero cloud calls."
+techStack: ["Go", "Python", "Ollama", "LangGraph", "ChromaDB", "Streamlit", "Tesseract OCR"]
+isOngoing: true
+---
+
+<div style={{overflowX: 'auto', margin: '1.5rem 0'}}>
+<svg viewBox="0 0 660 320" width="100%" style={{minWidth: '600px', fontFamily: 'var(--font-mono)'}}>
+  <rect x="15" y="15" width="150" height="45" rx="4" fill="none" stroke="var(--accent-primary)" strokeWidth="1.5" />
+  <text x="90" y="35" textAnchor="middle" fill="var(--text-primary)" fontSize="11">watched_docs/</text>
+  <text x="90" y="50" textAnchor="middle" fill="var(--text-muted)" fontSize="9">fsnotify / watchdog</text>
+
+  <line x1="90" y1="60" x2="90" y2="90" stroke="var(--accent-tertiary)" strokeWidth="1.5" markerEnd="url(#arrow8)" />
+
+  <rect x="15" y="95" width="150" height="55" rx="4" fill="none" stroke="var(--accent-primary)" strokeWidth="1.5" />
+  <text x="90" y="116" textAnchor="middle" fill="var(--text-primary)" fontSize="11">Parsers + OCR</text>
+  <text x="90" y="132" textAnchor="middle" fill="var(--text-muted)" fontSize="9">pdf/pptx/docx/image</text>
+  <text x="90" y="145" textAnchor="middle" fill="var(--text-muted)" fontSize="9">Tesseract: sin+tam+eng</text>
+
+  <line x1="165" y1="122" x2="220" y2="122" stroke="var(--accent-tertiary)" strokeWidth="1.5" markerEnd="url(#arrow8)" />
+
+  <rect x="225" y="95" width="150" height="55" rx="4" fill="none" stroke="var(--accent-primary)" strokeWidth="1.5" />
+  <text x="300" y="116" textAnchor="middle" fill="var(--text-primary)" fontSize="11">Chunker</text>
+  <text x="300" y="132" textAnchor="middle" fill="var(--text-muted)" fontSize="9">parent 1024 / child 256 tok</text>
+  <text x="300" y="145" textAnchor="middle" fill="var(--text-muted)" fontSize="9">tiktoken, 50 tok overlap</text>
+
+  <line x1="300" y1="150" x2="300" y2="180" stroke="var(--accent-tertiary)" strokeWidth="1.5" markerEnd="url(#arrow8)" />
+
+  <rect x="185" y="185" width="130" height="50" rx="4" fill="none" stroke="var(--accent-primary)" strokeWidth="1.5" />
+  <text x="250" y="205" textAnchor="middle" fill="var(--text-primary)" fontSize="10">ChromaDB</text>
+  <text x="250" y="220" textAnchor="middle" fill="var(--text-muted)" fontSize="9">dense vectors</text>
+
+  <rect x="325" y="185" width="130" height="50" rx="4" fill="none" stroke="var(--accent-primary)" strokeWidth="1.5" />
+  <text x="390" y="205" textAnchor="middle" fill="var(--text-primary)" fontSize="10">BM25 index</text>
+  <text x="390" y="220" textAnchor="middle" fill="var(--text-muted)" fontSize="9">sparse keyword</text>
+
+  <line x1="250" y1="235" x2="300" y2="260" stroke="var(--accent-tertiary)" strokeWidth="1.5" markerEnd="url(#arrow8)" />
+  <line x1="390" y1="235" x2="340" y2="260" stroke="var(--accent-tertiary)" strokeWidth="1.5" markerEnd="url(#arrow8)" />
+
+  <rect x="230" y="265" width="200" height="45" rx="4" fill="none" stroke="var(--accent-primary)" strokeWidth="1.5" />
+  <text x="330" y="285" textAnchor="middle" fill="var(--text-primary)" fontSize="11">RRF fusion → BGE rerank</text>
+  <text x="330" y="300" textAnchor="middle" fill="var(--text-muted)" fontSize="9">→ LangGraph: plan → generate → critique</text>
+
+  <rect x="460" y="95" width="180" height="220" rx="4" fill="none" stroke="var(--border-color)" strokeWidth="1" strokeDasharray="4 3" />
+  <text x="550" y="118" textAnchor="middle" fill="var(--accent-tertiary)" fontSize="10">All local:</text>
+  <text x="550" y="140" textAnchor="middle" fill="var(--text-muted)" fontSize="9">qwen3:8b generation</text>
+  <text x="550" y="160" textAnchor="middle" fill="var(--text-muted)" fontSize="9">gemma3:4b plan/critic</text>
+  <text x="550" y="180" textAnchor="middle" fill="var(--text-muted)" fontSize="9">nomic-embed-text</text>
+  <text x="550" y="200" textAnchor="middle" fill="var(--text-muted)" fontSize="9">bge-reranker-v2-m3</text>
+  <text x="550" y="230" textAnchor="middle" fill="var(--text-muted)" fontSize="9">no API keys</text>
+  <text x="550" y="250" textAnchor="middle" fill="var(--text-muted)" fontSize="9">no cloud calls</text>
+  <text x="550" y="280" textAnchor="middle" fill="var(--text-muted)" fontSize="9">Streamlit chat UI</text>
+  <text x="550" y="298" textAnchor="middle" fill="var(--text-muted)" fontSize="9">with citations</text>
+
+  <defs>
+    <marker id="arrow8" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="var(--accent-tertiary)" />
+    </marker>
+  </defs>
+</svg>
+</div>
+
+## Problem
+
+Most RAG demos assume a hosted embedding API, a hosted LLM, and English-only documents. None of that holds for a lot of real use cases in Sri Lanka: documents mix Sinhala, Tamil, and English, sending them to a third-party API isn't always acceptable, and "it works with an OpenAI key" isn't the same as "it works with zero cloud dependencies." I wanted a RAG system that could sit entirely on one machine — no API keys, no data leaving the device — and still handle scanned documents and three languages correctly.
+
+## Architecture / Approach
+
+DocMind is built as six independent, observable layers:
+
+- **L1 — File watcher**: a Go binary (`fsnotify`) and a Python thread (`watchdog`) both monitor `watched_docs/`, so dropping a file in triggers ingestion automatically within seconds.
+- **L2 — OCR microservice**: a standalone FastAPI service (port 8765) running Tesseract 5 with Sinhala, Tamil, and English language packs, with OpenCV/Pillow preprocessing (grayscale → Otsu threshold → denoise) ahead of OCR to improve accuracy on scanned pages.
+- **L3 — Parsing and chunking**: format-specific parsers (PDF via `pdfplumber` with OCR fallback, PPTX, DOCX, images, CSV/Excel) feed a parent-child chunker — 1024-token parent chunks for context, 256-token child chunks for precise retrieval, with 50-token overlap — using `tiktoken` for consistent counting across languages.
+- **L4 — Hybrid retrieval**: dense vector search (ChromaDB, `nomic-embed-text` embeddings) runs alongside sparse BM25 keyword search, fused with Reciprocal Rank Fusion rather than relying on embeddings alone — this matters specifically for multilingual text, where dense embeddings alone can miss exact-term matches that BM25 catches.
+- **L5 — Reranking and agent loop**: the fused top-20 results are reranked by a multilingual cross-encoder (BGE-reranker-v2-m3), then a LangGraph agent runs planner → retriever → generator → critic nodes — the critic checks whether the generated answer is actually grounded in retrieved context, and re-runs retrieval (up to 3 times) if it isn't, rather than returning an ungrounded answer.
+- **L6 — Frontend**: a Streamlit chat interface shows the answer with source citations, a language filter, a model switch (qwen3:8b for quality, gemma3:4b for speed), and a debug mode exposing chunk-level RRF/rerank scores.
+
+Every model in the pipeline runs locally through Ollama, sized to fit a 12GB RAM budget end to end — the README documents the exact memory footprint of each component (generation model, embeddings, reranker, indexes) because staying under that budget was a real design constraint, not an afterthought.
+
+## My Contribution
+
+I designed and built the full six-layer pipeline solo, in both Python and Go: the dual-language file watcher (Go binary for standalone use, Python watchdog thread inside the Streamlit app), the OCR microservice with multilingual preprocessing tuned for Sinhala/Tamil accuracy, the parent-child chunking strategy, the hybrid retrieval layer (dense + BM25 + RRF fusion), the reranking step, and the LangGraph agent with its self-critique retry loop. I also wrote the per-layer documentation (`docs/L1_*.md` through `L6_*.md`) as I built each layer, and a `tmuxp` session config so the five required services (OCR, watcher, Streamlit, Ollama, shell) start with one command instead of five manual terminal setups.
+
+## Outcome
+
+DocMind is an actively developed, fully local RAG system — over 400 commits in — that answers questions across three languages with zero API keys and zero cloud calls, staying within a 12GB RAM budget on commodity hardware. Building the multilingual hybrid retrieval layer was the part that most changed how I think about RAG: dense embeddings alone are not enough once documents mix scripts and languages, and BM25 plus a real reranker isn't optional at that point, it's load-bearing.
