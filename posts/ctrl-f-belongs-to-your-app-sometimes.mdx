@@ -1,0 +1,22 @@
+---
+title: "Sometimes Ctrl+F belongs to your app"
+date: "2026-02-25"
+category: "intern-diaries"
+excerpt: "Hijacking a browser shortcut is usually rude. In a dense admin dashboard where nobody uses native find, it turned out to be the right call."
+tags: ["UX", "Frontend", "Admin Tools"]
+readTime: "3 min read"
+---
+
+One of my early tickets was a search improvement for an internal dashboard. The system had an advanced search modal buried behind a button on one specific page. Staff used it constantly, but only from that page. From anywhere else, finding a record meant navigating back first.
+
+The request was to make the search reachable from everywhere. The obvious answer is a search icon in the header. The answer we shipped was Ctrl+F.
+
+My first reaction was that you never override browser shortcuts. That rule exists for a reason. Native find-in-page is real functionality, and stealing it from users is the kind of thing that gets written up in UX hall-of-shame threads. I raised it, and the counterargument was simple: watch how people actually use this app. Nobody was pressing Ctrl+F to find text on the page. The pages are dense tables where the browser's find box is nearly useless anyway. What staff wanted, dozens of times a day, was "find this record." Gmail overrides keyboard behavior. Linear does. GitHub captures the slash key. Inside a workspace app, users learn the app's dialect fast.
+
+So the rule I took away is narrower than the one I arrived with. Don't override browser shortcuts *in content sites*. In an internal tool that people live in for eight hours a day, mapping the "find" instinct to the app's actual find is arguably more honest than leaving it bound to a feature nobody uses there.
+
+The implementation had two details worth writing down. First, the handler has to check where focus is. If the user is inside a text input or textarea, Ctrl+F should fall through to the browser, because in that context they might genuinely want native find. The event listener checks the active element and returns early instead of calling preventDefault. Second, the modal itself had to become a shared component. It previously lived inline in one page's template. Opening it from anywhere meant extracting it into a single include rendered in the base layout, so both the original button and the new shortcut open the exact same markup. That refactor took longer than the shortcut binding and mattered more. Two copies of a search form drift apart within months.
+
+There was a related fix in the same ticket that I almost like better. The search fields required a click before you could type, because focus landed on the wrapper instead of the input. Autofocusing the input when the modal opens took one line and probably saved more cumulative seconds than the shortcut did. The unglamorous half of a ticket is often the valuable half.
+
+Would I override Ctrl+F on a public site? Still no. But "never" turned into "know your users well enough to know which instincts you're allowed to remap," and that's a more useful rule to carry around.

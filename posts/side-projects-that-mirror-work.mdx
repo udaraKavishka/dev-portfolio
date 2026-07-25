@@ -1,0 +1,20 @@
+---
+title: "Build a side project in your work stack"
+date: "2026-04-23"
+category: "intern-diaries"
+excerpt: "I started a personal backend in the same framework we use at work. The two feed each other in a loop I didn't anticipate: work explains the project, the project explains work."
+tags: ["Learning", "Side Projects", "Internship"]
+readTime: "3 min read"
+---
+
+The standard advice about side projects says use them to explore what work doesn't offer: new language, new paradigm, the fun stuff. I did the opposite, mostly by accident, and it turned out to be one of the better learning decisions of my internship. For a university project I needed a backend, and I built it in the same framework and general architecture as the system I work in daily.
+
+The effect was a feedback loop between the two codebases, running in both directions.
+
+Work to project: at work I sit inside a mature system where every decision was made years ago by someone experienced. Extensions wired up properly, migrations disciplined, config layered by environment, commit checks and CI in place. As an intern you consume these structures without really understanding what they're protecting you from. Building my own project, I hit the exact problems those structures exist to solve, one by one, in miniature. Config sprawl until I copied work's layering. A broken schema change until I understood why migration discipline matters. Every pain in the side project was a lecture explaining a decision in the work codebase that I'd been taking for granted.
+
+Project to work: the reverse flow is subtler but might be worth more. In my own project I have to make the decisions, not just live inside them. How should this be structured? Where does validation belong? Making even small architectural choices, and living with the bad ones, changed how I read the work codebase. Patterns I used to skim past now register as choices with alternatives. I catch myself reading a module and thinking "they could have done X here, why Y?", and sometimes I can reconstruct the answer, and sometimes I ask, and either way that's a qualitatively different level of engagement than "this is how it is."
+
+There's a bonus effect on CI and tooling. Setting up workflow actions and commit checks for my own repo, alone, with no one to copy from, forced me to actually understand what each piece does. The work pipeline went from "magic that runs when I push" to "a bigger version of the thing I built."
+
+The cost is honesty about novelty: I'm not learning a trendy new stack in my free time, and there's a version of this advice that calcifies into only ever knowing one ecosystem. I've hedged by keeping a second, genuinely different side project going. But for the internship year specifically, when the goal is converting daily exposure into durable understanding, mirroring the work stack has been the highest-return study technique I've found. The day job supplies the questions. The side project makes me earn the answers.

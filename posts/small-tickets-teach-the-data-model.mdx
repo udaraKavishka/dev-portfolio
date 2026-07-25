@@ -1,0 +1,20 @@
+---
+title: "Small tickets are a guided tour of the data model"
+date: "2026-02-28"
+category: "intern-diaries"
+excerpt: "Updating a document template and swapping a logo sound like chores. Each one forced me through a different layer of the system, which is exactly the point."
+tags: ["Internship", "Learning", "Software Engineering"]
+readTime: "3 min read"
+---
+
+Early intern tickets have a reputation: the stuff nobody else wants. Update this template. Swap that logo. Add a column to a report. It's tempting to treat them as dues-paying before the real work starts. A few months in, I want to argue the opposite: small tickets are the best systematic education in a codebase you'll ever get, provided you mine them properly.
+
+Take a template update I did early on, changing the wording and structure of generated documents. On the surface, editing text. In practice, to change a template safely I had to answer: where does each placeholder value come from? That question walked me backward through the rendering call, into the service that assembles the context, and finally into the domain models themselves, which is where I actually learned how the core entities of the business relate to each other. Nobody assigned me "learn the data model." The template ticket assigned it implicitly.
+
+Or the logo swap, which sounds like the most trivial possible change. Except the logo appeared in a dozen places: web pages, emails, generated PDFs. Each rendering path used a different mechanism, a shared component here, an inline image there, a base64 blob in the email templates because email clients are what they are. One "trivial" ticket turned into a survey of every rendering pipeline in the system, and I came out of it knowing which components are shared, what props they take, and where the bodies are buried.
+
+The pattern: a small ticket has a small diff but a wide read. The change is five lines; understanding where the five lines go safely requires touring a whole subsystem. That ratio is ideal for learning, because all your time goes into reading and comprehension, and almost none into the mechanical work of producing code. Big tickets invert the ratio. You spend your days producing and your understanding grows only along the narrow path you're building.
+
+The mining part matters though. You can do a small ticket in mercenary mode, pattern-match the existing code, make the edit, ship it, learn nothing. The trick I stumbled into is writing a short note per ticket, and forcing the note to answer one question beyond the fix: what did this touch that I didn't understand before? Some notes are two lines. A few turned into little maps of subsystems that I still consult.
+
+So if you're an intern staring at a queue of chore tickets while someone else builds the shiny feature: the chores are a syllabus wearing a disguise. The feature will teach its author one path through the system, deeply. The chores are teaching you the whole floor plan.

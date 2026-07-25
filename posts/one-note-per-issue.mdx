@@ -1,0 +1,24 @@
+---
+title: "One note per issue, before one line of code"
+date: "2026-04-08"
+category: "intern-diaries"
+excerpt: "Every ticket I work gets its own note: the problem restated, the plan, the test cases. Writing it slowed me down for a week and has sped me up ever since."
+tags: ["Productivity", "Internship", "Tools"]
+readTime: "3 min read"
+---
+
+I used to keep my thinking about a ticket in my head, plus maybe a scratch file called `notes.txt` that accumulated fragments from six different tasks until it meant nothing. This worked right up until the tickets got real, and then it very much didn't. The failure mode wasn't forgetting things exactly. It was re-deriving them: reconstructing yesterday's half-finished reasoning every morning like a soap opera recap.
+
+The system I landed on is embarrassingly simple. Every issue gets its own note the moment I pick it up. The note has a shape:
+
+The problem, restated in my own words. Not the ticket text, my paraphrase. If I can't paraphrase it, I don't understand it, and it's better to discover that before writing code. More than once the act of restating surfaced a question I had to ask the reporter, and the answer changed the work.
+
+The thought process, as it happens. Which files look relevant. What I tried, what happened, what that rules out. This section is a mess by design. It's not documentation, it's a debugger for my own reasoning, and its main job is being there tomorrow morning when the recap would otherwise cost half an hour.
+
+A summary of changes and test cases, written as the fix takes shape. This one has a second life: it becomes the PR description almost verbatim. By the time the code is ready, the "what changed and how to verify it" text already exists, because it accumulated while the work happened instead of being reconstructed at the end from a diff.
+
+The overhead is real but small, a few minutes per ticket plus discipline. The returns showed up within weeks and in places I didn't expect. Standups got easier, since yesterday's note is the update. Reviews got easier, since the PR description writes itself and reviewers keep noting the test cases are clear. Interruptions got cheaper, since resuming a task means opening a note instead of a memory-palace reconstruction. And when a similar bug appeared months later, the old note answered in thirty seconds what the git history would have taken an hour to give up.
+
+There's also an effect I'd call cognitive rather than organizational. I used to get overwhelmed when several tasks were in flight, everything jangling in working memory at once. Externalizing each thread into its own note means my head only has to hold the one I'm currently in. The others are parked, not lost. The overwhelm mostly went away, and I hadn't expected a note-taking habit to be the thing that fixed it.
+
+Tooling barely matters. Mine is a folder of markdown files with wiki links. Any system works if the rule is kept: one issue, one note, opened before the first line of code.

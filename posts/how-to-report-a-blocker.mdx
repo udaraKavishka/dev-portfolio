@@ -1,0 +1,24 @@
+---
+title: "Reporting a blocker is a writing problem"
+date: "2026-04-17"
+category: "intern-diaries"
+excerpt: "The gap between 'still stuck on the deploy thing' and a blocker report that gets you unblocked in five minutes is structure, not seniority."
+tags: ["Communication", "Internship", "Teamwork"]
+readTime: "3 min read"
+---
+
+The first time I was properly blocked at work, I did the intern thing: I sat with it. Surely I could figure it out. Asking felt like admitting the task was too big for me. Two hours later I asked, badly ("the setup isn't working?"), and got back a question I should have anticipated: what have you tried? Another round trip. Then: what's the exact error? Another round trip. What took five minutes to resolve consumed half a day, most of it in message latency that better writing would have eliminated.
+
+The engineers around me report blockers differently, and once I noticed the shape, I started copying it. A good blocker report has four parts, and none of them are optional.
+
+What exactly is blocked. Not the project, the specific step. "I can't verify my fix because the test database won't accept the migration" beats "blocked on the database." Precision here determines whether the right person even recognizes it as their domain.
+
+What I already tried, and what happened. Two or three bullet points. This does double duty: it saves the helper from suggesting the obvious things first, and it proves the question is earnest rather than lazy. The difference in how people respond to a question with visible effort behind it is enormous. Effort attracts effort.
+
+The exact error or observed behavior, verbatim. Pasted, not paraphrased. Half the time an experienced engineer reads the actual error and knows the answer instantly, from a detail I didn't realize was significant. My paraphrase would have filtered that detail out, because I didn't know it mattered. That's the whole trap of paraphrasing while confused: you summarize away the clue.
+
+Who or what I think can unblock it. Even a guess. "I think this needs someone with access to X" or "I suspect this config value but can't confirm." Being wrong here is fine; it still gives the reader a concrete thing to correct, which is faster than an open-ended plea.
+
+Written this way, a blocker often resolves in the standup where it's mentioned, sometimes in the meeting itself: someone says "that's the flag, I'll send it," and it's over. The vague version gets sympathy and a promise to look later. I've now watched both outcomes enough times to be sure the difference is the report, not the problem.
+
+The deeper realization is about the waiting itself. Sitting on a blocker to avoid looking weak reads, from the team's side, as a day of silence on a task they're counting on. The report that felt like an admission of failure is actually the professional behavior, and the silence is the failure. Nobody told me that directly. Watching senior engineers announce their blockers loudly, immediately, and without embarrassment told me.
