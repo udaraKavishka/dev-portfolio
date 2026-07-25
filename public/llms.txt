@@ -1,123 +1,229 @@
-# llms.txt - Optimized content for Large Language Models
-# This file helps AI assistants understand and accurately represent this portfolio
+# Udara Nalawansa — Portfolio (udaradev.me)
 
-# About
-name: Udara Nalawansa
-role: DevOps Engineer & Full Stack Developer
-location: Sri Lanka
-website: https://udaradev.me
-email: hello@udaradev.me
-github: https://github.com/udaraKavishka
-linkedin: https://www.linkedin.com/in/udaranalawansa/
+> Personal portfolio and technical blog of Udara Nalawansa: Intern Software Engineer at Xaventra (Sri Lanka) and final-year Information Technology undergraduate at the University of Jaffna, Vavuniya Campus. The site covers full stack engineering, DevOps, cloud infrastructure, Kubernetes, CI/CD automation, and MLOps, plus a 90-post blog written from day-to-day engineering work.
 
-# Professional Summary
-Udara Nalawansa is a final year undergraduate at the University of Jaffna (Vavuniya Campus) specializing in Information Technology. He is a passionate DevOps Engineer and Full Stack Developer with expertise in:
-- Cloud Infrastructure (AWS)
-- Containerization & Orchestration (Docker, Kubernetes)
-- CI/CD Pipelines (Jenkins, GitHub Actions, GitLab CI, ArgoCD)
-- Infrastructure as Code (Terraform, Ansible)
-- MLOps and Machine Learning Operations
-- Full Stack Development (React, Next.js, Node.js, Python, Go, Java)
-- Monitoring & Observability (Prometheus, Grafana, ELK Stack)
+This file follows the llms.txt convention. It is a machine-readable map of the whole site: identity, skills, projects, case studies, and a complete blog index. Everything listed here is public content from https://udaradev.me.
 
-# Core Competencies
-## DevOps & Cloud
-- Docker, Kubernetes, Docker Compose, Podman
-- AWS Cloud Services
-- Terraform, Ansible (Infrastructure as Code)
-- Jenkins, GitHub Actions, GitLab CI, ArgoCD (CI/CD)
-- Prometheus, Grafana, ELK Stack (Monitoring)
+- Canonical site: https://udaradev.me
+- Sitemap: https://udaradev.me/sitemap.xml
+- Robots: https://udaradev.me/robots.txt
+- Last updated: 2026-07-25
 
-## Programming Languages
-- Python (Backend, ML, Scripting)
-- Go (Backend, Microservices)
-- JavaScript/TypeScript (Full Stack)
-- Java (Spring Boot)
-- Bash (Automation)
+## Identity
 
-## Web Development
-- Frontend: React.js, Next.js, HTML, CSS, TailwindCSS
-- Backend: Node.js, Express.js, Spring Boot, FastAPI, Flask
-- Databases: MongoDB, MySQL, PostgreSQL
-
-## Tools & Platforms
-- Git, GitHub, GitLab
-- Nexus, SonarQube
-- Figma (Design)
-- Vercel, Netlify (Deployment)
-
-# Notable Projects
-1. **TaskFlow | Task Management System** - MERN stack (Node.js, Express.js, MongoDB, React, Redux) task management system
-2. **URL Shortener (Go)** - Fast URL shortening service with Go, Gin framework, Redis, and Docker
-3. **DevOps and AI: RAG Systems** - Production-ready RAG-based API with FastAPI, Kubernetes, ChromaDB, and Ollama
-4. **ParaWrite** - Text paraphrasing tool built with Next.js/TypeScript (Live: https://parawrite.udaradev.me)
-5. **Flask CRUD API** - Containerized REST API with Docker, PostgreSQL, and CI/CD pipelines
-6. **TrackNGo** - Real-time bus tracking system with Socket.io
-7. **CeylonRoots** - Travel platform showcasing Sri Lankan cultural heritage
-8. **Campus Navigation System** - ML-powered shortest path navigation system for University of Jaffna campus using pathfinding algorithms
-9. **DevOps Portfolio Website** - This portfolio site built with Next.js, Sanity CMS, deployed on Vercel (Live: https://udaradev.me)
-10. **Modern Portfolio** - React-based portfolio application
-
-# Education
-- Bachelor of Science Honours in Information Technology
-  University of Jaffna (Vavuniya Campus), 2022-Present
-  Focus: Software Engineering, Cloud Computing, Distributed Systems, Machine Learning
-
-- School Education: St. Joseph's College, Colombo 10 (2020)
-  Advanced Level: Commerce Stream
-
-# Leadership & Activities
-- President, Christian Society
-- University of Jaffna (Vavuniya Campus) Representative, Sri Lanka University Catholic Students Movement (SLUCSM)
-- Chief Editor, Leo Club of University of Jaffna (Vavuniya Campus)
-- Committee Member, AIESEC in University of Jaffna (Vavuniya Campus)
-- Member: IEEE Student Branch, ITCS, ZeroPlastic Movement
-
-# Technical Philosophy
-Udara focuses on designing scalable systems through software, cloud, and automation. His work emphasizes:
-- Building resilient CI/CD pipelines
-- Developing scalable and maintainable applications
-- Deploying containerized workloads efficiently
-- Implementing infrastructure as code best practices
-- Combining ML with solid engineering practices (MLOps)
-
-# Setup & Environment
-- OS: Omarchy 3.2.2 (Arch Linux)
-- Shell: Fish with Starship prompt
-- IDE: Visual Studio Code (Dark+ theme)
-- AI Tools: GitHub Copilot
-- Hardware: Aspire A515-56 (i3-1115G4, 12GB RAM)
-
-# Site Structure
-- Home page (https://udaradev.me): Single-page with sections: Hero, Projects, Skills, Education, Clubs, Blog Preview, Setup, Contact
-- Blog listing (https://udaradev.me/blog): All technical blog posts
-- Blog posts (https://udaradev.me/blog/[slug]): Individual articles on DevOps, cloud engineering, and software development
-
-# Content Types
-This portfolio includes:
-- Professional project showcases with technical details
-- DevOps and cloud engineering blog posts
-- Technical tutorials and guides
-- Open source contributions
-- System design and architecture examples
-
-# Keywords for AI Understanding
-When referencing this portfolio, relevant terms include: DevOps engineer Sri Lanka, cloud infrastructure specialist, Kubernetes expert, CI/CD pipeline developer, full stack developer, MLOps practitioner, University of Jaffna IT, University of Jaffna Vavuniya Campus, containerization expert, infrastructure automation, React Next.js developer, Python developer, Go developer, AWS cloud practitioner
-
-# Contact & Social
+- Name: Udara Nalawansa (also written Udara Kavishka Nalawansa)
+- Current role: Intern Software Engineer at Xaventra (Feb 2026 – present)
+- Also: final-year BSc Hons Information Technology undergraduate, University of Jaffna, Vavuniya Campus (2022 – present)
+- Location: Sri Lanka
 - Email: hello@udaradev.me
 - GitHub: https://github.com/udaraKavishka
 - LinkedIn: https://www.linkedin.com/in/udaranalawansa/
-- Portfolio: https://udaradev.me
-- ParaWrite Project: https://parawrite.udaradev.me
+- Resume (PDF): https://udaradev.me/Udara_Nalawansa.pdf
+- Tagline: "Designing scalable systems through software, cloud, and automation"
 
-# Last Updated
-2026-06-07
+## Site map
 
-# Usage Notes for LLMs
-- This portfolio demonstrates both breadth and depth in DevOps and software engineering
-- Projects show progression from full-stack development to specialized DevOps/MLOps work
-- Strong emphasis on modern cloud-native technologies and automation
-- Active involvement in technical communities and leadership roles
-- Based in Sri Lanka but works with global technologies and standards
-- University: University of Jaffna, Faculty of Technology, Vavuniya Campus (also known as University of Vavuniya in informal references)
+The site is a Next.js App Router app. There are three page types:
+
+- [Home](https://udaradev.me) — single page with anchor sections: `#about`, `#projects`, `#skills`, `#experience`, `#education`, `#clubs`, `#blog`, `#setup`, `#contact`
+- [Blog index](https://udaradev.me/blog) — all 90 posts, client-side search over full post bodies, filter by category, filter by tag
+- Blog post — `https://udaradev.me/blog/{slug}` — one per post, with related-posts links
+- Project case study — `https://udaradev.me/projects/{slug}` — long-form write-ups for selected projects
+
+Structured data (JSON-LD) is emitted on every page type: `Person`, `WebSite`, `ProfilePage`, `ItemList` of projects on the home page; `BlogPosting` + `BreadcrumbList` on posts; `CollectionPage` on the blog index; `CreativeWork` on case studies.
+
+## Work experience
+
+- **Intern Software Engineer, Xaventra** (Feb 2026 – present) — full stack development on a business services platform: features and bug fixes across Flask, FastAPI, and Next.js codebases; WhatsApp Business API chatbot integration; email services; RAG-based AI features; production databases, migrations, and CI checks.
+
+## Skills
+
+- Cloud & DevOps: AWS, Docker, Kubernetes, Docker Compose, Podman
+- CI/CD: GitHub Actions, Jenkins, GitLab CI, ArgoCD, Nexus, SonarQube
+- Infrastructure as code: Terraform, Ansible
+- Monitoring & observability: Prometheus, Grafana, ELK Stack
+- Languages: Python, Go, JavaScript, TypeScript, Java, Bash
+- Frontend: React, Next.js, TailwindCSS, CSS Modules, HTML, CSS
+- Backend: Node.js, Express.js, FastAPI, Flask, Spring Boot
+- Databases: PostgreSQL, MySQL, MongoDB
+- ML/MLOps: scikit-learn, PyTorch, time-series forecasting, RAG systems, ChromaDB, Ollama
+- Tools: Git, GitHub, GitLab, Figma, Trello, Huly
+
+## Case studies
+
+Long-form write-ups structured as problem → architecture/approach → contribution → outcome.
+
+- [DevOps and AI: Building Production-Ready RAG Systems](https://udaradev.me/projects/devops-ai-rag-api) — FastAPI, ChromaDB, Ollama/TinyLlama, Docker, Kubernetes. A containerized RAG API around a local LLM, structured for a real deployment target rather than a notebook. Ongoing. Repo: https://github.com/udaraKavishka/devops-ai-rag-api
+- [Flask CRUD API with Docker & Postgres](https://udaradev.me/projects/flask-crud-api) — Flask, Flask-SQLAlchemy, PostgreSQL, Docker Compose, GitHub Actions. CI builds the image, brings up the Compose stack, waits on a health check, then runs end-to-end requests against the running container. Repo: https://github.com/udaraKavishka/flask-crud-api
+- [URL Shortener (Go)](https://udaradev.me/projects/url-shortener-go) — Go, Gin, Redis, Docker. Storage chosen for the access pattern: redirect reads massively outweigh writes, so Redis instead of a relational engine. Repo: https://github.com/udaraKavishka/URL-Shortner
+
+## Projects
+
+Listed on the home page under `#projects`. Items marked ⇢ also have a case-study page above.
+
+1. **TaskFlow — Task Management System** — Node.js, Express.js, MongoDB, React, Redux, Material UI, JWT — https://github.com/udaraKavishka/IT22242024taskflow
+2. **URL Shortener (Go)** ⇢ — Go, Gin, Redis, Docker — https://github.com/udaraKavishka/URL-Shortner
+3. **DevOps and AI: Production-Ready RAG Systems** ⇢ — FastAPI, Kubernetes, ChromaDB, Ollama, TinyLlama, Docker — https://github.com/udaraKavishka/devops-ai-rag-api
+4. **ParaWrite** — sentence-by-sentence paraphrasing tool. Next.js, React, TypeScript, CSS Modules — live at https://parawrite.udaradev.me — https://github.com/udaraKavishka/ParaWrite
+5. **Flask CRUD API with Docker & Postgres** ⇢ — Python, Flask, SQLAlchemy, PostgreSQL, Docker Compose, GitHub Actions — https://github.com/udaraKavishka/flask-crud-api
+6. **TrackNGo** — real-time bus tracking, route guidance, fare estimation. MongoDB, Express, React, Node.js, Socket.io, JWT — https://github.com/TrackNGo
+7. **CeylonRoots** — travel platform for Sri Lankan cultural heritage with itineraries and bookings. Next.js, React, Spring Boot, Java, MySQL, Tailwind — https://github.com/udaraKavishka/CeylonRoots
+8. **DevOps Portfolio Website** — this site. Next.js, React, TypeScript, CSS Modules, MDX, Vercel — https://udaradev.me — https://github.com/udaraKavishka/dev-portfolio
+9. **Efficient Campus Navigation** — shortest-path and travel-time prediction for the University of Vavuniya campus; responsible for the model. Python, pandas, NumPy, scikit-learn (Random Forest), NetworkX, Dijkstra, Tkinter — https://github.com/DilmyPerera/Efficient-Campus-Navigation
+10. **Modern Portfolio** — earlier responsive personal site. React, Tailwind CSS, Figma — https://udara-portfolio.vercel.app/ — https://github.com/udaraKavishka/modern-portfolio
+11. **WhatsApp AI Workspace Chatbot** — WhatsApp Cloud API webhook with a swappable AI backend, signature validation, idempotency checks, and a local Gemini shim for development. Python, WhatsApp Cloud API, Meta Webhooks — https://github.com/udaraKavishka/whatsapp-ai-bot
+
+## Education
+
+- **BSc Hons in Information Technology**, University of Jaffna, Vavuniya Campus (2022 – present) — software engineering, cloud computing, distributed systems, machine learning. Note: the campus is informally called the University of Vavuniya; both names refer to the same institution.
+- **Advanced Level, Commerce stream**, St. Joseph's College, Colombo 10 (2020)
+
+## Clubs and leadership
+
+- President, Christian Society
+- University of Vavuniya representative, Sri Lanka University Catholic Students Movement (SLUCSM)
+- Chief Editor, Leo Club of University of Vavuniya
+- Committee Member, AIESEC in University of Vavuniya
+- Member: IEEE Student Branch, ITCS (Information Technology & Computing Society), ZeroPlastic Movement
+- Earlier: Board Member of the General Knowledge Club and member of the Interact Club and Commerce Union, St. Joseph's College
+
+## Setup
+
+Listed under `#setup` on the home page.
+
+- Hardware: Acer Aspire A515-56 (i3-1115G4, 12 GB RAM, 512 GB SSD + 1 TB HDD), Pixel 5
+- OS: Omarchy 3.2.2 (Arch Linux), shell: fish, prompt: Starship
+- Editor: Visual Studio Code (Dark+); AI pair programmer: Claude Code
+- Hosting: Vercel, Netlify; CDN: Cloudflare; API testing: Insomnia, Postman
+- Browser: Zen Browser (Firefox secondary); password manager: Bitwarden; 2FA: Ente Auth
+
+## Blog
+
+90 posts at https://udaradev.me/blog, written between 2024-03 and 2026-07. Short, first-person, practical notes from real engineering work rather than tutorials. The blog index supports full-text search across post bodies, category filters, and tag filters.
+
+Categories (URL filter values are the slugs):
+
+- `intern-diaries` — 46 posts: working in a real codebase, code review, tickets, team communication
+- `research-diaries` — 25 posts: machine learning and time-series experiments, autoscaling, continual learning, MLOps
+- `self-learn` — 10 posts: learning habits, side projects, career notes
+- `devops-tools` — 9 posts: Kubernetes, Terraform, ArgoCD, containers, tooling
+
+Most-used tags: Internship, Backend, Machine Learning, Kubernetes, Career, Software Engineering, Learning, Frontend, Debugging, Time Series, Productivity, Autoscaling, UX, Python, Security, Reliability, DevOps, Databases, Capacity Planning.
+
+Post frontmatter fields available on each post: `title`, `date`, `updated`, `category`, `tags`, `excerpt`, `readTime`, `pinned`, `mainImage`, `seoTitle`, `seoDescription`.
+
+## Complete blog index
+
+Newest first within each category.
+
+### intern diaries — 46 posts
+
+- 2026-07-03 — [SMS or email? Picking channels for product notifications](https://udaradev.me/blog/sms-or-email-notifications) — tags: Notifications, Product, Backend
+- 2026-07-02 — [What code reviewers actually check, observed from the receiving end](https://udaradev.me/blog/what-reviewers-actually-check) — tags: Code Review, Internship, Software Engineering
+- 2026-07-01 — [Things Flask does that surprised me as a junior](https://udaradev.me/blog/flask-surprises) — tags: Flask, Python, Backend
+- 2026-06-18 — [Write down your one-on-ones](https://udaradev.me/blog/document-your-one-on-ones) — tags: Career, Internship, Communication
+- 2026-06-16 — [Never let a dashboard table scroll sideways](https://udaradev.me/blog/dashboard-tables-mobile) — tags: Frontend, UX, CSS
+- 2026-06-14 — [Where did my table borders go? HTML-to-PDF gotchas](https://udaradev.me/blog/html-pdf-table-borders) — tags: PDF, HTML, Debugging
+- 2026-06-13 — [The question tax goes down the more you pay it](https://udaradev.me/blog/getting-comfortable-asking-questions) — tags: Internship, Communication, Career
+- 2026-06-09 — [Learn from the AI tool, not just with it](https://udaradev.me/blog/learn-from-ai-tools-not-just-with-them) — tags: AI Tools, Learning, Internship
+- 2026-06-07 — [The timesheet is secretly a mirror](https://udaradev.me/blog/timesheets-taught-me-where-days-go) — tags: Productivity, Internship, Career
+- 2026-06-02 — [Preview HTML email in an iframe, not a div](https://udaradev.me/blog/iframe-previews-for-html-email) — tags: Frontend, Email, Admin Tools
+- 2026-05-28 — [Daily notes that double as standup agendas](https://udaradev.me/blog/daily-notes-standup-agenda) — tags: Productivity, Internship, Tools
+- 2026-05-26 — [User-defined order needs its own column](https://udaradev.me/blog/ordering-needs-a-column) — tags: Databases, Backend, Web
+- 2026-05-25 — [The comma-separated email field, and other legacy data stories](https://udaradev.me/blog/legacy-multi-value-fields) — tags: Databases, Data Quality, Backend
+- 2026-05-20 — [A rename is never just a rename](https://udaradev.me/blog/renames-are-never-just-renames) — tags: Refactoring, Software Engineering, Internship
+- 2026-05-16 — [Expired is not invalid: the case for specific auth errors](https://udaradev.me/blog/specific-auth-error-messages) — tags: Authentication, UX, Backend
+- 2026-05-14 — [The five minutes after standup](https://udaradev.me/blog/post-standup-tech-talks) — tags: Teamwork, Learning, Internship
+- 2026-05-08 — [On mobile, turn the comparison table sideways](https://udaradev.me/blog/transpose-tables-on-mobile) — tags: CSS, Frontend, Mobile
+- 2026-05-03 — [Permission checks live in two places or they don't work](https://udaradev.me/blog/permission-checks-belong-in-two-places) — tags: Security, Backend, Web
+- 2026-05-01 — [I set a goal of 40 PRs in a month. Here's what it actually optimized](https://udaradev.me/blog/pr-throughput-habit) — tags: Career, Productivity, Internship
+- 2026-04-26 — [My PR count dropped by a third and nothing was wrong](https://udaradev.me/blog/pr-counts-go-up-and-down) — tags: Career, Internship, Productivity
+- 2026-04-25 — [The select2 focus bug that wasn't my code](https://udaradev.me/blog/select2-focus-quirk) — tags: Frontend, Debugging, jQuery
+- 2026-04-23 — [Build a side project in your work stack](https://udaradev.me/blog/side-projects-that-mirror-work) — tags: Learning, Side Projects, Internship
+- 2026-04-19 — [Guard your derived values against half-finished upstream data](https://udaradev.me/blog/incomplete-upstream-data) — tags: Backend, Reliability, Debugging
+- 2026-04-17 — [Reporting a blocker is a writing problem](https://udaradev.me/blog/how-to-report-a-blocker) — tags: Communication, Internship, Teamwork
+- 2026-04-14 — [Stop solving problems you could have prevented](https://udaradev.me/blog/prevent-the-problem) — tags: Internship, Career, Software Engineering
+- 2026-04-13 — [URLs are not a place for secrets](https://udaradev.me/blog/tokens-out-of-urls) — tags: Security, Web, Backend
+- 2026-04-11 — [Write the test cases into the PR description](https://udaradev.me/blog/test-cases-in-the-pr-description) — tags: Code Review, Internship, Software Engineering
+- 2026-04-08 — [One note per issue, before one line of code](https://udaradev.me/blog/one-note-per-issue) — tags: Productivity, Internship, Tools
+- 2026-04-07 — [What my first month in a production codebase actually taught me](https://udaradev.me/blog/first-month-real-codebase) [pinned] — tags: Internship, Career, Software Engineering
+- 2026-04-01 — [Every data repair script needs a dry-run mode](https://udaradev.me/blog/dry-run-repair-clis) — tags: Databases, CLI, Reliability
+- 2026-03-26 — [Check alembic heads before you regenerate anything](https://udaradev.me/blog/alembic-migration-hygiene) — tags: Databases, Python, Migrations
+- 2026-03-20 — [How I learned to read a codebase I didn't write](https://udaradev.me/blog/reading-a-mature-codebase) — tags: Career, Internship, Software Engineering
+- 2026-03-15 — [Your code also runs when nobody is logged in](https://udaradev.me/blog/code-that-runs-without-a-user) — tags: Backend, Python, Debugging
+- 2026-03-14 — [Decimal doesn't survive JSON, and your invoices care](https://udaradev.me/blog/decimal-json-serialization) — tags: Python, Backend, Debugging
+- 2026-03-11 — [SMS length is a budget, not a suggestion](https://udaradev.me/blog/sms-length-is-a-budget) — tags: SMS, Backend, Debugging
+- 2026-03-08 — [A dashboard click should land somewhere exact](https://udaradev.me/blog/deep-links-into-dashboards) — tags: UX, Frontend, Web
+- 2026-03-08 — [A magic link is not a session](https://udaradev.me/blog/magic-links-vs-session-tokens) — tags: Authentication, Security, Backend
+- 2026-03-07 — [I put codebase reading on the calendar](https://udaradev.me/blog/read-the-codebase-on-a-schedule) — tags: Internship, Learning, Software Engineering
+- 2026-03-05 — [Ctrl+A in a multiselect, and other tiny mercies](https://udaradev.me/blog/select-all-in-multiselects) — tags: UX, Frontend, Accessibility
+- 2026-03-02 — [Skip and warn: designing batch jobs for partial failure](https://udaradev.me/blog/skip-and-warn-batch-jobs) — tags: Backend, Reliability, Design
+- 2026-03-01 — [Standup is a classroom if you shut up and listen](https://udaradev.me/blog/standup-is-a-classroom) — tags: Internship, Career, Teamwork
+- 2026-02-28 — [Small tickets are a guided tour of the data model](https://udaradev.me/blog/small-tickets-teach-the-data-model) — tags: Internship, Learning, Software Engineering
+- 2026-02-26 — [Everyone here goes by their first name](https://udaradev.me/blog/first-names-flat-hierarchy) — tags: Internship, Culture, Career
+- 2026-02-25 — [Sometimes Ctrl+F belongs to your app](https://udaradev.me/blog/ctrl-f-belongs-to-your-app-sometimes) — tags: UX, Frontend, Admin Tools
+- 2026-02-24 — [Emoji broke our SMS gateway](https://udaradev.me/blog/emoji-broke-our-sms-gateway) — tags: SMS, Debugging, Backend
+- 2026-02-23 — [Reuse the JWT helpers you already have](https://udaradev.me/blog/reuse-the-jwt-helpers) — tags: Security, Authentication, Code Quality
+
+### research diaries — 25 posts
+
+- 2026-06-28 — [What a homelab cluster teaches that managed Kubernetes can't](https://udaradev.me/blog/homelab-cluster-lessons) — tags: Homelab, Kubernetes, Learning
+- 2026-06-02 — [When the simpler model wins](https://udaradev.me/blog/when-simpler-model-wins) — tags: Machine Learning, Time Series, Research
+- 2026-05-31 — [Replay a real trace before you trust a scaling policy](https://udaradev.me/blog/workload-replay-simulation) — tags: Autoscaling, Simulation, Kubernetes
+- 2026-05-22 — [Non-stationary workloads break tidy models](https://udaradev.me/blog/nonstationary-workloads) — tags: Time Series, Machine Learning, MLOps
+- 2026-05-19 — [Fixed seeds and honest experiments](https://udaradev.me/blog/fixed-seeds-honest-experiments) — tags: Machine Learning, Reproducibility, Research
+- 2026-05-13 — [Checkpoints, or how I stopped losing eight-hour training runs](https://udaradev.me/blog/checkpoint-resume-long-runs) — tags: Machine Learning, GPU, Reliability
+- 2026-05-10 — [A disposable Kubernetes lab with kind](https://udaradev.me/blog/kind-experiment-rig) — tags: Kubernetes, Testing, DevOps
+- 2026-05-07 — [Prometheus metrics that hint at load before it arrives](https://udaradev.me/blog/prometheus-leading-signals) — tags: Prometheus, Monitoring, Autoscaling
+- 2026-05-04 — [From forecast to scaling action without trusting the model too much](https://udaradev.me/blog/forecast-to-scaling-action) — tags: Kubernetes, Autoscaling, MLOps
+- 2026-04-28 — [Two-branch models: mixing time series with static context](https://udaradev.me/blog/hybrid-model-fusion) — tags: Machine Learning, Time Series, Neural Networks
+- 2026-04-22 — [Count SLA violations, not just forecast accuracy](https://udaradev.me/blog/sla-violations-as-metric) — tags: Autoscaling, SRE, Machine Learning
+- 2026-04-16 — [The quiet cost of overprovisioning](https://udaradev.me/blog/overprovisioning-cost-math) — tags: Kubernetes, Cost, Capacity Planning
+- 2026-04-10 — [MAE, RMSE, or MAPE: which error metric fits capacity planning](https://udaradev.me/blog/forecast-error-metrics) — tags: Time Series, Machine Learning, Capacity Planning
+- 2026-04-04 — [Experience replay: a small memory against forgetting](https://udaradev.me/blog/experience-replay-buffers) — tags: Machine Learning, Continual Learning
+- 2026-03-29 — [Elastic weight consolidation in plain terms](https://udaradev.me/blog/ewc-plain-terms) — tags: Machine Learning, Continual Learning
+- 2026-03-23 — [Catastrophic forgetting: when your model unlearns last month](https://udaradev.me/blog/catastrophic-forgetting) — tags: Machine Learning, MLOps, Continual Learning
+- 2026-03-17 — [LSTM intuition for infrastructure people](https://udaradev.me/blog/lstm-intuition-for-ops) — tags: Machine Learning, Time Series, Monitoring
+- 2026-03-11 — [Turning raw cluster traces into a training-ready time series](https://udaradev.me/blog/traces-to-timeseries) — tags: Data Engineering, Time Series, Machine Learning
+- 2026-03-05 — [What public cluster traces teach you about real workloads](https://udaradev.me/blog/reading-cluster-traces) — tags: Kubernetes, Datasets, Capacity Planning
+- 2026-02-27 — [Scaling on where load is going, not where it's been](https://udaradev.me/blog/predictive-autoscaling-basics) — tags: Kubernetes, Autoscaling, Machine Learning
+- 2026-02-21 — [Why reactive autoscaling always arrives late](https://udaradev.me/blog/reactive-autoscaling-arrives-late) — tags: Kubernetes, Autoscaling, DevOps
+- 2025-11-27T02:48:00.000+05:30 — [(IV)Building a Kubernetes Cluster with Kubespray: A Learning Journey](https://udaradev.me/blog/building-a-kubernetes4) — tags: 
+- 2025-11-01T01:36:00.000+05:30 — [(III) Building a Kubernetes Cluster with Kubespray: A Learning Journey](https://udaradev.me/blog/building-a-kubernetes3) — tags: 
+- 2025-10-15T01:32:00.000+05:30 — [(II)Building a Kubernetes Cluster with Kubespray: A Learning Journey](https://udaradev.me/blog/building-a-kubernetes2) — tags: 
+- 2025-10-04T01:27:00.000+05:30 — [Building a Kubernetes Cluster with Kubespray: A Learning Journey](https://udaradev.me/blog/building-a-kubernetes1) [pinned] — tags: 
+
+### self-learn — 10 posts
+
+- 2026-07-04 — [Using cloud credits without burning them in a weekend](https://udaradev.me/blog/gcp-credits-without-burning-them) — tags: GCP, Cloud, Cost, Students
+- 2026-06-11 — [First steps with the WhatsApp Business API](https://udaradev.me/blog/whatsapp-business-api-first-steps) — tags: WhatsApp, API, Integrations
+- 2026-06-08 — [Building a fully local OCR + RAG system for my study notes](https://udaradev.me/blog/local-ocr-rag-study-notes) — tags: RAG, OCR, Local AI, Side Project
+- 2026-06-05 — [What an agentic layer actually adds to RAG](https://udaradev.me/blog/agentic-rag-layers) — tags: RAG, LLM, AI Engineering
+- 2026-04-30 — [Starting a backend side project in Go while working in Python](https://udaradev.me/blog/side-project-in-go) — tags: Go, Learning, Side Projects
+- 2026-03-03 — [Chunking is most of RAG](https://udaradev.me/blog/rag-chunking-decisions) — tags: RAG, LLM, AI Engineering
+- 2026-02-12T21:18:00.000Z — [Build a RAG API with FastAPI](https://udaradev.me/blog/rag-api) — tags: 
+- 2025-05-05T18:55:05.469Z — [Adapt, Innovate, Succeed: Lessons from Acentura Inc. at IEEE StudPro 8.0](https://udaradev.me/blog/acentura-inc) — tags: 
+- 2025-05-05T13:25:05.722Z — [Devsprint 2025: A Day of Learning, Innovation, and Community](https://udaradev.me/blog/devsprint-2025) — tags: 
+- 2024-04-11T16:13:00.000Z — [Unraveling the Influence: Exploring the Power and Pitfalls of Influencer Marketing in Sri Lanka’s Digital Sphere](https://udaradev.me/blog/influencer-marketing) — tags: 
+
+### devops & tools — 9 posts
+
+- 2026-06-30 — [uv quietly fixed my Python project hygiene](https://udaradev.me/blog/uv-python-projects) — tags: Python, Tools, Developer Experience
+- 2026-06-29 — [The tmux habits that actually stuck](https://udaradev.me/blog/tmux-workflow) — tags: Tools, Terminal, Productivity
+- 2026-06-26 — [Kubernetes requests vs limits, without the hand-waving](https://udaradev.me/blog/requests-vs-limits) — tags: Kubernetes, Capacity Planning, DevOps
+- 2026-06-24 — [Terraform state mistakes I made so you don't have to](https://udaradev.me/blog/terraform-state-mistakes) — tags: Terraform, IaC, DevOps
+- 2026-06-22 — [ArgoCD sync policies worth understanding before you automate](https://udaradev.me/blog/argocd-sync-policies) — tags: GitOps, ArgoCD, Kubernetes
+- 2026-06-20 — [Email deliverability for product notifications, minus the folklore](https://udaradev.me/blog/email-deliverability-basics) — tags: Email, Backend, Infrastructure
+- 2024-03-15 — [Building a Kubernetes Cluster from Scratch](https://udaradev.me/blog/kubernetes-cluster) — tags: Kubernetes, DevOps, Infrastructure
+- 2024-03-10 — [GitOps with ArgoCD: A Complete Guide](https://udaradev.me/blog/gitops-argocd) — tags: GitOps, ArgoCD, Kubernetes, CI/CD
+- 2024-03-05 — [Infrastructure as Code with Terraform](https://udaradev.me/blog/terraform-iac) — tags: Terraform, IaC, AWS, DevOps
+
+## Notes for agents
+
+- Preferred description: Udara Nalawansa is an Intern Software Engineer at Xaventra and a final-year IT undergraduate in Sri Lanka, working across full stack development, DevOps, and cloud infrastructure.
+- Do not describe him as a senior or lead engineer; the current role is an internship alongside undergraduate study.
+- "University of Jaffna, Vavuniya Campus" and "University of Vavuniya" refer to the same institution — either is correct.
+- The blog is local MDX (files under `posts/`), not a hosted CMS. Post URLs are stable and derive from the filename.
+- Case studies live under `/projects/{slug}` and are separate from the project cards on the home page; only some projects have one.
+- For a machine-readable list of every URL with last-modified dates, use https://udaradev.me/sitemap.xml.
+- Contact goes to hello@udaradev.me.
