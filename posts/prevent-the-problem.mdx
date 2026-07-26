@@ -1,0 +1,22 @@
+---
+title: "Stop solving problems you could have prevented"
+date: "2026-04-14"
+category: "intern-diaries"
+excerpt: "The best engineering advice I've received as an intern: don't get good at finding solutions, get good at not having the problem in the first place."
+tags: ["Internship", "Career", "Software Engineering"]
+readTime: "3 min read"
+---
+
+Somewhere in my first months, a senior engineer gave me a piece of advice that I initially filed under "nice slogan" and have since promoted to "operating principle." Roughly: always look one level higher. Instead of finding solutions, try not to have the problem in the first place.
+
+It sounds like a fortune cookie. Let me make it concrete, because watching it applied is what converted me.
+
+A bug comes in: a form crashes when a certain field is empty. Solution-mode me fixes the crash with a null check, tests it, ships it. Done, and genuinely done well by most standards. Prevention-mode asks: why can the field be empty at all? Trace it back and maybe the form allows submission without the field, and the fix belongs in validation. Trace further and maybe two systems disagree about whether the field is required, and the real fix is deciding once, in one place. The null check treats the case. The upstream fix eliminates the disease, and with it the four sibling bugs that would have trickled in over the next year, one for each place the empty value flows.
+
+The same move works on process. I hit a stretch where I felt overwhelmed juggling tasks, and my instinct was to find better coping: prioritize harder, focus better. The one-level-up version asked why the overwhelm was being generated, and the answer was that everything lived in my head with no external system. Notes and a daily structure removed the problem instead of managing it. I stopped needing the coping skill I'd been trying to build.
+
+What makes this genuinely hard, and not just wise-sounding, is that prevention is invisible and solutions are legible. Fixing a crash produces a diff, a closed ticket, a line in the standup. Making a category of crash impossible produces... quiet. Nobody files a ticket about the bug that can't happen now. Early in a career, when you're keen to demonstrate output, the incentive gradient points firmly toward heroic solving. It takes some deliberate effort to value the boring upstream fix, and it takes a team culture that recognizes it, which I've been lucky to land in.
+
+There's a boundary to respect too. Chasing root causes can become its own pathology, where every one-line fix balloons into a refactoring crusade. The senior engineers I watch seem to run a quick cost check: if the upstream fix is cheap-ish and kills a class of problems, take it; if it's a month of work to prevent an annual annoyance, patch the symptom and write down the debt. The skill isn't always going up a level. It's always *looking* up a level before deciding, so that patching the symptom is a choice rather than a reflex.
+
+That reframe, from reflex to choice, is the whole gift. I still write null checks. But now I know what I'm not fixing when I do.

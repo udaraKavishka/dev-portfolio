@@ -1,0 +1,20 @@
+---
+title: "Learn from the AI tool, not just with it"
+date: "2026-06-09"
+category: "intern-diaries"
+excerpt: "The advice that changed how I use coding assistants as a junior: treat every generated solution as a lesson to be read, not just a diff to be shipped."
+tags: ["AI Tools", "Learning", "Internship"]
+readTime: "3 min read"
+---
+
+There's a fear that follows every junior developer using AI coding tools, usually voiced by someone senior on the internet: you'll ship code you don't understand, your skills won't develop, and you'll plateau as an operator of a machine you can't audit. I think the fear is legitimate. I also think it describes one way of using the tools, not the tools.
+
+The reframe came from my mentor, in one of those informal after-standup conversations, and it's simple enough to fit in a sentence: use the tool to learn, not only to produce. The practice behind the sentence is where the value is.
+
+Concretely, it means the generated solution is the beginning of the interaction instead of the end. The tool writes an approach; before committing anything, I read it the way I'd read a senior colleague's PR, which is to say suspiciously and with questions. Why a context manager here? Why did it guard this branch and not that one? What's this stdlib function I've never seen? Each question either gets answered by more reading or becomes a follow-up prompt, and the follow-up prompts are where the actual education happens. "Explain why you didn't do X" regularly teaches me more than a tutorial chapter, because the explanation is anchored to code I care about right now.
+
+Used this way, the tool functions like a patient senior engineer with unlimited time, which is a resource no actual workplace can offer an intern. Real seniors are generous here, but their time is finite and I ration my questions to them for the ones that need human judgment, architectural taste, institutional history, knowing which of two working solutions fits *this* codebase. The mechanical whys, syntax, idioms, standard library trivia, the tool absorbs endlessly without cost to anyone.
+
+The discipline that keeps this honest is a personal rule: nothing gets committed that I couldn't explain line by line to a reviewer without the tool open. It's the same standard that always applied to code copied from Stack Overflow, just enforced against a much more fluent source of copyable code. Some days the rule slows me down noticeably, and the slowdown is exactly the studying the fear says I'd be skipping.
+
+Do I always live up to it? No. Deadline pressure erodes it, boilerplate tempts shortcuts, and honestly, on trivial code the deep read isn't worth it. The rule matters most on code that's novel to me, which conveniently is also where the learning is. A generation in front of me learned by reading other people's code in open source. Reading the machine's code, interrogating it, and checking its answers seems like a legitimate descendant of that tradition. The plateau comes from skipping the reading, not from the tool writing the first draft.

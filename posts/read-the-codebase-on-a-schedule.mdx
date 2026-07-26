@@ -1,0 +1,22 @@
+---
+title: "I put codebase reading on the calendar"
+date: "2026-03-07"
+category: "intern-diaries"
+excerpt: "Closing tickets teaches you the codebase in patches. Dedicated reading time fills in the map. The trick is doing both on purpose instead of hoping one covers for the other."
+tags: ["Internship", "Learning", "Software Engineering"]
+readTime: "3 min read"
+---
+
+There are two schools of thought about learning a large codebase. One says just close tickets, understanding follows work. The other says study first, read the architecture docs, trace the core flows, and start working once you have the map. I tried each, and both failed in characteristic ways, so I ended up with a hybrid that I now defend with actual calendar blocks.
+
+Tickets-only failed like this: after a few weeks I knew several neighborhoods of the code in real depth, the ones my tickets had dragged me through, and had no idea how they connected. I could fix a bug in the template layer without knowing where templates got their data from. My knowledge was a set of islands, and every new ticket in open water felt like starting over.
+
+Study-first failed faster. I sat down to "read the codebase" with no question in hand and bounced off within the hour. Reading code without a purpose doesn't stick. You scroll through modules nodding, retain nothing, and can't tell which of the hundred files deserve attention. Code isn't a novel. It doesn't reward linear reading.
+
+The hybrid: a fixed portion of the day is reading time, but the reading is always anchored to something a recent ticket touched. Fixed a bug in a form yesterday? Today's reading traces where that form's submissions actually go, all the way down. Copied an existing pattern to get something working? Reading time is for understanding why the pattern exists and what the alternatives were. The tickets supply the questions; the reading time supplies the answers the ticket deadline didn't leave room for.
+
+This works because tickets generate genuine curiosity and then give you no time to satisfy it. Under deadline you learn exactly enough to make the change safely, and you can feel the unexplored branches you're stepping past. Without a scheduled slot, those branches stay unexplored forever, because there is always another ticket. The calendar block is just a way of taking my own curiosity seriously enough to fund it.
+
+Concrete example of the payoff: one ticket had me updating document templates, a contained change. The scheduled reading afterward followed the data those templates consumed, which walked me through the core domain models and how they relate. A later ticket touching those same models, one that would have been days of confused spelunking, took an afternoon instead. The reading had already paid for itself.
+
+The ratio I settled on is modest, roughly an hour against a day of ticket work. It's not much. But compounding does the rest: every hour of directed reading makes all subsequent tickets slightly faster, and the islands have been growing together into something like a continent.
