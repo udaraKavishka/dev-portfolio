@@ -7,13 +7,13 @@ tags: ["Backend", "Reliability", "Debugging"]
 readTime: "3 min read"
 ---
 
-The bug report said a task page wouldn't load for one specific case. Everything else worked. The stack trace pointed at a balance-due calculation, which summed payment amounts collected across the earlier steps of a multi-step workflow.
+The bug report said a page wouldn't load for one specific record. Everything else worked. The stack trace pointed at a running-total calculation, which summed amounts collected across the earlier steps of a multi-step workflow.
 
 The cause: the calculation loaded data from every previous step, and one of those steps had been started but never finished. Its data was half-filled, the amount field empty, and the arithmetic choked on a null. The code had an implicit assumption baked in: by the time we compute, everything before us is complete.
 
 In a workflow system, that assumption is simply false. Steps get abandoned, re-assigned, redone. Between "started" and "completed" every step has a long, legitimate life in a partial state. The fix was to filter by status and derive only from steps explicitly marked complete. Incomplete steps aren't corrupt; they're just not facts yet, and calculations should treat them as not existing.
 
-A neighboring bug taught the same lesson from a different angle. Code that displayed a payment link looked up the payment record attached to a completed send-invoice step, assuming completed step implies payment record exists. Usually true. But there was a legitimate path where the step completed without one, and the lookup crashed on the very record it was sure existed. Same shape: trusting an invariant that the system doesn't actually enforce.
+A neighboring bug taught the same lesson from a different angle. Code that rendered a link looked up the related record attached to a completed step, assuming completed step implies related record exists. Usually true. But there was a legitimate path where the step completed without one, and the lookup crashed on the very record it was sure existed. Same shape: trusting an invariant that the system doesn't actually enforce.
 
 What I took away, generalized:
 
@@ -21,6 +21,6 @@ Derived values inherit the worst-case state of everything they read. A calculati
 
 Status fields exist to be filtered on. If your domain model bothers to distinguish pending from in-progress from completed, code that reads across records must say which states it accepts. Reading everything and hoping is the bug in its larval stage.
 
-"Should never happen" needs a decision, not a crash. When the payment record is genuinely missing, the options are: skip the display, show a placeholder, log a warning for investigation. Any of these beats a 500 on an unrelated page. Choose one deliberately.
+"Should never happen" needs a decision, not a crash. When the related record is genuinely missing, the options are: skip the display, show a placeholder, log a warning for investigation. Any of these beats a 500 on an unrelated page. Choose one deliberately.
 
 The pattern is worth internalizing because it doesn't show up in demos. With test data, everything is complete, because you completed it. Production is where workflows live in every intermediate state simultaneously, and the code that survives is the code that expected that.

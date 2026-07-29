@@ -7,7 +7,7 @@ tags: ["Databases", "Backend", "Web"]
 readTime: "3 min read"
 ---
 
-The feature request was modest: let users rearrange the entries in a list, specifically the people associated with a record, so they appear in a chosen order on generated documents. Drag and drop, save, done. A frontend task, I assumed.
+The feature request was modest: let users rearrange the entries in a list attached to a record, so they appear in a chosen order wherever that list is displayed. Drag and drop, save, done. A frontend task, I assumed.
 
 The first thing implementing it teaches you is that your list currently has no order. It has an *accidental* order, whatever the database returns, which is typically insertion order right up until it isn't. Add an index, change a query, and rows come back shuffled. If the UI has been displaying that accidental order and users have been reading meaning into it, you already had a latent bug; the reorder feature just forces the issue. Order that matters is data, and data needs a column.
 
@@ -15,6 +15,6 @@ So the schema gets a position field, and immediately you're making decisions tha
 
 The backend contract has its own subtlety. The reorder endpoint should accept the full ordered list of IDs, not a "move item X to position Y" delta. Full-list updates are idempotent and survive two users reordering around the same time with a last-write-wins outcome that's at least coherent. Delta operations interleave into nonsense. This is one of those small API-design choices that costs nothing upfront and quietly prevents a class of bug reports later.
 
-Then the part I genuinely didn't foresee: every consumer of the list has an opinion now. The web page should use the new order, obviously. The generated documents, that's the whole point. But the CSV export? The API responses other systems read? Each output either respects the user's ordering or actively ignores it, and both can be correct depending on the consumer; a sync endpoint feeding another system may specifically want stable ID order. The feature forced an inventory of everywhere this list gets rendered, and an explicit ordering decision at each site. The ordering column was one line of schema. Propagating its meaning was the actual feature.
+Then the part I genuinely didn't foresee: every consumer of the list has an opinion now. The web page should use the new order, obviously. Anything rendered for the user to read, that's the whole point. But an export? An API response another system consumes? Each output either respects the user's ordering or actively ignores it, and both can be correct depending on the consumer; a sync endpoint feeding another system may specifically want stable ID order. The feature forced an inventory of everywhere this list gets rendered, and an explicit ordering decision at each site. The ordering column was one line of schema. Propagating its meaning was the actual feature.
 
 What I'd tell my past self at estimation time: "let users reorder the list" is schema work, an API contract decision, and a consumer audit, wearing a drag-and-drop costume. The drag and drop is the easy part. There's a library for it.

@@ -14,9 +14,9 @@ The uncomfortable part is that a repair script is a weapon pointed at production
 Dry run means the script does all of its real work (query, classify, compute the fix) and then, instead of writing, prints what it would have done:
 
 ```
-Would update person 4521: "a@x.com, b@y.com" -> keep "a@x.com", drop 1 other
-Would update person 4587: "c@z.com,c@z.com"  -> deduplicate to "c@z.com"
-Would skip person 4612: no valid email found (manual review)
+Would update record 1: "a@example.com, b@example.com" -> keep "a@example.com", drop 1 other
+Would update record 2: "c@example.com,c@example.com"  -> deduplicate to "c@example.com"
+Would skip record 3: no valid email found (manual review)
 164 rows: 158 would update, 6 skipped
 ```
 

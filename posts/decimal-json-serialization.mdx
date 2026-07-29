@@ -13,7 +13,7 @@ If you handle money in Python you use Decimal, because floats can't represent 0.
 TypeError: Object of type Decimal is not JSON serializable
 ```
 
-I hit this in a workflow system where step data was stored as JSON between steps. A field holding a company's stated capital was a Decimal, the serializer choked, and a downstream calculation crashed for one specific record while every other record sailed through. Data-dependent crashes like that are the annoying kind: the code is "working" right up until the one row that exercises the path.
+I hit this where intermediate data was being stashed as JSON between the stages of a longer process. One of the stashed fields held a monetary amount as a Decimal, the serializer choked, and a downstream calculation crashed for one specific record while every other record sailed through. Data-dependent crashes like that are the annoying kind: the code is "working" right up until the one row that exercises the path.
 
 The tempting one-line fix is `json.dumps(data, default=float)`. It runs. It's also wrong, because converting to float throws away exactly the precision guarantee that made you choose Decimal. The error won't show up in tests with round numbers. It shows up months later as an invoice that's off by a cent, and a cent-level discrepancy in accounting is not a small bug, it's a reconciliation investigation.
 
