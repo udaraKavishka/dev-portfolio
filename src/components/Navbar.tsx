@@ -52,6 +52,7 @@ export default function Navbar() {
         { href: '#skills', label: 'Skills' },
         { href: '#experience', label: 'Experience' },
         { href: '#education', label: 'Education' },
+        { href: '#research', label: 'Research' },
         // { href: '#achievements', label: 'Achievements' },
         { href: '#clubs', label: 'Clubs' },
         { href: '#setup', label: 'Setup' },

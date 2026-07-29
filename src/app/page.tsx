@@ -6,6 +6,7 @@ import Skills from '@/components/Skills';
 import Contact from '@/components/Contact';
 import Experience from '@/components/Experience';
 import Education from '@/components/Education';
+import Research from '@/components/Research';
 import Clubs from '@/components/Clubs';
 import Setup from '@/components/Setup';
 import HomeBlog from '@/components/HomeBlog';
@@ -52,6 +53,7 @@ export default function Home() {
         <Skills />
         <Experience />
         <Education />
+        <Research />
         <Clubs />
         <HomeBlog posts={posts} />
         <Setup />
