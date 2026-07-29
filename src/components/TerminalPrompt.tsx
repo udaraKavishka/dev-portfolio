@@ -44,6 +44,7 @@ const SECTIONS: Record<string, string> = {
     skills: 'skills',
     experience: 'experience',
     education: 'education',
+    research: 'research',
     clubs: 'clubs',
     setup: 'setup',
     contact: 'contact',

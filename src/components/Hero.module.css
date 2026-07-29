@@ -188,6 +188,17 @@
     margin-bottom: 1rem;
 }
 
+.viewCount {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.35rem;
+    margin-top: 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
 .bio {
     color: var(--text-primary);
     line-height: 1.7;
