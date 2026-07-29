@@ -245,6 +245,28 @@ export const educationData: EducationItem[] = [
     },
 ];
 
+interface ResearchItem {
+    title: string;
+    focus: string;
+    institution: string;
+    period: string;
+    highlights: string[];
+}
+
+export const researchData: ResearchItem[] = [
+    {
+        title: 'Undergraduate Research (BSc Hons IT)',
+        focus: 'Adaptive CPU auto scaling using hybrid neural networks and continual learning within Kubernetes orchestration',
+        institution: 'University of Jaffna ( Vavuniya University )',
+        period: '2025 - 2026',
+        highlights: [
+            'Built a hybrid LSTM and MLP CPU demand forecasting model with continual learning through Elastic Weight Consolidation and Experience Replay, trained on Google Cluster Traces.',
+            'Deployed and managed a controlled Kubernetes test environment and benchmarked the predictive autoscaler against the standard Horizontal Pod Autoscaler using a Prometheus based evidence pipeline.',
+            'Analyzed cluster behaviour and resource utilization patterns to improve scaling efficiency.',
+        ],
+    },
+];
+
 interface ClubItem {
     name: string;
     role: string;

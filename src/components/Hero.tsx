@@ -7,6 +7,7 @@ import Image from 'next/image';
 import styles from './Hero.module.css';
 import { heroData } from '@/data/content';
 import TerminalPrompt from './TerminalPrompt';
+import ViewCounter from './ViewCounter';
 
 export default function Hero() {
     const { name, tagline, bio, techStack, profileImage, socialLinks, roles } = heroData;
@@ -152,6 +153,7 @@ export default function Hero() {
                                     </a>
                                 ))}
                             </div>
+                            <ViewCounter />
                         </motion.div>
                     </div>
                 </motion.div>
