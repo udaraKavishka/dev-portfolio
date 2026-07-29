@@ -7,7 +7,7 @@ tags: ["Authentication", "Security", "Backend"]
 readTime: "3 min read"
 ---
 
-Passwordless login flows usually involve two different tokens, and I've watched confusion between them produce real bugs. They both travel as opaque strings. That's where the similarity ends.
+Passwordless login flows usually involve two different tokens, and confusion between the two is a reliable source of auth bugs. They both travel as opaque strings. That's where the similarity ends.
 
 The magic-link token is a one-time credential. It goes into the login URL emailed to the user, and its only job is to prove that whoever clicked the link controls the mailbox. It should be single-use, expire quickly (minutes to an hour), and die the moment it's verified. Think of it as a key that dissolves in the lock.
 
@@ -17,7 +17,7 @@ Distinct lifetimes, distinct storage, distinct validation paths. Trouble starts 
 
 Two related habits worth adopting.
 
-Keep tokens out of visible URLs wherever you can. The magic link itself has no choice, that's the mechanism. But after verification, everything should move into the request body or an httpOnly cookie. URLs leak in ways nothing else does: browser history, server access logs, proxy logs, Referer headers, screenshots in bug reports. I've seen a session-relevant token sit in a query parameter where every page view wrote it to the access log. Nobody malicious found it. That's luck, not design.
+Keep tokens out of visible URLs wherever you can. The magic link itself has no choice, that's the mechanism. But after verification, everything should move into the request body or an httpOnly cookie. URLs leak in ways nothing else does: browser history, server access logs, proxy logs, Referer headers, screenshots in bug reports. A token parked in a query parameter gets written to the access log on every page view that carries it, and "nobody malicious read those logs" is luck rather than design.
 
 Make verification errors specific. When a link fails, "expired" and "invalid" are different situations with different correct responses. Expired means the user is legitimate but slow, so offer to resend. Invalid means the token was mangled, already used, or possibly forged, which deserves more caution and maybe a log entry. Collapsing both into "login failed, try again" feels tidy and helps no one. The user retries the same dead link, support can't tell what happened, and the log says nothing useful.
 

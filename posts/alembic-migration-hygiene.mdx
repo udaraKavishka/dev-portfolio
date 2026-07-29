@@ -15,7 +15,7 @@ alembic.util.exc.CommandError: Can't locate revision identified by 'f7a2c9d1b3e4
 
 If you've used Alembic (or Flask-Migrate, which wraps it), you may know the cold feeling this message produces. The database says it's at revision f7a2c9d1b3e4. Alembic scans the migration files and finds no such revision. The two sources of truth have diverged, and neither one can be casually rewritten.
 
-In our case the cause was ordinary: a migration file had been deleted during branch cleanup, after it had already been applied to a database. The file was the only record of what that revision was. Git had it, thankfully, and restoring the file fixed everything in one commit. But sitting with a database that referenced a phantom revision made the mental model click in a way documentation never had.
+The cause, when I hit it, was ordinary: a migration file had been deleted during branch cleanup, after it had already been applied to a local database. The file was the only record of what that revision was. Git had it, thankfully, and restoring the file fixed everything in one commit. But sitting with a database that referenced a phantom revision made the mental model click in a way documentation never had.
 
 Alembic tracks state in two places. The `alembic_version` table in your database holds the ID of the currently applied revision. The files in `versions/` form a chain, each one naming its parent. Every Alembic operation works by walking that chain between where the database is and where the files say it could go. Delete a file from the middle (or from the tip, if a database points at it) and the walk fails. Migration files aren't scaffolding you can prune. They're the ledger.
 

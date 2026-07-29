@@ -7,11 +7,11 @@ tags: ["UX", "Frontend", "Admin Tools"]
 readTime: "3 min read"
 ---
 
-One of my early tickets was a search improvement for an internal dashboard. The system had an advanced search modal buried behind a button on one specific page. Staff used it constantly, but only from that page. From anywhere else, finding a record meant navigating back first.
+One of my early tickets was a search improvement for a dashboard-style app. It had an advanced search modal buried behind a button on one specific page. People used it constantly, but only from that page. From anywhere else, finding a record meant navigating back first.
 
-The request was to make the search reachable from everywhere. The obvious answer is a search icon in the header. The answer we shipped was Ctrl+F.
+The request was to make the search reachable from everywhere. The obvious answer is a search icon in the header. The answer that shipped was Ctrl+F.
 
-My first reaction was that you never override browser shortcuts. That rule exists for a reason. Native find-in-page is real functionality, and stealing it from users is the kind of thing that gets written up in UX hall-of-shame threads. I raised it, and the counterargument was simple: watch how people actually use this app. Nobody was pressing Ctrl+F to find text on the page. The pages are dense tables where the browser's find box is nearly useless anyway. What staff wanted, dozens of times a day, was "find this record." Gmail overrides keyboard behavior. Linear does. GitHub captures the slash key. Inside a workspace app, users learn the app's dialect fast.
+My first reaction was that you never override browser shortcuts. That rule exists for a reason. Native find-in-page is real functionality, and stealing it from users is the kind of thing that gets written up in UX hall-of-shame threads. I raised it, and the counterargument was simple: watch how people actually use this app. Nobody was pressing Ctrl+F to find text on the page. The pages are dense tables where the browser's find box is nearly useless anyway. What users wanted, dozens of times a day, was "find this record." Gmail overrides keyboard behavior. Linear does. GitHub captures the slash key. Inside a workspace app, users learn the app's dialect fast.
 
 So the rule I took away is narrower than the one I arrived with. Don't override browser shortcuts *in content sites*. In an internal tool that people live in for eight hours a day, mapping the "find" instinct to the app's actual find is arguably more honest than leaving it bound to a feature nobody uses there.
 
