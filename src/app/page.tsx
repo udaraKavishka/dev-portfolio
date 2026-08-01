@@ -20,6 +20,11 @@ export const metadata: Metadata = {
   description: defaultDescription,
   alternates: {
     canonical: SITE_URL,
+    types: {
+      'application/rss+xml': [
+        { url: '/rss.xml', title: 'Udara Nalawansa — Blog' },
+      ],
+    },
   },
   openGraph: {
     title: 'Udara Nalawansa | DevOps Engineer in Sri Lanka',
