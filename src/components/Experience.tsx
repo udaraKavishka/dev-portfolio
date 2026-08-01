@@ -43,6 +43,13 @@ export default function Experience() {
                                 {item.description && (
                                     <p className={styles.description}>{item.description}</p>
                                 )}
+                                {item.highlights && (
+                                    <ul className={styles.highlights}>
+                                        {item.highlights.map((highlight, i) => (
+                                            <li key={i}>{highlight}</li>
+                                        ))}
+                                    </ul>
+                                )}
                             </div>
                         </motion.div>
                     ))}
