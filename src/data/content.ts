@@ -13,7 +13,7 @@ export const heroData = {
     name: "Udara Nalawansa",
     roles: [
         "Intern Software Engineer @ Xaventra",
-        "Final Year Undergraduate",
+        "BSc (Hons) IT Graduate - First Class",
         "DevOps Enthusiast",
         "Full Stack Developer",
         "Software Engineer",
@@ -150,6 +150,7 @@ export const projectsData: ProjectItem[] = [
 export const skillsData = [
     // Cloud and DevOps
     { name: 'AWS', category: 'Cloud' },
+    { name: 'GCP', category: 'Cloud' },
     { name: 'Docker', category: 'Containerization' },
     { name: 'Kubernetes', category: 'Orchestration' },
     { name: 'Docker Compose', category: 'Containerization' },
@@ -158,7 +159,6 @@ export const skillsData = [
     // CI/CD
     { name: 'Jenkins', category: 'CI/CD' },
     { name: 'GitHub Actions', category: 'CI/CD' },
-    { name: 'Nexus', category: 'CI/CD' },
     { name: 'SonarQube', category: 'CI/CD' },
     { name: 'GitLab CI', category: 'CI/CD' },
     { name: 'ArgoCD', category: 'CI/CD' },
@@ -171,27 +171,46 @@ export const skillsData = [
     { name: 'Prometheus', category: 'Monitoring' },
     { name: 'Grafana', category: 'Monitoring' },
     { name: 'ELK Stack', category: 'Monitoring' },
+    { name: 'Sentry', category: 'Monitoring' },
+
+    // AI and Machine Learning
+    { name: 'PyTorch', category: 'AI/ML' },
+    { name: 'scikit-learn', category: 'AI/ML' },
+    { name: 'Pandas', category: 'AI/ML' },
+    { name: 'NumPy', category: 'AI/ML' },
+    { name: 'MLP', category: 'AI/ML' },
+    { name: 'MLOps', category: 'AI/ML' },
+    { name: 'RAG', category: 'AI/ML' },
+    { name: 'ChromaDB', category: 'AI/ML' },
+    { name: 'Ollama', category: 'AI/ML' },
 
     // Programming and Scripting
     { name: 'Python', category: 'Programming' },
     { name: 'Java', category: 'Programming' },
     { name: 'JavaScript', category: 'Programming' },
+    { name: 'TypeScript', category: 'Programming' },
     { name: 'Bash', category: 'Programming' },
     { name: 'Go', category: 'Programming' },
 
     // Frontend
     { name: 'React.js', category: 'Frontend' },
     { name: 'Next.js', category: 'Frontend' },
-    { name: 'HTML', category: 'Frontend' },
-    { name: 'CSS', category: 'Frontend' },
+    { name: 'React Native', category: 'Frontend' },
     { name: 'TailwindCSS', category: 'Frontend' },
+    { name: 'shadcn/ui', category: 'Frontend' },
+    { name: 'TanStack Query', category: 'Frontend' },
 
     // Backend
     { name: 'Node.js', category: 'Backend' },
     { name: 'Python', category: 'Backend' },
+    { name: 'Java', category: 'Backend' },
     { name: 'Go', category: 'Backend' },
-    { name: 'Express.js', category: 'Backend' },
     { name: 'Spring Boot', category: 'Backend' },
+    { name: 'FastAPI', category: 'Backend' },
+    { name: 'Flask', category: 'Backend' },
+    { name: 'SQLAlchemy', category: 'Backend' },
+    { name: 'Alembic', category: 'Backend' },
+    { name: 'Pydantic', category: 'Backend' },
 
     // Databases
     { name: 'MongoDB', category: 'Database' },
@@ -201,9 +220,13 @@ export const skillsData = [
     // Tools and Collaboration
     { name: 'Git', category: 'Tools' },
     { name: 'GitHub', category: 'Tools' },
+    { name: 'Linux', category: 'Tools' },
+    { name: 'Claude Code', category: 'Tools' },
+    { name: 'MCP', category: 'Tools' },
+    { name: 'Postman', category: 'Tools' },
+    { name: 'OpenAPI', category: 'Tools' },
     { name: 'Figma', category: 'Tools' },
     { name: 'Trello', category: 'Tools' },
-    { name: 'Huly', category: 'Tools' },
 ];
 
 interface ExperienceItem {
@@ -211,15 +234,21 @@ interface ExperienceItem {
     company: string;
     period: string;
     description?: string;
+    highlights?: string[];
     link?: string;
 }
 
 export const experienceData: ExperienceItem[] = [
     {
         role: 'Intern Software Engineer',
-        company: 'Xaventra',
+        company: 'Xaventra (Private) Limited, Colombo',
         period: 'Feb 2026 - Present',
         description: 'Full stack development on a business services platform — building features and fixing bugs across Flask, FastAPI, and Next.js codebases, integrating WhatsApp Business API chatbots, email services, and RAG-based AI features, and working with production databases, migrations, and CI checks.',
+        highlights: [
+            'Building and maintaining a company secretarial and business compliance platform for Sri Lankan companies, spanning a Flask admin CRM, a FastAPI backend, and a Next.js client portal and marketing site.',
+            'Designed and integrated RESTful APIs in FastAPI and PostgreSQL against a Next.js and TypeScript frontend, following OpenAPI-driven development.',
+            'Diagnosed and resolved production issues through log analysis, database inspection, and API tracing, and supported CI/CD workflows, Alembic migrations, and incident response with root-cause analysis.',
+        ],
     },
 ];
 
@@ -232,10 +261,10 @@ interface EducationItem {
 
 export const educationData: EducationItem[] = [
     {
-        degree: 'Bachelor of Science Honours in Information Technology',
+        degree: 'Bachelor of Science Honours in Information Technology - First Class',
         institution: 'University of Jaffna ( Vavuniya University )',
-        period: '2022 - Present',
-        description: 'Focused on software engineering, cloud computing, distributed systems, and machine learning. Actively involved in various technical projects and leadership roles.',
+        period: '2022 - 2026 (transcript pending)',
+        description: 'Completed with First Class Honours and a GPA of 3.77. Focused on software engineering, cloud computing, distributed systems, and machine learning. Actively involved in various technical projects and leadership roles.',
     },
     {
         degree: 'School Education',
