@@ -1,0 +1,53 @@
+---
+title: "CeylonRoots — A Travel Platform With a Separate Admin Application"
+date: "2026-05-08"
+excerpt: "A Sri Lankan travel booking platform where the public site and the staff admin panel are two different applications on one Postgres database — Next.js for travellers, Flask for the people who run the business."
+techStack: ["Next.js", "TypeScript", "Prisma", "PostgreSQL", "Flask", "Python", "Spring Boot", "Tailwind CSS", "GitHub Actions"]
+githubUrl: "https://github.com/udaraKavishka/CeylonRoots"
+---
+
+## Problem
+
+A travel platform has two very different users. Travellers need a fast, image-heavy, SEO-visible site to browse packages, build itineraries, and book. Staff need dense CRUD screens — packages, destinations, departures, guides, gallery, bookings, blog, testimonials, submissions — where the priority is editing a lot of records quickly, not visual polish.
+
+Building both into one frontend means the admin screens inherit all the marketing site's constraints and every admin change risks the public site. The project started with a Spring Boot API behind a React frontend, which added a third problem: a Java service, a JavaScript frontend, and a Python-shaped admin workload all pulling in different directions.
+
+## Architecture / Approach
+
+```text
+  traveller                          staff
+     |                                 |
+     v                                 v
+  +---------------------+     +---------------------+
+  |  Next.js App Router |     |  Flask admin panel  |
+  |  app/api/* routes   |     |  Jinja2 + WTForms   |
+  |  Prisma client      |     |  SQLAlchemy         |
+  |  localhost:3000     |     |  admin.localhost    |
+  +---------------------+     +---------------------+
+              \                       /
+               \                     /
+                v                   v
+              +-------------------------+
+              |       PostgreSQL        |  one schema
+              +-------------------------+
+
+  backend/  Spring Boot + JPA + S3   (earlier iteration, kept in tree)
+
+  CI: eslint -> tsc --noEmit -> pytest, path-filtered per app
+```
+
+- **Two applications, one database.** The Next.js app owns the traveller experience and its own `app/api/*` routes through Prisma; the Flask panel owns staff CRUD through SQLAlchemy. Neither calls the other — Postgres is the integration point, so an admin deploy can't take the public site down.
+- **The admin is Flask on purpose.** Server-rendered Jinja2 forms with WTForms is simply less code than rebuilding twenty CRUD screens in React, and the form-heavy workload is where that stack is strongest.
+- **Split by hostname**, not by route prefix: the panel runs on `admin.localhost:3001` against the same data, keeping admin surface off the public origin entirely.
+- **Migrations are Alembic-managed** on the Flask side, so schema changes have a versioned history rather than being applied by whichever app booted first.
+- **A JSON-driven submission engine** (`submissions.json` + a schema file) defines enquiry forms as data, so a new form is a config edit rather than a new set of routes, templates, and models.
+- **The Spring Boot service is still in the repo** — controllers, JPA entities, DTOs, an S3 service, a global exception handler — as the earlier iteration of the same domain, which makes the modelling decisions comparable across two very different stacks.
+- **CI is path-filtered:** ESLint and `tsc` run when the Next.js app changes, pytest when the Flask backend does, so unrelated changes don't trigger unrelated jobs.
+
+## My Contribution
+
+Solo project — I'm the only contributor across all three applications. The decision I'd defend is the two-app split over one Next.js admin: the staff screens are almost entirely forms and lists, and Flask + Jinja2 + WTForms gets those built and edited faster than React would, while sharing the database keeps the two views of the data consistent by construction. I designed the Prisma schema, wrote the Next.js API routes and traveller UI, built the Flask admin (routes, forms, access control, Alembic migrations, seed data, API tests), and set up the path-filtered integrity workflow.
+
+## Outcome
+
+The platform runs as two independently deployable applications over one Postgres schema, with the admin surface isolated to its own hostname and the public site free to be optimized for speed and SEO. The Spring Boot iteration left in the tree makes this a useful comparison piece — the same travel domain modelled in JPA entities and in Prisma — and the CI setup means a change to either app is checked without dragging the other through its full pipeline.

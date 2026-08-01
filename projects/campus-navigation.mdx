@@ -1,0 +1,63 @@
+---
+title: "Efficient Campus Navigation — Shortest Paths With Predicted Travel Times"
+date: "2024-06-19"
+excerpt: "A campus routing system for the University of Vavuniya: Dijkstra over a hand-surveyed campus graph, plus a Random Forest that predicts how long an edge actually takes depending on time of day."
+techStack: ["Python", "scikit-learn (Random Forest)", "Pandas", "NumPy", "Dijkstra Algorithm", "Tkinter", "Pillow (PIL)"]
+githubUrl: "https://github.com/DilmyPerera/Efficient-Campus-Navigation"
+---
+
+## Problem
+
+The University of Vavuniya campus is not obvious to navigate — buildings, turning points, and connecting paths that a newcomer has to learn by walking them. The straightforward fix is a shortest-path system over a graph of the campus.
+
+But distance is the wrong thing to minimize on its own. The path that is shortest in metres isn't always the fastest one to walk: a route through the canteen at midday behaves differently than the same route at 7am, and an event on campus changes it again. That makes the edge weight a *prediction* problem, not a fixed number — which is the part I owned.
+
+## Architecture / Approach
+
+```text
+  campus survey
+       |
+       v
+  +--------------------------------------+
+  |  campus graph                        |
+  |  building -> {neighbour: distance}   |
+  |  + x,y screen coordinates            |
+  +--------------------------------------+
+       |                        |
+       |                        v
+       |            +---------------------------------+
+       |            |  travel time model              |
+       |            |  features: from, to, time of    |
+       |            |  day, day of week, event flag   |
+       |            |  OneHotEncoder + StandardScaler |
+       |            |  RandomForestRegressor (100)    |
+       |            |  scored with MAE                |
+       |            +---------------------------------+
+       |                        |
+       v                        v
+  +--------------------------------------+
+  |  Dijkstra (heapq priority queue)     |
+  +--------------------------------------+
+       |
+       v
+  Tkinter canvas: campus image + route drawn over x,y coords
+```
+
+- **The graph is an adjacency map**, `{"TP1": {"MAIN GATE": 35, "LIB": 110, "x": 600, "y": 535}}` — each node carries both its neighbours' distances and its position on the campus image, so routing and drawing read from one source.
+- **Dijkstra with `heapq`** computes the path; the coordinate keys are skipped during relaxation so layout data never leaks into path cost.
+- **Travel time is modelled separately from distance.** Features are the edge endpoints plus time of day, day of week, and an event flag — one-hot encoded for the categorical fields, scaled for the numeric one, through a `ColumnTransformer`.
+- **A `RandomForestRegressor` (100 trees)** predicts travel time, evaluated with mean absolute error on a held-out split. A tree ensemble suits this because the relationship is non-linear and interaction-heavy — a specific corridor at a specific hour, not a smooth global trend.
+- **Seeds are fixed** (`np.random.seed(42)`, `random_state=42` on both the split and the model) so results are reproducible rather than a lucky run.
+- **Tkinter + Pillow** render the campus image with the computed route drawn over it, which keeps the whole thing runnable with no server and no install beyond Python.
+
+## My Contribution
+
+Team project. I was in charge of the model: the travel-time dataset construction, the preprocessing pipeline (one-hot encoding for locations and time features, scaling for the event flag), the Random Forest training and MAE evaluation, and the notebook that documents it. I also contributed the initial application window and the project README.
+
+The honest caveat, which the notebook makes plain: travel times are synthetic, generated from distance plus noise, because there was no observed timing data to train on. The value is the pipeline and the framing — the campus graph is real, and the model slots straight in once real walk-time observations exist.
+
+*(Contribution derived from commit history — correct me if the split differs from what you remember.)*
+
+## Outcome
+
+A working desktop navigator that computes and draws the shortest route between any two campus locations, with a separately trained travel-time model ready to replace raw distance as the edge weight. What I'd carry forward from it is the separation itself: routing and cost estimation are different problems, and keeping the graph independent of how edges are priced means the model can improve without touching the pathfinder.

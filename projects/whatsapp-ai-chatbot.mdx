@@ -1,0 +1,58 @@
+---
+title: "WhatsApp AI Workspace Chatbot"
+date: "2026-05-22"
+excerpt: "A WhatsApp Cloud API webhook that treats the AI backend as a swappable dependency — signature validation, idempotent delivery, and a local shim so the whole thing runs without a live model."
+techStack: ["Python", "Flask", "WhatsApp Cloud API", "Meta Webhooks", "Gemini", "Shell"]
+githubUrl: "https://github.com/udaraKavishka/whatsapp-ai-bot"
+---
+
+## Problem
+
+Most "WhatsApp chatbot" examples wire the Meta webhook straight into one specific AI provider's SDK. That gets a demo working and then locks you in: switching models means rewriting the transport layer, and you can't develop anything locally without burning API calls against a live model. Meta also retries webhook deliveries, so a naive handler answers the same message twice — which on WhatsApp is very visible to the person you're talking to.
+
+I wanted a webhook layer that was correct on its own terms — verified, deduplicated, testable offline — with the AI treated as a service behind a contract rather than a hardcoded dependency.
+
+## Architecture / Approach
+
+```text
+  WhatsApp user
+       |  inbound message
+       v
+  Meta Cloud API
+       |  POST /webhook/meta/whatsapp
+       v
+  +----------------------------------+
+  |  security.py                     |  X-Hub-Signature-256 vs APP_SECRET
+  +----------------------------------+
+       |  verified
+       v
+  +----------------------------------+
+  |  idempotency.py                  |  seen this message id? drop it
+  +----------------------------------+
+       |  new
+       v
+  +----------------------------------+
+  |  models.py -> chat_client.py     |  { session_id, message }
+  +----------------------------------+
+       |                        ^
+       v                        |  { message }
+  CHAT_BACKEND_URL  <---- gemini_shim.py (local dev)
+       |
+       v
+  whatsapp_client.py -> Graph API -> user
+```
+
+- **The chat backend is a URL, not a library.** Anything that accepts `{session_id, message}` and returns `{message}` can sit behind `CHAT_BACKEND_URL`. Swapping providers is a config change.
+- **`gemini_shim.py`** implements that same contract locally, so the full inbound-to-reply path is exercisable in development without a hosted model.
+- **Signature verification happens before parsing.** `X-Hub-Signature-256` is checked against `META_APP_SECRET` on every `POST`; the `GET` subscription handshake is verified separately against `META_VERIFY_TOKEN`.
+- **Idempotency is keyed on the inbound message id**, file-backed for now with a clear seam to move it to Redis or Postgres — Meta's retries are a normal condition, not an error case.
+- **Session identity is derived**, not stored: `phone_number_id` + sender number, so conversation continuity doesn't need a user table.
+- **Errors are read from three places** in the payload (`value.errors`, `messages[].errors`, `statuses[].errors`) because Meta reports failures in different shapes depending on where they happen.
+
+## My Contribution
+
+Solo project. I designed the `{session_id, message}` contract that keeps the AI provider swappable, and wrote the shim that implements it locally so the webhook can be developed and tested end-to-end offline. The split into `security.py`, `models.py`, `chat_client.py`, `whatsapp_client.py`, and `idempotency.py` was deliberate: parsing, verification, and each outbound call are separately testable, and the parts most likely to change (the AI backend, the dedupe store) are the ones with the narrowest interfaces. I also wrote the setup docs — Meta test app creation, key setup, webhook overrides, troubleshooting — because the hard part of a Meta integration is usually the console, not the code.
+
+## Outcome
+
+The integration runs as a reusable template: point it at a different chat backend and a different WhatsApp number and it becomes a bot for another business, with no changes to the webhook layer. Signature validation and dedupe are handled at the boundary rather than being bolted on later, and the production gaps are documented explicitly — Redis-backed idempotency, the 24-hour session window, retries with backoff, and async acknowledgement under load — rather than left implied.

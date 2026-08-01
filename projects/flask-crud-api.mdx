@@ -12,6 +12,24 @@ A CRUD API is a common enough exercise that it's easy to stop at "the endpoints 
 
 ## Architecture / Approach
 
+```text
+  docker compose up
+  +------------------------------------------+
+  |                                          |
+  |  +----------------+   depends_on +       |
+  |  |  api (Flask)   |   healthcheck        |
+  |  |  SQLAlchemy    |----------------+     |
+  |  +----------------+                |     |
+  |          |                         v     |
+  |          |  CRUD            +-----------+|
+  |          +----------------->| Postgres  ||
+  |                             +-----------+|
+  +------------------------------------------+
+
+  GitHub Actions on every push:
+    build image -> compose up -> wait for health -> E2E requests
+```
+
 - **Flask + Flask-SQLAlchemy** implement the user-management CRUD endpoints against a relational schema.
 - **PostgreSQL** provides persistence, run as a separate service rather than SQLite, so the setup matches how a real deployment would be composed.
 - **Docker Compose** wires the API and database together with defined service dependencies and environment variables, so `docker compose up` reproduces the full stack identically on any machine.
