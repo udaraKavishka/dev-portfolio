@@ -13,6 +13,27 @@ Most RAG (Retrieval-Augmented Generation) tutorials stop at "it works on my mach
 
 ## Architecture / Approach
 
+```text
+                    client
+                      |
+                      | POST /ingest, /query
+                      v
+            +--------------------+
+            |      FastAPI       |  stateless, OpenAPI/Swagger
+            +--------------------+
+               |              |
+     embed +   |              |  prompt + retrieved context
+     similarity|              v
+     search    |     +--------------------+
+               |     |  Ollama/TinyLlama  |  local generation
+               v     +--------------------+
+        +-----------+
+        | ChromaDB  |  vector store, own service
+        +-----------+
+
+  each box = its own container -> its own k8s deployment
+```
+
 The system is split into clearly separated concerns:
 
 - **FastAPI** exposes the RAG endpoints (ingest, query) with OpenAPI/Swagger docs generated automatically, so the API contract is self-documenting from day one.

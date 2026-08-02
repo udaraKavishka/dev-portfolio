@@ -53,6 +53,35 @@ function parsePost(fileName: string): PostWithContent {
     };
 }
 
+// Strip MDX/markdown syntax down to readable prose. Shared by the search index
+// and the feed excerpt fallback.
+function toPlainText(content: string): string {
+    return content
+        .replace(/```[\s\S]*?```/g, ' ')
+        .replace(/`[^`]*`/g, ' ')
+        .replace(/!?\[([^\]]*)\]\([^)]*\)/g, '$1')
+        .replace(/[#>*_~|-]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+}
+
+// Posts without an `excerpt` in frontmatter still need a description in the RSS
+// feed, so fall back to the opening of the body.
+export function excerptFor(post: { excerpt?: string }, content: string, maxLength = 180): string {
+    if (post.excerpt) {
+        return post.excerpt;
+    }
+
+    const plain = toPlainText(content);
+    if (plain.length <= maxLength) {
+        return plain;
+    }
+
+    const cut = plain.slice(0, maxLength);
+    const lastSpace = cut.lastIndexOf(' ');
+    return `${(lastSpace > 0 ? cut.slice(0, lastSpace) : cut).trimEnd()}…`;
+}
+
 export function getAllPosts(): Post[] {
     if (!fs.existsSync(postsDirectory)) {
         return [];
@@ -83,15 +112,32 @@ export function getSearchIndex(): SearchEntry[] {
         .filter((fileName) => /\.mdx?$/.test(fileName))
         .map((fileName) => {
             const { slug, content } = parsePost(fileName);
-            const body = content
-                .replace(/```[\s\S]*?```/g, ' ')
-                .replace(/`[^`]*`/g, ' ')
-                .replace(/!?\[([^\]]*)\]\([^)]*\)/g, '$1')
-                .replace(/[#>*_~|-]/g, ' ')
-                .replace(/\s+/g, ' ')
-                .trim()
-                .toLowerCase();
-            return { slug, body };
+            return { slug, body: toPlainText(content).toLowerCase() };
+        });
+}
+
+export interface FeedPost extends Post {
+    description: string;
+}
+
+// Every post, newest first, with a guaranteed description for the RSS feed.
+export function getFeedPosts(): FeedPost[] {
+    if (!fs.existsSync(postsDirectory)) {
+        return [];
+    }
+
+    return fs
+        .readdirSync(postsDirectory)
+        .filter((fileName) => /\.mdx?$/.test(fileName))
+        .map((fileName) => {
+            const { content, ...post } = parsePost(fileName);
+            return { ...post, description: excerptFor(post, content) };
+        })
+        .filter((post) => post.date)
+        .sort((a, b) => {
+            const dateDiff = new Date(b.date).getTime() - new Date(a.date).getTime();
+            if (dateDiff !== 0) return dateDiff;
+            return a.title.localeCompare(b.title);
         });
 }
 
