@@ -12,6 +12,24 @@ URL shortening is a well-worn exercise, but it's a good forcing function for a s
 
 ## Architecture / Approach
 
+```text
+  write path (rare)              read path (hot)
+  POST /shorten                  GET /:code
+       |                              |
+       v                              v
+  +---------------------------------------+
+  |            Go + Gin HTTP              |
+  +---------------------------------------+
+       |  SET code -> url         |  GET code
+       v                          v
+  +---------------------------------------+
+  |                 Redis                 |  in-memory KV
+  +---------------------------------------+
+                                  |
+                                  v
+                          302 -> original URL
+```
+
 - **Go + Gin** implement the HTTP layer: an endpoint to create a short link and a redirect endpoint that resolves it.
 - **Redis** is the store, not Postgres or MySQL — short-link lookups are simple key-to-URL reads that need to be fast and don't need relational queries, joins, or complex indexing, so an in-memory key-value store is a better fit than paying for a relational engine's overhead.
 - **Docker** packages the service so it can be run and reasoned about the same way in development as in any deployment target.

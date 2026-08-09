@@ -1,0 +1,57 @@
+---
+title: "TrackNGo — Real-Time Bus Tracking Across Four Deployable Apps"
+date: "2025-04-03"
+excerpt: "A public transport platform for Sri Lankan commuters, split into four repositories — public API, commuter frontend, admin API, admin frontend — so operators and passengers never share a deployment."
+techStack: ["Node.js", "Express.js", "TypeScript", "MongoDB", "Mongoose", "React", "Vite", "Leaflet", "JWT", "Tailwind CSS"]
+githubUrl: "https://github.com/TrackNGo"
+---
+
+## Problem
+
+Bus travel in Sri Lanka runs on informal knowledge: which bus goes where, roughly when it turns up, and what the fare should be. TrackNGo set out to make that legible — live bus locations, route and timetable lookup, fare estimation, and lost-and-found — for commuters, while giving operators and admins the tools to keep that data accurate.
+
+Those are two different products with two different security profiles. Commuters need an anonymous, fast, mostly read-only surface. Admins and conductors need authenticated write access to buses, routes, timetables, fares, reports, and user accounts. Serving both from one application means one bug or one bad deploy exposes the operator surface to the public internet.
+
+## Architecture / Approach
+
+```text
+  commuter (anonymous)                 admin / conductor (authenticated)
+        |                                        |
+        v                                        v
+  +-------------------+                 +-----------------------+
+  | frontend          |                 | frontend_admin        |
+  | React + Vite + TS |                 | React + Vite + TS     |
+  | Leaflet map       |                 | dashboards + tables   |
+  +-------------------+                 +-----------------------+
+        |  REST                                  |  REST + JWT
+        v                                        v
+  +-------------------+                 +-----------------------+
+  | backend (JS)      |                 | backend_admin (TS)    |
+  | tracking, alerts, |                 | AuthMiddleware        |
+  | lost & found,     |                 | bus/route/timetable/  |
+  | contact, news     |                 | fare/report/user CRUD |
+  +-------------------+                 +-----------------------+
+             \                               /
+              v                             v
+             +-------------------------------+
+             |            MongoDB            |
+             +-------------------------------+
+```
+
+- **Four repositories, two audiences.** The public API carries no admin routes at all, so there is nothing to accidentally leave unauthenticated — the separation is structural rather than a middleware check.
+- **The admin backend is TypeScript with explicit interfaces** (`BusDetails`, `BusRoute`, `TimeTable`, `Report`, `fareEstimate`) because it's the write side: mistyped payloads there corrupt data the public side reads. The public backend stayed JavaScript, where the surface is narrower and mostly reads.
+- **`AuthMiddleware` + JWT guards every admin route**, with `ProtectedRoute` mirroring the same boundary in the admin frontend so an unauthenticated session never renders operator screens.
+- **Live location is a first-class model** (`busLocationModel`) written by conductors and read by commuters through the tracking controller, with the commuter map rendered in Leaflet against those coordinates.
+- **Contact and reports are modelled as submissions with status**, so an enquiry or a lost-item report has a lifecycle staff can work through rather than being fire-and-forget.
+
+## My Contribution
+
+Team project of six. I'm the top contributor on the admin backend (105 commits) and second on the public backend (46) and the commuter frontend (63), with work in the admin frontend too — so the parts I own are mostly the API side of both surfaces.
+
+Concretely: I built the emergency alert feature end to end (model, controller, routes, and the per-bus retrieval endpoint), the contact and enquiry system across all four apps — `Contact` model and controller on the public API, the `FormSubmission` model, TypeScript interfaces, controller and routes on the admin API, and the admin screens to view, update, and delete submissions — the bus service request endpoints, the conductor password-change and admin password-change flows, and fixes to the fare and bus-route admin screens. On the commuter frontend I worked on the route selection behaviour, including excluding the selected start location from the end-location options.
+
+*(Team attribution here is derived from commit history — correct me if any of it misstates who owned what.)*
+
+## Outcome
+
+A four-application platform where the public and operator surfaces are separately deployable and separately secured, backed by one MongoDB database. The pattern I took from it is the one worth keeping: when two audiences have different auth requirements, splitting the deployment is cheaper and safer than defending a shared one — and typing the write side more strictly than the read side is a reasonable place to spend the extra effort.

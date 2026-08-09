@@ -1,0 +1,56 @@
+---
+title: "TaskFlow — Consolidating a Split MERN App into One Next.js Service"
+date: "2026-05-09"
+excerpt: "A Trello-style task manager that started as a separate Express API and React SPA, then got collapsed into a single Next.js app on Prisma and Postgres — without breaking the existing frontend's API contract."
+techStack: ["Next.js", "TypeScript", "Prisma", "PostgreSQL", "JWT", "Material UI", "GitHub Actions", "Docker"]
+githubUrl: "https://github.com/udaraKavishka/IT22242024taskflow"
+---
+
+## Problem
+
+TaskFlow started as a conventional MERN split: an Express + MongoDB backend in one folder, a React SPA in another, deployed and run separately. That shape costs more than it gives for an app this size — two deploy targets, two dependency trees, CORS configuration, and a local setup that needs two terminals before anything renders.
+
+The obvious move was to consolidate into one Next.js app. The catch: the existing frontend already spoke to a specific API shape, and a rewrite that changed every response shape at the same time as the runtime would have been impossible to debug — any bug could be from the migration or from the new serialization.
+
+## Architecture / Approach
+
+```text
+  browser
+     |
+     v
+  +----------------------------------------------+
+  |             Next.js (one deploy)             |
+  |                                              |
+  |  app/boards, app/board/[id], app/login  (UI) |
+  |                    |                         |
+  |                    v                         |
+  |  app/api/[...path]/route.ts   catch-all API  |
+  |         |                                    |
+  |         |  lib/request-user.ts   (JWT)       |
+  |         |  lib/legacy-serializers.ts         |
+  |         v      keeps old response shapes     |
+  |  lib/prisma.ts                               |
+  +----------------------------------------------+
+                      |
+                      v
+                 PostgreSQL
+
+  deprecated/backend + deprecated/frontend kept in-tree as reference
+
+  CI: postgres:16 service -> prisma generate/migrate -> build
+```
+
+- **A catch-all route (`app/api/[...path]/route.ts`)** absorbs the old API surface in one place instead of scattering dozens of route files, so the migration is a single well-defined boundary.
+- **`lib/legacy-serializers.ts` and `lib/mappers.ts`** translate Prisma models back into the response shapes the original client expected. This is the deliberate part: the storage layer changed from MongoDB documents to a relational schema, but the wire format stayed put, so migration bugs and serialization bugs stay separable.
+- **Prisma + PostgreSQL** replace Mongoose + MongoDB — boards, lists, cards, and members are relational data with real foreign keys, and the schema is now migration-managed rather than implicit in application code.
+- **`lib/auth.ts` + `lib/request-user.ts`** keep JWT verification in one place, shared by every API path rather than repeated per-route middleware.
+- **The old apps stay in the repo** under `deprecated/`, so the previous behaviour is checkable rather than remembered.
+- **CI runs against a real Postgres 16 service container** with `prisma generate` and migrations applied before the build — the same failure mode the app would hit on a fresh deploy.
+
+## My Contribution
+
+I built the original MERN backend — the board, list, card, checklist, label, comment, attachment, and member services, plus JWT auth middleware and validation — and later did the consolidation into the Next.js monolith: the Prisma schema, the catch-all API route, the legacy serializers that preserved the existing response contract, and the GitHub Actions workflow that stands up Postgres and runs migrations on every push. The decision to keep the old response shapes rather than modernize them in the same pass was mine, and it's the reason the migration was reviewable.
+
+## Outcome
+
+One repository, one deploy target, one `npm run dev`, and a relational schema with migrations instead of ad-hoc documents — with the client-facing API unchanged through the move. The `deprecated/` folder plus the changelog make the before-and-after legible, which is most of the value of the project: it's a worked example of migrating a running app's runtime and storage without changing its contract at the same time.

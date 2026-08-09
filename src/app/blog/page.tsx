@@ -1,5 +1,7 @@
+import { Rss } from 'lucide-react';
 import { getAllPosts, getSearchIndex } from '@/lib/posts';
 import BlogList from '@/components/BlogList';
+import Reading from '@/components/Reading';
 import Navbar from '@/components/Navbar';
 import styles from './blog.module.css';
 import type { Metadata } from 'next';
@@ -24,10 +26,15 @@ export const metadata: Metadata = {
     },
     alternates: {
         canonical: absoluteUrl('/blog'),
+        types: {
+            'application/rss+xml': [
+                { url: '/rss.xml', title: 'Udara Nalawansa — Blog' },
+            ],
+        },
     },
 };
 
-export default function Blog() {
+export default async function Blog() {
     const posts = getAllPosts();
     const searchIndex = getSearchIndex();
 
@@ -46,8 +53,13 @@ export default function Blog() {
                     <p className={styles.subtitle}>
                         notes from my internship, research, and self-learning. devops, kubernetes, ML, and the bugs in between.
                     </p>
+                    <a href="/rss.xml" className={styles.feedLink}>
+                        <Rss size={14} />
+                        <span>rss</span>
+                    </a>
                 </header>
                 <BlogList posts={posts} searchIndex={searchIndex} />
+                <Reading />
             </div>
             </main>
         </>

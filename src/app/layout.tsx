@@ -60,6 +60,11 @@ export const metadata: Metadata = {
   manifest: '/site.webmanifest',
   alternates: {
     canonical: SITE_URL,
+    types: {
+      'application/rss+xml': [
+        { url: '/rss.xml', title: 'Udara Nalawansa — Blog' },
+      ],
+    },
   },
 };
 
