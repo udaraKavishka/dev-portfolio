@@ -1,0 +1,32 @@
+---
+title: "A uniqueness check has to exclude the record it's checking"
+date: "2026-07-09"
+category: "intern-diaries"
+excerpt: "Replaying a workflow made users hit 'this reference already exists' for their own record's reference. Admins never saw it, which is why it survived."
+tags: ["Backend", "Validation", "Debugging"]
+readTime: "3 min read"
+---
+
+A reference number has to be unique, so the form validates it: look up whether any record holds this value, and reject if one does. That works exactly until the record being edited is the one holding it.
+
+We hit it through the back door. When a workflow gets reset and replayed — the team does this when something needs correcting a few steps back — the later steps ask for the reference again. The record already exists by then, holding that value, so the validator found a match and refused. The user was being told their own reference belonged to someone else.
+
+The corrected check needs to know which record to ignore:
+
+```python
+query = Record.query.filter(Record.reference == value)
+if record_id:
+    query = query.filter(Record.id != record_id)
+if query.first():
+    raise ValidationError("Reference already exists")
+```
+
+Straightforward. The interesting part is why it took so long to surface.
+
+The validator had a bypass: administrators skipped the check entirely, presumably added at some point so someone could fix bad data without fighting the form. Which means every person most likely to test a replay, debug a stuck workflow, or click through the flow while investigating a complaint was the one person the bug could not happen to. The people who could reproduce it were the people who couldn't debug it, and they reported it as "the form won't let me save", which is not a phrase that leads anyone to a uniqueness query.
+
+So there are two things I now watch for.
+
+The first is the shape of the bug: any "does this value already exist" check needs an exclusion for the current record, and the exclusion has to travel to wherever the validator runs. That plumbing is often the awkward part, because the form frequently doesn't own the record — something above it does.
+
+The second is more general and, I think, more useful. A role-based bypass around a validation rule creates a class of bug that is invisible to privileged users. Feature flags do the same thing, and so does any debug-only branch. When someone reports a problem I can't reproduce, one of my first questions now is whether my account skips something theirs doesn't. That question has explained more mystery reports for me than any log line.

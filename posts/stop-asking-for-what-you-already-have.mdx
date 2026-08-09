@@ -1,0 +1,24 @@
+---
+title: "Stop asking for the file you already have"
+date: "2026-08-07"
+category: "intern-diaries"
+excerpt: "Two steps apart in the same workflow, the same documents were being uploaded twice by the same person. The second upload wasn't a requirement. It was a missing line."
+tags: ["Product", "Backend", "Workflow"]
+readTime: "3 min read"
+---
+
+Somewhere around the middle of a long workflow, a step collects a couple of signed documents. Four steps later, another step asks for the same documents again. Same person doing both, often in the same sitting, digging back through their downloads folder to re-attach files the system already has.
+
+They'd been doing it for months. It came up as a passing remark, not a ticket.
+
+The engine underneath actually supports this properly. A step can declare that a field is pre-filled from a named earlier step, and the form opens with the value already in it. The mechanism was there and used elsewhere. The later step just never declared it, so it rendered empty, and an empty required field is an instruction. Nobody thinks "this should have been filled in" — they think "it wants the file again, fine".
+
+Adding the declarations was small. What made it interesting was the pass afterwards, looking for the same shape everywhere else, because once you know what it looks like you find it repeatedly. In several places the value existed one or two steps back and the form asked anyway. In one, a reference recorded at an approval step wasn't shown at the verification step that exists specifically to check it, so the verifier was checking against a value they had to go and find in another tab.
+
+Two wrinkles worth knowing.
+
+Pre-filling from an earlier step means keys have to match, and in a few places they didn't — the same document was called one thing early on and something else later. Renaming a key inside stored form data is a migration, not an edit, because everything already completed keeps its data under the old name and simply reads as blank afterwards. That needed a backfill command, run in dry-run first, and it needs to be safe to run twice.
+
+The other one is that the label and the key are allowed to differ, and here they should. Early in the flow it's the document as submitted. Later it's the approved copy, and staff need to see that difference. So the keys were unified and the labels deliberately left distinct. Aligning the data doesn't mean flattening the vocabulary people use.
+
+The general version, which I think applies to any multi-step form anywhere: every time you ask for something, ask whether the system already knows it. Asking twice isn't a small annoyance that costs a few seconds. It's an invitation to attach the wrong file, and it teaches people that the software doesn't remember what they told it, which changes how much care they take with everything else it asks.

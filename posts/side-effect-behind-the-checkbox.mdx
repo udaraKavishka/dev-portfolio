@@ -1,0 +1,36 @@
+---
+title: "The side effect behind the checkbox"
+date: "2026-07-07"
+category: "intern-diaries"
+excerpt: "An optional 'send email' checkbox was quietly gating the creation of a record the workflow depended on. Unchecking it broke two steps further down."
+tags: ["Backend", "Debugging", "Workflow"]
+readTime: "3 min read"
+---
+
+A bug came in that read like a data problem: some records were missing a related row, so the next two steps in the workflow had nothing to work with and the recipient never got their link. Nobody could reproduce it on demand, which is usually the sign that the trigger is a human choice rather than a code path.
+
+It was a checkbox. The form has a "send email" option, unticked when someone has already spoken to the recipient and doesn't want another mail landing. The code looked like this, roughly:
+
+```python
+if self.send_email.data:
+    context = build_context(step)
+    send_mail(...)
+```
+
+`build_context()` is also the function that creates the related record. It was inside the branch. So the record existed only when an email was sent, and the two later steps were built on the assumption that it always existed.
+
+What makes this worth writing down is that the code reads perfectly fine. Everything inside the `if` block is about sending an email: build the context, render the template, send. The record creation got pulled in because the email needs a link, and the function that makes the link also makes the record. It got grouped by *what it was needed for* instead of *what it does*.
+
+The fix was mechanical once seen. Move the call above the guard, in every form that had copied the same shape:
+
+```python
+context = build_context(step)
+if self.send_email.data:
+    send_mail(...)
+```
+
+The number of copies is its own signal. When the same three lines appear in eight places, a bug in the arrangement of those lines is a bug in eight places, and it stays hidden in seven of them because nobody ever unticks the box on those particular forms.
+
+The rule I took from it: a state change that other steps depend on must never sit inside a branch that exists for an optional notification. Do the durable thing first, then decide whether to tell anyone about it. Notifications are the part you're allowed to skip; records are not.
+
+There's a testing lesson underneath. Every test exercised the default path, because the default is what you click when you're checking that the feature works. The failure lived entirely in the non-default choice, which is a place tests rarely go unless someone deliberately asks "what if the user says no to this?" That question is cheap to ask and, in a workflow app where each step feeds the next, it's usually where the interesting failures are.

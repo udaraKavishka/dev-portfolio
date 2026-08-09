@@ -1,0 +1,26 @@
+---
+title: "Say the whole word"
+date: "2026-08-09"
+category: "intern-diaries"
+excerpt: "I shortened a constant to an acronym that made sense to me at the time. It got sent back, and the reasoning stuck with me more than the change did."
+tags: ["Code Quality", "Naming", "Internship"]
+readTime: "3 min read"
+---
+
+I'd written a constant for how many working days you get before a particular kind of follow-up is due. The phrase behind it is long, and the phrase appeared in a few other names in the same file, so I compressed it into an acronym. Three letters. Perfectly readable while I was holding the whole thing in my head.
+
+It came back in review with one line: don't use short forms. Write it out.
+
+```python
+MAX_CNA = 2
+
+MAX_CLIENT_NOT_ANSWER_WORKING_DAYS = 2
+```
+
+My first reaction was that the second one is unwieldy, which it is. The argument that changed my mind is that the abbreviation only works while you already know the answer. If you know the concept, `CNA` is a fast reminder. If you don't, it's a lookup, and there is nowhere to look it up. Not the code, not the database, not the docs. You have to find someone who was there. Every name is written once and read by people who weren't in the conversation that produced it, and the reader's cost is the one that repeats.
+
+There's a subtler version that I've since started catching in my own work. An abbreviation quietly invents a word. Once `CNA` exists in the code, it starts appearing in commit messages, then in a variable name, then in something a person says in a standup, and suddenly there's a term that means something specific to the system and nothing at all to the team who does the work. The domain already had a phrase for this. Compressing it swapped a shared word for a private one, and that's a real loss even though it looks like a formatting preference.
+
+I'd add one thing the review didn't say. Long names are a hint that the concept might be doing too much. `MAX_CLIENT_NOT_ANSWER_WORKING_DAYS` is long because it carries four ideas: a maximum, a category, a unit and a rule. Sometimes that's just what the thing is. Sometimes the length is telling you the thing should be a small object or a lookup keyed by category rather than a flat constant per case. Writing it out is what makes that visible; the acronym hides it.
+
+Not every short form is bad, of course. Established acronyms that the whole industry reads without pausing are fine, and the codebase should use whatever the domain genuinely uses. The rule is narrower than "never abbreviate": don't coin an abbreviation. If you're the first person to write it, you've made up a word, and you've made it up on behalf of everyone who reads the file later.

@@ -1,0 +1,22 @@
+---
+title: "Rewinding a workflow means recomputing it"
+date: "2026-07-10"
+category: "intern-diaries"
+excerpt: "Restoring a task to an earlier step reset the work but kept the original assignees, quietly sending steps back to people who had left the task."
+tags: ["Workflow", "Backend", "Design"]
+readTime: "3 min read"
+---
+
+Tasks can be restored: pick an earlier step, and it plus everything after it resets to not-started so the team can redo that stretch. Useful when something needs correcting late, and dangerous in a way I didn't anticipate.
+
+The rule for a task moving forward is that completed steps keep the person who did them, and future steps pick up whoever is currently assigned to the task. That's deliberate — history should record who actually did the work, and upcoming work should go to the current team. Both halves are right.
+
+Restore broke the second half. The reset steps had been created when the task started, carrying the assignee from that moment, and resetting only changed their status. So a step from six weeks ago came back to life pointing at whoever was on the task back then, even though it had been reassigned twice since. The work reappeared in the wrong person's queue, and the right person never saw it.
+
+The fix is to treat restore as a fork in the timeline rather than an undo. Anything the system derives at creation time has to be derived again for the steps being revived: every user reference on the step, and in a neighbouring case the expiry date, which should be recomputed from the moment the step is re-sent rather than carrying the original deadline forward.
+
+What I keep circling back to is that the forward path and the rewind path were written months apart, by different people, and each is correct on its own terms. The forward path says "future steps use the current team". The rewind path says "these steps are now in the future". Nobody ever wrote the sentence that combines them, which is exactly the sentence that had to be true.
+
+If you have a state machine that can move backwards, it's worth listing every field that gets computed on the way forward and asking, for each one, what it should be after a rewind. That list is usually short — a few user references, a date, a set of derived flags — and going through it deliberately takes about ten minutes. Discovering the same list one support complaint at a time takes considerably longer.
+
+The related habit: when you build the undo, test it on a record whose surrounding state has changed since it was created. Restoring something created five minutes ago proves almost nothing, because at that point every derived value still happens to be correct.
