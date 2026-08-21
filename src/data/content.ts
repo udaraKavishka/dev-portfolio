@@ -12,7 +12,7 @@ import {
 export const heroData = {
     name: "Udara Nalawansa",
     roles: [
-        "Intern Software Engineer @ Xaventra",
+        "Associate Software Engineer @ Xaventra",
         "BSc (Hons) IT Graduate - First Class",
         "DevOps Enthusiast",
         "Full Stack Developer",
@@ -162,9 +162,7 @@ export const skillsData = [
     { name: 'Podman', category: 'Containerization' },
 
     // CI/CD
-    { name: 'Jenkins', category: 'CI/CD' },
     { name: 'GitHub Actions', category: 'CI/CD' },
-    { name: 'SonarQube', category: 'CI/CD' },
     { name: 'GitLab CI', category: 'CI/CD' },
     { name: 'ArgoCD', category: 'CI/CD' },
 
@@ -202,7 +200,6 @@ export const skillsData = [
     { name: 'Next.js', category: 'Frontend' },
     { name: 'React Native', category: 'Frontend' },
     { name: 'TailwindCSS', category: 'Frontend' },
-    { name: 'shadcn/ui', category: 'Frontend' },
     { name: 'TanStack Query', category: 'Frontend' },
 
     // Backend
@@ -214,7 +211,6 @@ export const skillsData = [
     { name: 'FastAPI', category: 'Backend' },
     { name: 'Flask', category: 'Backend' },
     { name: 'SQLAlchemy', category: 'Backend' },
-    { name: 'Alembic', category: 'Backend' },
     { name: 'Pydantic', category: 'Backend' },
 
     // Databases
@@ -224,14 +220,11 @@ export const skillsData = [
 
     // Tools and Collaboration
     { name: 'Git', category: 'Tools' },
-    { name: 'GitHub', category: 'Tools' },
     { name: 'Linux', category: 'Tools' },
     { name: 'Claude Code', category: 'Tools' },
     { name: 'MCP', category: 'Tools' },
-    { name: 'Postman', category: 'Tools' },
-    { name: 'OpenAPI', category: 'Tools' },
-    { name: 'Figma', category: 'Tools' },
-    { name: 'Trello', category: 'Tools' },
+    { name: 'Postman', category: 'Tools' }
+
 ];
 
 interface ExperienceItem {
@@ -245,7 +238,7 @@ interface ExperienceItem {
 
 export const experienceData: ExperienceItem[] = [
     {
-        role: 'Intern Software Engineer',
+        role: 'Associate Software Engineer',
         company: 'Xaventra (Private) Limited, Colombo',
         period: 'Feb 2026 - Present',
         description: 'Full stack development on a business services platform — building features and fixing bugs across Flask, FastAPI, and Next.js codebases, integrating WhatsApp Business API chatbots, email services, and RAG-based AI features, and working with production databases, migrations, and CI checks.',
