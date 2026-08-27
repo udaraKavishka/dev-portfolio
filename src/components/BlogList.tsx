@@ -6,7 +6,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Pin, Search } from 'lucide-react';
 import type { Post, SearchEntry } from '@/lib/posts';
-import { CATEGORIES } from '@/lib/categories';
+import { CATEGORIES, ARCHIVED_CATEGORIES } from '@/lib/categories';
 import styles from './BlogList.module.css';
 
 interface BlogListProps {
@@ -77,11 +77,21 @@ export default function BlogList({ posts, searchIndex }: BlogListProps) {
         return new Map(searchIndex.map((entry) => [entry.slug, entry.body]));
     }, [searchIndex]);
 
+    // Archived categories are day-to-day notes: they show under their own
+    // filter, but the "all" list keeps only the pinned ones.
+    const allPosts = useMemo(
+        () =>
+            posts.filter(
+                (post) => post.pinned || !ARCHIVED_CATEGORIES.has(post.category ?? '')
+            ),
+        [posts]
+    );
+
     const filteredPosts = useMemo(() => {
         const byCategory = (
             activeCategory
                 ? posts.filter((post) => post.category === activeCategory)
-                : posts
+                : allPosts
         )
             .slice()
             .sort((a, b) => Number(b.pinned ?? false) - Number(a.pinned ?? false));
@@ -103,7 +113,7 @@ export default function BlogList({ posts, searchIndex }: BlogListProps) {
             }
         }
         return [...titleMatches, ...bodyMatches];
-    }, [posts, activeCategory, query, bodyMap]);
+    }, [posts, allPosts, activeCategory, query, bodyMap]);
 
     // Reset the highlight whenever the visible set changes (adjust-state-during-render).
     const selectionKey = `${activeCategory ?? ''}|${query.trim().toLowerCase()}`;
@@ -272,7 +282,7 @@ export default function BlogList({ posts, searchIndex }: BlogListProps) {
                     className={`${styles.filter} ${!activeCategory ? styles.filterActive : ''}`}
                     onClick={() => setCategory(null)}
                 >
-                    all ({posts.length})
+                    all ({allPosts.length})
                 </button>
                 {CATEGORIES.map((category) => (
                     <button
