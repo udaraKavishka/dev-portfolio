@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     const postUrl = absoluteUrl(`/blog/${slug}`);
     const imageUrl = post.mainImage || '/screenshot.png';
     const title = post.seoTitle || post.title;
-    const description = post.seoDescription || post.excerpt || `Read ${post.title} by Udara Nalawansa, DevOps engineer in Sri Lanka.`;
+    const description = post.seoDescription || post.excerpt || `Read ${post.title} by Udara Nalawansa, software engineer in Sri Lanka.`;
 
     return {
         title,

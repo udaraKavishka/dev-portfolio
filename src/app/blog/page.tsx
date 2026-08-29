@@ -51,7 +51,7 @@ export default async function Blog() {
                 <header className={styles.header}>
                     <h1 className={styles.title}>blog</h1>
                     <p className={styles.subtitle}>
-                        notes from my internship, research, and self-learning. devops, kubernetes, ML, and the bugs in between.
+                        notes from work, research, and self-learning. devops, kubernetes, ML, and the bugs in between.
                     </p>
                     <a href="/rss.xml" className={styles.feedLink}>
                         <Rss size={14} />

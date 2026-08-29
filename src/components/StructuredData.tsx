@@ -21,7 +21,7 @@ export function PersonSchema() {
     url: SITE_URL,
     email: "hello@udaradev.me",
     image: absoluteUrl('/profile.jpg'),
-    jobTitle: "Intern Software Engineer",
+    jobTitle: "Associate Software Engineer",
     worksFor: {
       "@type": "Organization",
       name: "Xaventra"
@@ -104,7 +104,7 @@ export function ProfilePageSchema({ projects, posts = [] }: ProfilePageSchemaPro
     "@type": "ProfilePage",
     "@id": `${SITE_URL}/#profile-page`,
     url: SITE_URL,
-    name: "Udara Nalawansa - DevOps Engineer Portfolio",
+    name: "Udara Nalawansa - Software Engineer Portfolio",
     isPartOf: {
       "@id": WEBSITE_ID
     },

@@ -21,7 +21,7 @@ export const heroData = {
         "MLOps Engineer"
     ],
     tagline: "Designing Scalable Systems Through Software, Cloud, and Automation",
-    bio: "Intern Software Engineer at Xaventra and full stack developer in Sri Lanka focused on cloud infrastructure, automation, continuous delivery, and MLOps. I design resilient CI/CD pipelines, build scalable applications, deploy containerized workloads, and implement infrastructure as code with tools such as Kubernetes, Docker, Terraform, AWS, and GitHub Actions.",
+    bio: "Associate Software Engineer at Xaventra and full stack developer in Sri Lanka focused on cloud infrastructure, automation, continuous delivery, and MLOps. I design resilient CI/CD pipelines, build scalable applications, deploy containerized workloads, and implement infrastructure as code with tools such as Kubernetes, Docker, Terraform, AWS, and GitHub Actions.",
     techStack: [
         { name: 'Docker', icon: '🐳' },
         { name: 'Kubernetes', icon: '☸️' },

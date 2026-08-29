@@ -16,7 +16,7 @@ import { projectsData } from '@/data/content';
 import { defaultDescription, SITE_URL } from '@/lib/seo';
 
 export const metadata: Metadata = {
-  title: 'DevOps Engineer in Sri Lanka',
+  title: 'Udara Nalawansa | Software Engineer in Sri Lanka',
   description: defaultDescription,
   alternates: {
     canonical: SITE_URL,
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: 'Udara Nalawansa | DevOps Engineer in Sri Lanka',
+    title: 'Udara Nalawansa | Software Engineer in Sri Lanka',
     description: defaultDescription,
     url: SITE_URL,
     type: 'website',

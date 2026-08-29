@@ -12,7 +12,7 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: 'Udara Nalawansa | DevOps Engineer in Sri Lanka',
+    default: 'Udara Nalawansa | Software Engineer in Sri Lanka',
     template: '%s | Udara Nalawansa'
   },
   description: defaultDescription,
@@ -24,20 +24,20 @@ export const metadata: Metadata = {
     locale: 'en_US',
     url: SITE_URL,
     siteName: SITE_NAME,
-    title: 'Udara Nalawansa | DevOps Engineer in Sri Lanka',
+    title: 'Udara Nalawansa | Software Engineer in Sri Lanka',
     description: defaultDescription,
     images: [
       {
         url: '/screenshot.png',
         width: 1200,
         height: 630,
-        alt: 'Udara Nalawansa Portfolio - DevOps Engineer'
+        alt: 'Udara Nalawansa Portfolio - Software Engineer'
       }
     ]
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Udara Nalawansa | DevOps Engineer in Sri Lanka',
+    title: 'Udara Nalawansa | Software Engineer in Sri Lanka',
     description: defaultDescription,
     images: ['/screenshot.png'],
     creator: '@udaranalawansa'
