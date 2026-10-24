@@ -261,8 +261,8 @@ export const educationData: EducationItem[] = [
     {
         degree: 'Bachelor of Science Honours in Information Technology - First Class',
         institution: 'University of Jaffna ( Vavuniya University )',
-        period: '2022 - 2026 (transcript pending)',
-        description: 'Completed with First Class Honours and a GPA of 3.77. Focused on software engineering, cloud computing, distributed systems, and machine learning. Actively involved in various technical projects and leadership roles.',
+        period: '2022 - 2026 ',
+        description: 'Completed with First Class Honours and a GPA of 3.75. Focused on software engineering, cloud computing, distributed systems, and machine learning. Actively involved in various technical projects and leadership roles.',
     },
     {
         degree: 'School Education',
