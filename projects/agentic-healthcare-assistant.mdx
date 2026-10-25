@@ -14,26 +14,7 @@ A plain RAG bot gets the schedule questions wrong because tables don't survive c
 
 ## Architecture / Approach
 
-```text
-patient question
-   |
-   v
-FAQ gate        local embedding match, no model call
-   | miss
-   v
-route           gpt-oss-20b, one call: rewrite the follow-up, pick a route
-   |
-   +-- refuse --> fixed referral to a doctor, answer model never called
-   |
-   v
-retrieve        SQL tools, hybrid vector search, or both concurrently
-   |
-   v
-answer          gpt-oss-120b, streamed, grounded in what was retrieved
-   |
-   v
-remember        the turn and its route, in conversations.db
-```
+<Diagram src="/projects/agentic-healthcare-assistant/architecture.svg" alt="Patient question flows from the Streamlit UI through FastAPI to an FAQ gate, then a gpt-oss-20b router that refuses clinical questions or retrieves from SQLite tools and Qdrant hybrid search, before gpt-oss-120b streams a grounded answer and the turn is saved." />
 
 - **Five explicit routes:** `faq`, `vector`, `sql`, `both`, `refuse`. The router returns the label directly instead of the label being inferred from which tools were called, so routing is one decision that can be scored against a golden set.
 - **Hybrid retrieval for the website corpus.** Dense and BM25 results are fused with reciprocal rank fusion, then reranked with a cross-encoder. Dense, sparse and rerank models all come from one ONNX dependency (fastembed), and Qdrant runs embedded, so there is no extra service to host.

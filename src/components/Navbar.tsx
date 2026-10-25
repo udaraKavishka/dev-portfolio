@@ -10,15 +10,9 @@ import { applyTheme, getTheme, toggleTheme as toggleThemeState, THEME_EVENT, typ
 const navLinks = [
     { href: '#about', label: 'About' },
     { href: '#projects', label: 'Projects' },
-    { href: '#skills', label: 'Skills' },
     { href: '#experience', label: 'Experience' },
-    { href: '#education', label: 'Education' },
-    { href: '#research', label: 'Research' },
-    // { href: '#achievements', label: 'Achievements' },
-    { href: '#clubs', label: 'Clubs' },
-    { href: '#setup', label: 'Setup' },
-    { href: '#contact', label: 'Contact' },
     { href: '/blog', label: 'Blog' },
+    { href: '#contact', label: 'Contact' },
 ];
 
 export default function Navbar() {
@@ -37,12 +31,10 @@ export default function Navbar() {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    // Highlight the link for whichever home page section crosses the middle of the viewport.
+    // Track whichever home page section crosses the middle of the viewport; sections
+    // without a nav link (Skills, Education, ...) clear the highlight.
     useEffect(() => {
-        const sections = navLinks
-            .filter((link) => link.href.startsWith('#'))
-            .map((link) => document.getElementById(link.href.slice(1)))
-            .filter((section): section is HTMLElement => section !== null);
+        const sections = Array.from(document.querySelectorAll<HTMLElement>('main section[id]'));
         if (sections.length === 0) return;
 
         const observer = new IntersectionObserver(

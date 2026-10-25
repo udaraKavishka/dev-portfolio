@@ -1,3 +1,5 @@
+import fs from 'fs';
+import path from 'path';
 import Image from 'next/image';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { dracula } from 'react-syntax-highlighter/dist/esm/styles/hljs';
@@ -17,6 +19,21 @@ export function createMdxComponents(contentImageClassName: string): MDXComponent
                         {code.replace(/\n$/, '')}
                     </SyntaxHighlighter>
                 </div>
+            );
+        },
+        // Architecture diagrams are draw.io SVGs under public/. They are inlined so their
+        // light-dark() colors follow the site theme and labels pick up the site font.
+        Diagram: ({ src, alt }: { src: string; alt: string }) => {
+            const svg = fs
+                .readFileSync(path.join(process.cwd(), 'public', src), 'utf8')
+                .replace(/^<\?xml[^>]*>\s*(<!DOCTYPE[^>]*>\s*)?/, '');
+            return (
+                <figure className="diagram">
+                    <div className="diagram-frame" role="img" aria-label={alt} dangerouslySetInnerHTML={{ __html: svg }} />
+                    <figcaption>
+                        <a href={src} target="_blank" rel="noopener noreferrer">Open full size</a>
+                    </figcaption>
+                </figure>
             );
         },
         img: ({ src, alt }) => {

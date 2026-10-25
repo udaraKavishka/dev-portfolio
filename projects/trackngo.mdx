@@ -14,29 +14,7 @@ Those are two different products with two different security profiles. Commuters
 
 ## Architecture / Approach
 
-```text
-  commuter (anonymous)                 admin / conductor (authenticated)
-        |                                        |
-        v                                        v
-  +-------------------+                 +-----------------------+
-  | frontend          |                 | frontend_admin        |
-  | React + Vite + TS |                 | React + Vite + TS     |
-  | Leaflet map       |                 | dashboards + tables   |
-  +-------------------+                 +-----------------------+
-        |  REST                                  |  REST + JWT
-        v                                        v
-  +-------------------+                 +-----------------------+
-  | backend (JS)      |                 | backend_admin (TS)    |
-  | tracking, alerts, |                 | AuthMiddleware        |
-  | lost & found,     |                 | bus/route/timetable/  |
-  | contact, news     |                 | fare/report/user CRUD |
-  +-------------------+                 +-----------------------+
-             \                               /
-              v                             v
-             +-------------------------------+
-             |            MongoDB            |
-             +-------------------------------+
-```
+<Diagram src="/projects/trackngo/architecture.svg" alt="Commuters use the public React frontend and JavaScript backend; admins and conductors use the admin frontend and TypeScript backend with JWT; both backends share MongoDB." />
 
 - **Four repositories, two audiences.** The public API carries no admin routes at all, so there is nothing to accidentally leave unauthenticated — the separation is structural rather than a middleware check.
 - **The admin backend is TypeScript with explicit interfaces** (`BusDetails`, `BusRoute`, `TimeTable`, `Report`, `fareEstimate`) because it's the write side: mistyped payloads there corrupt data the public side reads. The public backend stayed JavaScript, where the surface is narrower and mostly reads.

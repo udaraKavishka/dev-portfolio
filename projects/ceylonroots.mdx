@@ -14,27 +14,7 @@ Building both into one frontend means the admin screens inherit all the marketin
 
 ## Architecture / Approach
 
-```text
-  traveller                          staff
-     |                                 |
-     v                                 v
-  +---------------------+     +---------------------+
-  |  Next.js App Router |     |  Flask admin panel  |
-  |  app/api/* routes   |     |  Jinja2 + WTForms   |
-  |  Prisma client      |     |  SQLAlchemy         |
-  |  localhost:3000     |     |  admin.localhost    |
-  +---------------------+     +---------------------+
-              \                       /
-               \                     /
-                v                   v
-              +-------------------------+
-              |       PostgreSQL        |  one schema
-              +-------------------------+
-
-  backend/  Spring Boot + JPA + S3   (earlier iteration, kept in tree)
-
-  CI: eslint -> tsc --noEmit -> pytest, path-filtered per app
-```
+<Diagram src="/projects/ceylonroots/architecture.svg" alt="Travellers use the Next.js App Router with Prisma and staff use a Flask admin panel with SQLAlchemy, both on one PostgreSQL schema; an earlier Spring Boot backend stays in the tree and CI runs eslint, tsc and pytest per app." />
 
 - **Two applications, one database.** The Next.js app owns the traveller experience and its own `app/api/*` routes through Prisma; the Flask panel owns staff CRUD through SQLAlchemy. Neither calls the other — Postgres is the integration point, so an admin deploy can't take the public site down.
 - **The admin is Flask on purpose.** Server-rendered Jinja2 forms with WTForms is simply less code than rebuilding twenty CRUD screens in React, and the form-heavy workload is where that stack is strongest.

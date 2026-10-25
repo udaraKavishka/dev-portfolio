@@ -13,26 +13,7 @@ Most RAG (Retrieval-Augmented Generation) tutorials stop at "it works on my mach
 
 ## Architecture / Approach
 
-```text
-                    client
-                      |
-                      | POST /ingest, /query
-                      v
-            +--------------------+
-            |      FastAPI       |  stateless, OpenAPI/Swagger
-            +--------------------+
-               |              |
-     embed +   |              |  prompt + retrieved context
-     similarity|              v
-     search    |     +--------------------+
-               |     |  Ollama/TinyLlama  |  local generation
-               v     +--------------------+
-        +-----------+
-        | ChromaDB  |  vector store, own service
-        +-----------+
-
-  each box = its own container -> its own k8s deployment
-```
+<Diagram src="/projects/devops-ai-rag-api/architecture.svg" alt="A client calls the stateless FastAPI service, which embeds and searches ChromaDB and prompts Ollama with TinyLlama, each running as its own Kubernetes deployment." />
 
 The system is split into clearly separated concerns:
 

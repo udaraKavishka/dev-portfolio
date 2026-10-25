@@ -14,31 +14,7 @@ The obvious move was to consolidate into one Next.js app. The catch: the existin
 
 ## Architecture / Approach
 
-```text
-  browser
-     |
-     v
-  +----------------------------------------------+
-  |             Next.js (one deploy)             |
-  |                                              |
-  |  app/boards, app/board/[id], app/login  (UI) |
-  |                    |                         |
-  |                    v                         |
-  |  app/api/[...path]/route.ts   catch-all API  |
-  |         |                                    |
-  |         |  lib/request-user.ts   (JWT)       |
-  |         |  lib/legacy-serializers.ts         |
-  |         v      keeps old response shapes     |
-  |  lib/prisma.ts                               |
-  +----------------------------------------------+
-                      |
-                      v
-                 PostgreSQL
-
-  deprecated/backend + deprecated/frontend kept in-tree as reference
-
-  CI: postgres:16 service -> prisma generate/migrate -> build
-```
+<Diagram src="/projects/taskflow/architecture.svg" alt="The browser loads Next.js UI routes that call a catch-all API route, which uses JWT auth and legacy serializers and queries PostgreSQL through Prisma, all in one deploy." />
 
 - **A catch-all route (`app/api/[...path]/route.ts`)** absorbs the old API surface in one place instead of scattering dozens of route files, so the migration is a single well-defined boundary.
 - **`lib/legacy-serializers.ts` and `lib/mappers.ts`** translate Prisma models back into the response shapes the original client expected. This is the deliberate part: the storage layer changed from MongoDB documents to a relational schema, but the wire format stayed put, so migration bugs and serialization bugs stay separable.

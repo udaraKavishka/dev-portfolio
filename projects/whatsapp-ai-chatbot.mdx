@@ -14,33 +14,7 @@ I wanted a webhook layer that was correct on its own terms — verified, dedupli
 
 ## Architecture / Approach
 
-```text
-  WhatsApp user
-       |  inbound message
-       v
-  Meta Cloud API
-       |  POST /webhook/meta/whatsapp
-       v
-  +----------------------------------+
-  |  security.py                     |  X-Hub-Signature-256 vs APP_SECRET
-  +----------------------------------+
-       |  verified
-       v
-  +----------------------------------+
-  |  idempotency.py                  |  seen this message id? drop it
-  +----------------------------------+
-       |  new
-       v
-  +----------------------------------+
-  |  models.py -> chat_client.py     |  { session_id, message }
-  +----------------------------------+
-       |                        ^
-       v                        |  { message }
-  CHAT_BACKEND_URL  <---- gemini_shim.py (local dev)
-       |
-       v
-  whatsapp_client.py -> Graph API -> user
-```
+<Diagram src="/projects/whatsapp-ai-chatbot/architecture.svg" alt="A WhatsApp message reaches the Flask webhook through Meta Cloud API, passes signature verification and idempotency checks, goes to a swappable chat backend or local Gemini shim, and the reply is sent back through the Graph API." />
 
 - **The chat backend is a URL, not a library.** Anything that accepts `{session_id, message}` and returns `{message}` can sit behind `CHAT_BACKEND_URL`. Swapping providers is a config change.
 - **`gemini_shim.py`** implements that same contract locally, so the full inbound-to-reply path is exercisable in development without a hosted model.

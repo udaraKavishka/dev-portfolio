@@ -70,6 +70,49 @@ html {
   outline-offset: 2px;
 }
 
+/* draw.io architecture diagrams inlined by the MDX Diagram component */
+.diagram {
+  margin: 2rem 0;
+}
+
+.diagram-frame {
+  overflow-x: auto;
+  padding: 1rem;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+}
+
+.diagram-frame svg {
+  display: block;
+  width: 100%;
+  min-width: 560px;
+  height: auto;
+  color-scheme: dark !important;
+}
+
+[data-theme='light'] .diagram-frame svg {
+  color-scheme: light !important;
+}
+
+.diagram-frame foreignObject div {
+  font-family: var(--font-mono) !important;
+}
+
+.diagram figcaption {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  text-align: right;
+}
+
+.diagram figcaption a {
+  color: var(--text-muted);
+}
+
+.diagram figcaption a:hover {
+  color: var(--accent-primary);
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
