@@ -58,6 +58,7 @@ Structured data (JSON-LD) is emitted on every page type: `Person`, `WebSite`, `P
 
 Long-form write-ups structured as problem → architecture/approach → contribution → outcome.
 
+- [Agentic Healthcare Assistant — Hybrid RAG + SQL Hospital Chatbot](https://udaradev.me/projects/agentic-healthcare-assistant) — Python, FastAPI, Streamlit, Groq (gpt-oss), Qdrant, fastembed, SQLite, sqlglot, Playwright. A patient chatbot for Nawaloka Hospitals that routes each question between scraped website knowledge (hybrid vector search with reranking) and a read-only SQL database, with clinical questions short-circuited to a fixed referral. Routing 34/34, retrieval 22/22, SQL execution 17/17 on its golden sets. Repo: https://github.com/udaraKavishka/Agentic-Healthcare-Assistant
 - [DevOps and AI: Building Production-Ready RAG Systems](https://udaradev.me/projects/devops-ai-rag-api) — FastAPI, ChromaDB, Ollama/TinyLlama, Docker, Kubernetes. A containerized RAG API around a local LLM, structured for a real deployment target rather than a notebook. Ongoing. Repo: https://github.com/udaraKavishka/devops-ai-rag-api
 - [Flask CRUD API with Docker & Postgres](https://udaradev.me/projects/flask-crud-api) — Flask, Flask-SQLAlchemy, PostgreSQL, Docker Compose, GitHub Actions. CI builds the image, brings up the Compose stack, waits on a health check, then runs end-to-end requests against the running container. Repo: https://github.com/udaraKavishka/flask-crud-api
 - [URL Shortener (Go)](https://udaradev.me/projects/url-shortener-go) — Go, Gin, Redis, Docker. Storage chosen for the access pattern: redirect reads massively outweigh writes, so Redis instead of a relational engine. Repo: https://github.com/udaraKavishka/URL-Shortner
@@ -66,17 +67,18 @@ Long-form write-ups structured as problem → architecture/approach → contribu
 
 Listed on the home page under `#projects`. Items marked ⇢ also have a case-study page above.
 
-1. **TaskFlow — Task Management System** — Node.js, Express.js, MongoDB, React, Redux, Material UI, JWT — https://github.com/udaraKavishka/IT22242024taskflow
-2. **URL Shortener (Go)** ⇢ — Go, Gin, Redis, Docker — https://github.com/udaraKavishka/URL-Shortner
-3. **DevOps and AI: Production-Ready RAG Systems** ⇢ — FastAPI, Kubernetes, ChromaDB, Ollama, TinyLlama, Docker — https://github.com/udaraKavishka/devops-ai-rag-api
-4. **ParaWrite** — sentence-by-sentence paraphrasing tool. Next.js, React, TypeScript, CSS Modules — live at https://parawrite.udaradev.me — https://github.com/udaraKavishka/ParaWrite
-5. **Flask CRUD API with Docker & Postgres** ⇢ — Python, Flask, SQLAlchemy, PostgreSQL, Docker Compose, GitHub Actions — https://github.com/udaraKavishka/flask-crud-api
-6. **TrackNGo** — real-time bus tracking, route guidance, fare estimation. MongoDB, Express, React, Node.js, Socket.io, JWT — https://github.com/TrackNGo
-7. **CeylonRoots** — travel platform for Sri Lankan cultural heritage with itineraries and bookings. Next.js, React, Spring Boot, Java, MySQL, Tailwind — https://github.com/udaraKavishka/CeylonRoots
-8. **DevOps Portfolio Website** — this site. Next.js, React, TypeScript, CSS Modules, MDX, Vercel — https://udaradev.me — https://github.com/udaraKavishka/dev-portfolio
-9. **Efficient Campus Navigation** — shortest-path and travel-time prediction for the University of Vavuniya campus; responsible for the model. Python, pandas, NumPy, scikit-learn (Random Forest), NetworkX, Dijkstra, Tkinter — https://github.com/DilmyPerera/Efficient-Campus-Navigation
-10. **Modern Portfolio** — earlier responsive personal site. React, Tailwind CSS, Figma — https://udara-portfolio.vercel.app/ — https://github.com/udaraKavishka/modern-portfolio
-11. **WhatsApp AI Workspace Chatbot** — WhatsApp Cloud API webhook with a swappable AI backend, signature validation, idempotency checks, and a local Gemini shim for development. Python, WhatsApp Cloud API, Meta Webhooks — https://github.com/udaraKavishka/whatsapp-ai-bot
+1. **Agentic Healthcare Assistant — Hybrid RAG + SQL Hospital Chatbot** ⇢ — agentic chatbot for Nawaloka Hospitals routing patient questions between scraped website knowledge and a read-only SQL database, streamed to a chat UI. Python, FastAPI, Streamlit, Groq, Qdrant, fastembed, SQLite, sqlglot, Playwright, uv — https://github.com/udaraKavishka/Agentic-Healthcare-Assistant
+2. **TaskFlow — Task Management System** — Node.js, Express.js, MongoDB, React, Redux, Material UI, JWT — https://github.com/udaraKavishka/IT22242024taskflow
+3. **URL Shortener (Go)** ⇢ — Go, Gin, Redis, Docker — https://github.com/udaraKavishka/URL-Shortner
+4. **DevOps and AI: Production-Ready RAG Systems** ⇢ — FastAPI, Kubernetes, ChromaDB, Ollama, TinyLlama, Docker — https://github.com/udaraKavishka/devops-ai-rag-api
+5. **ParaWrite** — sentence-by-sentence paraphrasing tool. Next.js, React, TypeScript, CSS Modules — live at https://parawrite.udaradev.me — https://github.com/udaraKavishka/ParaWrite
+6. **Flask CRUD API with Docker & Postgres** ⇢ — Python, Flask, SQLAlchemy, PostgreSQL, Docker Compose, GitHub Actions — https://github.com/udaraKavishka/flask-crud-api
+7. **TrackNGo** — real-time bus tracking, route guidance, fare estimation. MongoDB, Express, React, Node.js, Socket.io, JWT — https://github.com/TrackNGo
+8. **CeylonRoots** — travel platform for Sri Lankan cultural heritage with itineraries and bookings. Next.js, React, Spring Boot, Java, MySQL, Tailwind — https://github.com/udaraKavishka/CeylonRoots
+9. **DevOps Portfolio Website** — this site. Next.js, React, TypeScript, CSS Modules, MDX, Vercel — https://udaradev.me — https://github.com/udaraKavishka/dev-portfolio
+10. **Efficient Campus Navigation** — shortest-path and travel-time prediction for the University of Vavuniya campus; responsible for the model. Python, pandas, NumPy, scikit-learn (Random Forest), NetworkX, Dijkstra, Tkinter — https://github.com/DilmyPerera/Efficient-Campus-Navigation
+11. **Modern Portfolio** — earlier responsive personal site. React, Tailwind CSS, Figma — https://udara-portfolio.vercel.app/ — https://github.com/udaraKavishka/modern-portfolio
+12. **WhatsApp AI Workspace Chatbot** — WhatsApp Cloud API webhook with a swappable AI backend, signature validation, idempotency checks, and a local Gemini shim for development. Python, WhatsApp Cloud API, Meta Webhooks — https://github.com/udaraKavishka/whatsapp-ai-bot
 
 ## Education
 

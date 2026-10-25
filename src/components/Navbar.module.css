@@ -74,6 +74,14 @@
     width: 100%;
 }
 
+.link.active {
+    color: var(--accent-primary);
+}
+
+.link.active::before {
+    width: 100%;
+}
+
 .themeToggle {
     background: none;
     border: 1px solid var(--border-color);
@@ -125,7 +133,8 @@
     border-radius: var(--radius-sm);
 }
 
-.mobileLink:hover {
+.mobileLink:hover,
+.mobileLink.active {
     background-color: var(--bg-tertiary);
     color: var(--accent-primary);
 }
@@ -137,5 +146,13 @@
 
     .mobile {
         display: flex;
+    }
+}
+
+@media (hover: none) and (pointer: coarse) {
+    .themeToggle,
+    .menuButton {
+        min-width: 44px;
+        min-height: 44px;
     }
 }

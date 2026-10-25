@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { defaultDescription, SITE_NAME, SITE_URL } from "@/lib/seo";
+import MotionProvider from "@/components/MotionProvider";
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
@@ -86,7 +87,7 @@ export default function RootLayout({
       <body
         className={`${jetbrainsMono.variable} antialiased`}
       >
-        {children}
+        <MotionProvider>{children}</MotionProvider>
       </body>
     </html>
   );

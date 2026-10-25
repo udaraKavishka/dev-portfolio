@@ -7,11 +7,26 @@ import { Menu, X, Moon, Sun } from 'lucide-react';
 import styles from './Navbar.module.css';
 import { applyTheme, getTheme, toggleTheme as toggleThemeState, THEME_EVENT, type Theme } from '@/lib/theme';
 
+const navLinks = [
+    { href: '#about', label: 'About' },
+    { href: '#projects', label: 'Projects' },
+    { href: '#skills', label: 'Skills' },
+    { href: '#experience', label: 'Experience' },
+    { href: '#education', label: 'Education' },
+    { href: '#research', label: 'Research' },
+    // { href: '#achievements', label: 'Achievements' },
+    { href: '#clubs', label: 'Clubs' },
+    { href: '#setup', label: 'Setup' },
+    { href: '#contact', label: 'Contact' },
+    { href: '/blog', label: 'Blog' },
+];
+
 export default function Navbar() {
     const router = useRouter();
     const [isOpen, setIsOpen] = useState(false);
     const [theme, setTheme] = useState<'dark' | 'light'>('dark');
     const [scrolled, setScrolled] = useState(false);
+    const [activeSection, setActiveSection] = useState('');
 
     useEffect(() => {
         const handleScroll = () => {
@@ -20,6 +35,26 @@ export default function Navbar() {
 
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    // Highlight the link for whichever home page section crosses the middle of the viewport.
+    useEffect(() => {
+        const sections = navLinks
+            .filter((link) => link.href.startsWith('#'))
+            .map((link) => document.getElementById(link.href.slice(1)))
+            .filter((section): section is HTMLElement => section !== null);
+        if (sections.length === 0) return;
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) setActiveSection(entry.target.id);
+                });
+            },
+            { rootMargin: '-45% 0px -50% 0px' }
+        );
+        sections.forEach((section) => observer.observe(section));
+        return () => observer.disconnect();
     }, []);
 
     // Sync from the shared theme source: apply the stored/current theme on mount,
@@ -46,20 +81,6 @@ export default function Navbar() {
         setTheme(toggleThemeState());
     };
 
-    const navLinks = [
-        { href: '#about', label: 'About' },
-        { href: '#projects', label: 'Projects' },
-        { href: '#skills', label: 'Skills' },
-        { href: '#experience', label: 'Experience' },
-        { href: '#education', label: 'Education' },
-        { href: '#research', label: 'Research' },
-        // { href: '#achievements', label: 'Achievements' },
-        { href: '#clubs', label: 'Clubs' },
-        { href: '#setup', label: 'Setup' },
-        { href: '#contact', label: 'Contact' },
-        { href: '/blog', label: 'Blog' },
-    ];
-
     const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
         if (href.startsWith('#')) {
             e.preventDefault();
@@ -73,7 +94,8 @@ export default function Navbar() {
                 // We're on home page, just scroll
                 const element = document.querySelector(href);
                 if (element) {
-                    element.scrollIntoView({ behavior: 'smooth' });
+                    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                    element.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' });
                     setIsOpen(false);
                 }
             }
@@ -95,7 +117,8 @@ export default function Navbar() {
                         <Link
                             key={link.href}
                             href={link.href}
-                            className={styles.link}
+                            className={`${styles.link} ${activeSection === link.href.slice(1) ? styles.active : ''}`}
+                            aria-current={activeSection === link.href.slice(1) ? 'location' : undefined}
                             onClick={(e) => handleNavClick(e, link.href)}
                         >
                             {link.label}
@@ -126,7 +149,8 @@ export default function Navbar() {
                         <Link
                             key={link.href}
                             href={link.href}
-                            className={styles.mobileLink}
+                            className={`${styles.mobileLink} ${activeSection === link.href.slice(1) ? styles.active : ''}`}
+                            aria-current={activeSection === link.href.slice(1) ? 'location' : undefined}
                             onClick={(e) => handleNavClick(e, link.href)}
                         >
                             {link.label}

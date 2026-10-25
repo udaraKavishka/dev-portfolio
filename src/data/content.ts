@@ -53,6 +53,14 @@ interface ProjectItem {
 
 export const projectsData: ProjectItem[] = [
     {
+        id: 12,
+        title: 'Agentic Healthcare Assistant — Hybrid RAG + SQL Hospital Chatbot',
+        description: 'An agentic chatbot for Nawaloka Hospitals that routes each patient question between scraped website knowledge (hybrid vector search) and a read-only SQL database of doctors, channeling schedules, and lab prices, then streams a grounded answer to a chat UI.',
+        techStack: ['Python', 'FastAPI', 'Streamlit', 'Groq', 'Qdrant', 'fastembed', 'SQLite', 'sqlglot', 'Playwright', 'uv'],
+        githubUrl: 'https://github.com/udaraKavishka/Agentic-Healthcare-Assistant',
+        caseStudySlug: 'agentic-healthcare-assistant',
+    },
+    {
         id: 1,
         title: 'TaskFlow | Task Management System (MERN Stack)',
         description: 'Taskflow is an efficient and user-friendly task management system designed to help individuals and teams organize, track, and manage their tasks seamlessly.',
@@ -121,7 +129,7 @@ export const projectsData: ProjectItem[] = [
     {
         id: 9,
         title: 'Efficient Campus Navigation — Smart Shortest Path System for University of Vavuniya',
-        description: 'A smart navigation system for the University of Vavuniya campus that predicts travel times and computes the shortest paths, enhancing efficiency for students, staff, and visitors.(Incharge of the Model)',
+        description: 'A smart navigation system for the University of Vavuniya campus that predicts travel times and computes the shortest paths, enhancing efficiency for students, staff, and visitors. I was in charge of the prediction model.',
         techStack: ['Python', 'Pandas', 'NumPy', 'scikit-learn (Random Forest)', 'NetworkX', 'Tkinter', 'Pillow (PIL)', 'Dijkstra Algorithm'],
         githubUrl: 'https://github.com/DilmyPerera/Efficient-Campus-Navigation',
         caseStudySlug: 'campus-navigation',
@@ -250,19 +258,49 @@ export const experienceData: ExperienceItem[] = [
     },
 ];
 
+interface EducationMediaItem {
+    title: string;
+    src: string;
+}
+
 interface EducationItem {
     degree: string;
     institution: string;
     period: string;
     description?: string;
+    media?: EducationMediaItem[];
 }
 
 export const educationData: EducationItem[] = [
     {
         degree: 'Bachelor of Science Honours in Information Technology - First Class',
-        institution: 'University of Jaffna ( Vavuniya University )',
-        period: '2022 - 2026 ',
+        institution: 'University of Jaffna (Vavuniya University)',
+        period: 'Oct 2022 – Oct 2026',
         description: 'Completed with First Class Honours and a GPA of 3.75. Focused on software engineering, cloud computing, distributed systems, and machine learning. Actively involved in various technical projects and leadership roles.',
+        media: [
+            { title: 'Hackaday 2023', src: '/education/university-of-vavuniya/hackaday-2023.jpg' },
+            { title: 'ZeroPlastic Trail Vanni Walk 2023', src: '/education/university-of-vavuniya/zeroplastic-trail-vanni-walk-2023.jpg' },
+            { title: 'Lent Program 2023', src: '/education/university-of-vavuniya/lent-program-2023.jpg' },
+            { title: 'Chief Editor Appointment, Leo Club of University of Vavuniya', src: '/education/university-of-vavuniya/leo-club-chief-editor-appointment.jpg' },
+            { title: 'Basketball Team, Applied Science', src: '/education/university-of-vavuniya/basketball-team-applied-science.jpg' },
+            { title: 'Hanthana Batch Expedition', src: '/education/university-of-vavuniya/hanthana-batch-expedition.jpg' },
+            { title: 'Inter University Basketball Championship 2024', src: '/education/university-of-vavuniya/inter-university-basketball-championship-2024.jpg' },
+            { title: 'FARS 2024 Annual Research Session', src: '/education/university-of-vavuniya/fars-2024-annual-research-session.jpg' },
+            { title: 'IEEEXtreme 2024', src: '/education/university-of-vavuniya/ieeextreme-2024.jpg' },
+            { title: 'Christian Society AGM 2024', src: '/education/university-of-vavuniya/christian-society-agm-2024.jpg' },
+            { title: 'Christian Society AGM 2024, Appointed as Second Editor', src: '/education/university-of-vavuniya/christian-society-agm-2024-second-editor.jpg' },
+            { title: "Christmas Get-Together 2024, Sri Lanka University Catholic Students' Movement (SLUCSM)", src: '/education/university-of-vavuniya/slucsm-christmas-get-together-2024.jpg' },
+            { title: "Leadership Forum 2024, Sri Lanka University Catholic Students' Movement (SLUCSM)", src: '/education/university-of-vavuniya/slucsm-leadership-forum-2024.jpg' },
+            { title: 'Harmony Fest 2025, Representing Christian Society', src: '/education/university-of-vavuniya/harmony-fest-2025.jpg' },
+            { title: 'Renewed Hearts Lent Program 2025, Christian Society of University of Vavuniya', src: '/education/university-of-vavuniya/renewed-hearts-lent-program-2025.jpg' },
+            { title: "Lent Program 2025, Sri Lanka University Catholic Students' Movement (SLUCSM)", src: '/education/university-of-vavuniya/slucsm-lent-program-2025.jpg' },
+            { title: 'DevSprint 2025, IEEE Student Branch in collaboration with GitHub Education and WSO2', src: '/education/university-of-vavuniya/devsprint-2025.jpg' },
+            { title: "National Seminar 2025, Sri Lanka University Catholic Students' Movement (SLUCSM)", src: '/education/university-of-vavuniya/slucsm-national-seminar-2025.jpg' },
+            { title: 'Annual Charity, Christian Society of University of Vavuniya', src: '/education/university-of-vavuniya/christian-society-annual-charity.jpg' },
+            { title: 'National Transformative Leadership (NTL) Program by International Movement of Catholic Students (IMCS) Pax Romana Asia-Pacific', src: '/education/university-of-vavuniya/imcs-national-transformative-leadership-program.jpg' },
+            { title: "Annual General Meeting 2025, Sri Lanka University Catholic Students' Movement (SLUCSM)", src: '/education/university-of-vavuniya/slucsm-agm-2025.jpg' },
+            { title: 'BSc IT (Hons) Final Year, Final Batch Photo of University Life', src: '/education/university-of-vavuniya/final-year-batch-photo.jpg' },
+        ],
     },
     {
         degree: 'School Education',
@@ -284,7 +322,7 @@ export const researchData: ResearchItem[] = [
     {
         title: 'Undergraduate Research (BSc Hons IT)',
         focus: 'Adaptive CPU auto scaling using hybrid neural networks and continual learning within Kubernetes orchestration',
-        institution: 'University of Jaffna ( Vavuniya University )',
+        institution: 'University of Jaffna (Vavuniya University)',
         period: '2025 - 2026',
         highlights: [
             'Built a hybrid LSTM and MLP CPU demand forecasting model with continual learning through Elastic Weight Consolidation and Experience Replay, trained on Google Cluster Traces.',

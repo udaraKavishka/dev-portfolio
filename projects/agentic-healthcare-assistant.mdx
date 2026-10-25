@@ -1,0 +1,53 @@
+---
+title: "Agentic Healthcare Assistant — Hybrid RAG + SQL Hospital Chatbot"
+date: "2026-09-07"
+excerpt: "A patient chatbot for Nawaloka Hospitals that decides, per question, whether the answer lives on the hospital website or in its database, and then answers from exactly that source."
+techStack: ["Python", "FastAPI", "Streamlit", "Groq", "gpt-oss", "Qdrant", "fastembed", "SQLite", "sqlglot", "Playwright", "uv"]
+githubUrl: "https://github.com/udaraKavishka/Agentic-Healthcare-Assistant"
+---
+
+## Problem
+
+Hospital knowledge is split across two very different places. Services, clinical centres and policies are written up on the Nawaloka Hospitals website. Doctors, channeling schedules, lab test prices and health packages sit in a relational database. A patient asking "which cardiologist is available on Tuesday, and what does the heart check package include?" should not need to know that half of the answer is prose and the other half is a row.
+
+A plain RAG bot gets the schedule questions wrong because tables don't survive chunking well. A plain text-to-SQL bot can't answer anything about policies. And in a medical setting, a confident wrong answer, or a model that offers clinical advice, is worse than no answer at all.
+
+## Architecture / Approach
+
+```text
+patient question
+   |
+   v
+FAQ gate        local embedding match, no model call
+   | miss
+   v
+route           gpt-oss-20b, one call: rewrite the follow-up, pick a route
+   |
+   +-- refuse --> fixed referral to a doctor, answer model never called
+   |
+   v
+retrieve        SQL tools, hybrid vector search, or both concurrently
+   |
+   v
+answer          gpt-oss-120b, streamed, grounded in what was retrieved
+   |
+   v
+remember        the turn and its route, in conversations.db
+```
+
+- **Five explicit routes:** `faq`, `vector`, `sql`, `both`, `refuse`. The router returns the label directly instead of the label being inferred from which tools were called, so routing is one decision that can be scored against a golden set.
+- **Hybrid retrieval for the website corpus.** Dense and BM25 results are fused with reciprocal rank fusion, then reranked with a cross-encoder. Dense, sparse and rerank models all come from one ONNX dependency (fastembed), and Qdrant runs embedded, so there is no extra service to host.
+- **Typed SQL tools, not free-form SQL.** The database is opened read-only behind four independent walls: read-only at the driver, `PRAGMA query_only`, generated SQL validated against the parse tree with a table allowlist (sqlglot), and a row limit and deadline on every query.
+- **Clinical questions are a routing decision, not a prompt instruction.** They short-circuit to a fixed referral before the answer model is ever called.
+- **Streaming end to end.** FastAPI serves `POST /chat` as server-sent events, and the Streamlit UI shows the chosen route live while the answer streams in.
+- **Offline data pipeline with no model calls:** a Playwright crawl of the site (it's a React app, so it needs a headless render) produces 82 documents from 89 URLs, indexing turns them into 834 chunks plus 89 harvested FAQ entries, and a seed step loads a 5-table SQLite database.
+
+## My Contribution
+
+Solo project, end to end. I built the scraper, the chunking and indexing pipeline, the hybrid search, the read-only SQL layer and its guard, the routing and answer nodes, conversation memory, the FastAPI SSE endpoint and the Streamlit chat UI. Every word the models see lives in one `prompts.yml`, so prompt changes are reviewable diffs instead of strings scattered through the code.
+
+I put most of the effort into evaluation. There are three separate scores because they fail independently: routing can be right while retrieval returns the wrong page, and both can be right while a SQL query filters on the wrong argument. Each golden set leans toward the cases that actually break, like prose columns stored in SQL, a clinic that runs "Daily", questions that need both sources, and clinical refusals. The project ships with `ruff`, `ruff format`, `pyright` and 129 tests behind a single `make check`, and dependencies are locked with uv.
+
+## Outcome
+
+On one `make evaluate` run the assistant routes 34 of 34 questions correctly (including 5 multi-turn follow-ups), retrieves the right page in the top 5 for 22 of 22 (mean reciprocal rank 0.94), and returns the correct rows for 17 of 17 SQL questions, checked against the data rather than the route. Common questions skip the models entirely through the FAQ gate at a 56 ms median. The agent can't write to the hospital database or reach outside its five tables, and it never gives clinical advice, which matters more here than any of the accuracy numbers.

@@ -76,3 +76,9 @@
         gap: 0.25rem;
     }
 }
+
+@media (hover: none) and (pointer: coarse) {
+    .viewMoreButton {
+        min-height: 44px;
+    }
+}

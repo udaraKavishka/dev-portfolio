@@ -334,7 +334,14 @@
         font-size: 1.75rem;
     }
 
-    .techGrid {
-        grid-template-columns: repeat(3, 1fr);
+    .sidebar {
+        order: -1;
+    }
+}
+
+@media (hover: none) and (pointer: coarse) {
+    .socialLink {
+        width: 44px;
+        height: 44px;
     }
 }

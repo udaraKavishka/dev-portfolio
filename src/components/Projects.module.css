@@ -170,6 +170,10 @@
     margin-bottom: 1rem;
 }
 
+.badgeContainer:empty {
+    display: none;
+}
+
 .ongoingBadge {
     display: inline-flex;
     align-items: center;
@@ -238,5 +242,12 @@
 
     .projects {
         padding: 4rem 1rem;
+    }
+}
+
+@media (hover: none) and (pointer: coarse) {
+    .iconLink {
+        width: 44px;
+        height: 44px;
     }
 }
