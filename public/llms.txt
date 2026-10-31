@@ -25,7 +25,7 @@ This file follows the llms.txt convention. It is a machine-readable map of the w
 
 The site is a Next.js App Router app. There are three page types:
 
-- [Home](https://udaradev.me) — single page with anchor sections: `#about`, `#projects`, `#skills`, `#experience`, `#education`, `#research`, `#clubs`, `#blog`, `#setup`, `#contact`
+- [Home](https://udaradev.me) — single page with anchor sections: `#about`, `#projects`, `#skills`, `#journey` (tabs: `#experience`, `#education`, `#research`), `#clubs`, `#blog`, `#setup`, `#contact`
 - [Blog index](https://udaradev.me/blog) — all 90 posts, client-side search over full post bodies, filter by category, filter by tag
 - Blog post — `https://udaradev.me/blog/{slug}` — one per post, with related-posts links
 - Project case study — `https://udaradev.me/projects/{slug}` — long-form write-ups for selected projects
@@ -67,18 +67,17 @@ Long-form write-ups structured as problem → architecture/approach → contribu
 
 Listed on the home page under `#projects`. Items marked ⇢ also have a case-study page above.
 
-1. **Agentic Healthcare Assistant — Hybrid RAG + SQL Hospital Chatbot** ⇢ — agentic chatbot for Nawaloka Hospitals routing patient questions between scraped website knowledge and a read-only SQL database, streamed to a chat UI. Python, FastAPI, Streamlit, Groq, Qdrant, fastembed, SQLite, sqlglot, Playwright, uv — https://github.com/udaraKavishka/Agentic-Healthcare-Assistant
-2. **TaskFlow — Task Management System** — Node.js, Express.js, MongoDB, React, Redux, Material UI, JWT — https://github.com/udaraKavishka/IT22242024taskflow
-3. **URL Shortener (Go)** ⇢ — Go, Gin, Redis, Docker — https://github.com/udaraKavishka/URL-Shortner
-4. **DevOps and AI: Production-Ready RAG Systems** ⇢ — FastAPI, Kubernetes, ChromaDB, Ollama, TinyLlama, Docker — https://github.com/udaraKavishka/devops-ai-rag-api
-5. **ParaWrite** — sentence-by-sentence paraphrasing tool. Next.js, React, TypeScript, CSS Modules — live at https://parawrite.udaradev.me — https://github.com/udaraKavishka/ParaWrite
-6. **Flask CRUD API with Docker & Postgres** ⇢ — Python, Flask, SQLAlchemy, PostgreSQL, Docker Compose, GitHub Actions — https://github.com/udaraKavishka/flask-crud-api
-7. **TrackNGo** — real-time bus tracking, route guidance, fare estimation. MongoDB, Express, React, Node.js, Socket.io, JWT — https://github.com/TrackNGo
-8. **CeylonRoots** — travel platform for Sri Lankan cultural heritage with itineraries and bookings. Next.js, React, Spring Boot, Java, MySQL, Tailwind — https://github.com/udaraKavishka/CeylonRoots
-9. **DevOps Portfolio Website** — this site. Next.js, React, TypeScript, CSS Modules, MDX, Vercel — https://udaradev.me — https://github.com/udaraKavishka/dev-portfolio
-10. **Efficient Campus Navigation** — shortest-path and travel-time prediction for the University of Vavuniya campus; responsible for the model. Python, pandas, NumPy, scikit-learn (Random Forest), NetworkX, Dijkstra, Tkinter — https://github.com/DilmyPerera/Efficient-Campus-Navigation
-11. **Modern Portfolio** — earlier responsive personal site. React, Tailwind CSS, Figma — https://udara-portfolio.vercel.app/ — https://github.com/udaraKavishka/modern-portfolio
-12. **WhatsApp AI Workspace Chatbot** — WhatsApp Cloud API webhook with a swappable AI backend, signature validation, idempotency checks, and a local Gemini shim for development. Python, WhatsApp Cloud API, Meta Webhooks — https://github.com/udaraKavishka/whatsapp-ai-bot
+1. **Agentic Healthcare Assistant** ⇢ — agentic chatbot for Nawaloka Hospitals routing patient questions between scraped website knowledge and a read-only SQL database, streamed to a chat UI. Python, FastAPI, Streamlit, Groq, Qdrant, fastembed, SQLite, sqlglot, Playwright, uv — https://github.com/udaraKavishka/Agentic-Healthcare-Assistant
+2. **WhatsApp AI Chatbot** ⇢ — WhatsApp Cloud API webhook with a swappable AI backend, signature validation, idempotency checks, and a local Gemini shim for development. Python, WhatsApp Cloud API, Meta Webhooks — https://github.com/udaraKavishka/whatsapp-ai-bot
+3. **Production-Ready RAG API** ⇢ — FastAPI, Kubernetes, ChromaDB, Ollama, TinyLlama, Docker — https://github.com/udaraKavishka/devops-ai-rag-api
+4. **Flask CRUD API** ⇢ — Python, Flask, SQLAlchemy, PostgreSQL, Docker Compose, GitHub Actions — https://github.com/udaraKavishka/flask-crud-api
+5. **URL Shortener** ⇢ — Go, Gin, Redis, Docker — https://github.com/udaraKavishka/URL-Shortner
+6. **TrackNGo** ⇢ — real-time bus tracking, route guidance, fare estimation. MongoDB, Express, React, Node.js, Socket.io, JWT — https://github.com/TrackNGo
+7. **TaskFlow** ⇢ — Node.js, Express.js, MongoDB, React, Redux, Material UI, JWT — https://github.com/udaraKavishka/IT22242024taskflow
+8. **CeylonRoots** ⇢ — travel platform for Sri Lankan cultural heritage with itineraries and bookings. Next.js, React, Spring Boot, Java, MySQL, Tailwind — https://github.com/udaraKavishka/CeylonRoots
+9. **Efficient Campus Navigation** ⇢ — shortest-path and travel-time prediction for the University of Vavuniya campus; responsible for the model. Python, pandas, NumPy, scikit-learn (Random Forest), NetworkX, Dijkstra, Tkinter — https://github.com/DilmyPerera/Efficient-Campus-Navigation
+10. **ParaWrite** — sentence-by-sentence paraphrasing tool. Next.js, React, TypeScript, CSS Modules — live at https://parawrite.udaradev.me — https://github.com/udaraKavishka/ParaWrite
+11. **Portfolio Website** — this site. Next.js, React, TypeScript, CSS Modules, MDX, Vercel — https://udaradev.me — https://github.com/udaraKavishka/dev-portfolio
 
 ## Education
 

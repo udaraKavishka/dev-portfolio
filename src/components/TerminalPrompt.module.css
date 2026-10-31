@@ -1,12 +1,26 @@
 .terminal {
-    margin-top: 1.75rem;
-    padding: 1rem 1.1rem 1.1rem;
-    border: 1px solid var(--accent-secondary);
-    border-radius: var(--radius-sm);
-    background-color: var(--bg-primary);
-    box-shadow: 0 0 0 1px rgba(74, 222, 128, 0.08), 0 6px 20px rgba(0, 0, 0, 0.25);
+    padding: 0.9rem 1.1rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    background-color: color-mix(in srgb, var(--bg-secondary) 85%, transparent);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 12px 32px -16px rgba(0, 0, 0, 0.35);
     font-family: var(--font-mono);
     cursor: text;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.terminal:hover {
+    border-color: color-mix(in srgb, var(--accent-primary) 45%, var(--border-color));
+}
+
+/* The input hides its own outline, so the whole bar carries the focus ring */
+.terminal:focus-within {
+    border-color: var(--accent-primary);
+    box-shadow:
+        0 0 0 3px color-mix(in srgb, var(--accent-primary) 18%, transparent),
+        0 12px 32px -16px rgba(0, 0, 0, 0.35);
 }
 
 .header {

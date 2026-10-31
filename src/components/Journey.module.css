@@ -1,0 +1,340 @@
+.journey {
+    padding: 6rem 1rem;
+    background-color: var(--bg-primary);
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Two columns either side of a spine; the spine fills with accent as you scroll */
+.timeline {
+    --gutter: 88px;
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) var(--gutter) minmax(0, 1fr);
+    row-gap: 1.5rem;
+}
+
+.spine {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 2px;
+    overflow: hidden;
+    border-radius: 2px;
+    background-color: var(--border-color);
+    transform: translateX(-50%);
+}
+
+.spineFill {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(var(--accent-primary), var(--accent-tertiary));
+    transform-origin: top;
+}
+
+.entry {
+    position: relative;
+    grid-row: var(--row);
+    min-width: 0;
+    scroll-margin-top: 6rem;
+}
+
+.left {
+    grid-column: 1;
+}
+
+.right {
+    grid-column: 3;
+}
+
+/* Start the right column a little lower so its first year sits below the degree's year on the spine */
+.left + .right {
+    margin-top: 4.5rem;
+}
+
+/* Connector from the card to the spine */
+.entry::before {
+    content: '';
+    position: absolute;
+    top: 2.05rem;
+    width: calc(var(--gutter) / 2);
+    height: 1px;
+    background-color: var(--border-color);
+}
+
+.left::before {
+    right: calc(var(--gutter) / -2);
+}
+
+.right::before {
+    left: calc(var(--gutter) / -2);
+}
+
+.yearAnchor {
+    position: absolute;
+    top: 1.25rem;
+    z-index: 1;
+}
+
+.left .yearAnchor {
+    right: calc(var(--gutter) / -2);
+    transform: translateX(50%);
+}
+
+.right .yearAnchor {
+    left: calc(var(--gutter) / -2);
+    transform: translateX(-50%);
+}
+
+.year {
+    display: block;
+    padding: 0.25rem 0.7rem;
+    border: 1px solid color-mix(in srgb, var(--accent-primary) 55%, var(--border-color));
+    border-radius: 999px;
+    background-color: var(--bg-primary);
+    box-shadow: 0 0 0 4px var(--bg-primary);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--accent-primary);
+}
+
+.card {
+    padding: 1.4rem 1.5rem 1.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    background-color: var(--bg-secondary);
+    transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--accent-primary) 50%, var(--border-color));
+    box-shadow: 0 18px 40px -28px color-mix(in srgb, var(--accent-primary) 55%, transparent);
+}
+
+.cardTop {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.kind {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent-primary);
+}
+
+.badge,
+.now {
+    margin-left: auto;
+    padding: 0.15rem 0.6rem;
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 700;
+}
+
+.badge {
+    background-color: color-mix(in srgb, var(--accent-primary) 14%, transparent);
+    color: var(--accent-primary);
+}
+
+.now {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    border: 1px solid color-mix(in srgb, var(--accent-primary) 40%, transparent);
+    color: var(--accent-primary);
+}
+
+.nowDot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--accent-primary);
+    animation: pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%,
+    100% {
+        box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent-primary) 60%, transparent);
+    }
+
+    50% {
+        box-shadow: 0 0 0 5px transparent;
+    }
+}
+
+.title {
+    margin-bottom: 0.35rem;
+    font-family: var(--font-mono);
+    font-size: 1.2rem;
+    line-height: 1.35;
+    color: var(--text-primary);
+}
+
+.org {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.2rem 0.75rem;
+    margin-bottom: 0.9rem;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.period {
+    font-family: var(--font-mono);
+    color: var(--text-muted);
+}
+
+.lead {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: var(--text-secondary);
+}
+
+.chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 1rem;
+    list-style: none;
+}
+
+.chip {
+    padding: 0.28rem 0.6rem;
+    border: 1px solid var(--border-color);
+    border-radius: 999px;
+    background-color: var(--bg-tertiary);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+}
+
+/* Highlights stay folded so cards stay short */
+.details {
+    margin-top: 1rem;
+    padding-top: 0.75rem;
+    border-top: 1px dashed var(--border-color);
+}
+
+.summary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    min-height: 32px;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: var(--accent-primary);
+    cursor: pointer;
+    list-style: none;
+}
+
+.summary::-webkit-details-marker {
+    display: none;
+}
+
+.summary::before {
+    content: '▸';
+    transition: transform 0.2s ease;
+}
+
+.details[open] .summary::before {
+    transform: rotate(90deg);
+}
+
+.highlights {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 0.6rem;
+    list-style: none;
+}
+
+.highlights li {
+    position: relative;
+    padding-left: 1.2rem;
+    font-size: 0.86rem;
+    line-height: 1.65;
+    color: var(--text-secondary);
+}
+
+.highlights li::before {
+    content: '▹';
+    position: absolute;
+    left: 0;
+    color: var(--accent-primary);
+}
+
+@media (max-width: 860px) {
+    .journey {
+        padding: 4rem 1rem;
+    }
+
+    .timeline {
+        --gutter: 32px;
+        grid-template-columns: var(--gutter) minmax(0, 1fr);
+    }
+
+    .spine {
+        left: calc(var(--gutter) / 2);
+    }
+
+    .entry {
+        grid-row: auto;
+    }
+
+    .left,
+    .right {
+        grid-column: 2;
+    }
+
+    .left + .right {
+        margin-top: 0;
+    }
+
+    .left::before,
+    .right::before {
+        right: auto;
+        left: calc(var(--gutter) / -2);
+    }
+
+    /* On narrow screens the year becomes a dot on the spine; the period is printed in the card */
+    .left .yearAnchor,
+    .right .yearAnchor {
+        right: auto;
+        left: calc(var(--gutter) / -2);
+        transform: translate(-50%, 0.45rem);
+    }
+
+    .year {
+        width: 12px;
+        height: 12px;
+        padding: 0;
+        overflow: hidden;
+        border-width: 2px;
+        font-size: 0;
+    }
+
+    .card {
+        padding: 1.2rem 1.1rem 1.3rem;
+    }
+}

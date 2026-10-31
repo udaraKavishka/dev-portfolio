@@ -1,53 +1,79 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useInView } from 'framer-motion';
-import { useRef } from 'react';
+import { GitBranch } from 'lucide-react';
 import styles from './Skills.module.css';
 import { skillsData } from '@/data/content';
 
-const categories = Array.from(new Set(skillsData.map((s) => s.category)));
+const groups = Array.from(new Set(skillsData.map((s) => s.category))).map((category) => ({
+    category,
+    skills: skillsData.filter((s) => s.category === category),
+}));
 
 export default function Skills() {
-    const ref = useRef(null);
-    const isInView = useInView(ref, { once: true, margin: '-100px' });
-
     return (
-        <section id="skills" className={styles.skills} ref={ref}>
+        <section id="skills" className={styles.skills}>
             <div className={styles.container}>
                 <h2 className="section-title">Tech Stack</h2>
-                <div className={styles.categories}>
-                    {categories.map((category, catIndex) => (
-                        <motion.div
-                            key={category}
-                            className={styles.category}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={isInView ? { opacity: 1, y: 0 } : {}}
-                            transition={{ delay: catIndex * 0.1, duration: 0.5 }}
-                        >
-                            <h3 className={styles.categoryTitle}>{category}</h3>
-                            <div className={styles.skillsList}>
-                                {skillsData
-                                    .filter((skill) => skill.category === category)
-                                    .map((skill, index) => (
-                                        <motion.div
-                                            key={skill.name}
-                                            className={styles.skillItem}
-                                            initial={{ opacity: 0, x: -10 }}
-                                            animate={isInView ? { opacity: 1, x: 0 } : {}}
-                                            transition={{
-                                                delay: catIndex * 0.1 + index * 0.05,
-                                                duration: 0.3,
-                                            }}
-                                        >
-                                            <span className={styles.bullet}>▸</span>
-                                            <span className={styles.skillName}>{skill.name}</span>
-                                        </motion.div>
+                <motion.div
+                    className={styles.editor}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: '-100px' }}
+                    transition={{ duration: 0.5 }}
+                >
+                    <div className={styles.tabBar}>
+                        <span className={styles.dots} aria-hidden="true">
+                            <span />
+                            <span />
+                            <span />
+                        </span>
+                        <span className={styles.tab}>stack.yaml</span>
+                    </div>
+
+                    <div className={styles.code}>
+                        <div className={styles.line}>
+                            <span className={styles.lineNo} aria-hidden="true">1</span>
+                            <p className={styles.comment}># tools I use to build, ship and run software</p>
+                        </div>
+                        {groups.map((group, index) => (
+                            <div key={group.category} className={styles.line}>
+                                <span className={styles.lineNo} aria-hidden="true">{index + 2}</span>
+                                <h3 className={styles.key}>
+                                    {group.category}
+                                    <span className={styles.punct}>:</span>
+                                </h3>
+                                <ul className={styles.values}>
+                                    {group.skills.map((skill) => (
+                                        <li key={skill.name} className={styles.value}>
+                                            {skill.icon ? (
+                                                <span
+                                                    className={styles.logo}
+                                                    style={{ '--logo': `url(/icons/tech/${skill.icon}.svg)` } as React.CSSProperties}
+                                                    aria-hidden="true"
+                                                />
+                                            ) : (
+                                                <span className={styles.logoFallback} aria-hidden="true">
+                                                    {skill.name[0]}
+                                                </span>
+                                            )}
+                                            {skill.name}
+                                        </li>
                                     ))}
+                                </ul>
                             </div>
-                        </motion.div>
-                    ))}
-                </div>
+                        ))}
+                    </div>
+
+                    <div className={styles.statusBar}>
+                        <span className={styles.status}>
+                            <GitBranch size={12} aria-hidden="true" />
+                            main
+                        </span>
+                        <span className={styles.status}>{skillsData.length} entries</span>
+                        <span className={`${styles.status} ${styles.statusRight}`}>YAML · UTF-8 · LF</span>
+                    </div>
+                </motion.div>
             </div>
         </section>
     );

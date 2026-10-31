@@ -1,46 +1,88 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useInView } from 'framer-motion';
-import { useRef } from 'react';
-import { Linkedin, ArrowRight } from 'lucide-react';
+import { Linkedin, ArrowRight, Crown, Newspaper, Flag, Users, UsersRound, type LucideIcon } from 'lucide-react';
 import styles from './Clubs.module.css';
 import { clubsData } from '@/data/content';
 
-export default function Clubs() {
-    const ref = useRef(null);
-    const isInView = useInView(ref, { once: true, margin: '-100px' });
+// Leadership roles get a card each, ordered by weight; every other role is listed as a membership.
+const LEADERSHIP_ORDER: { match: string; icon: LucideIcon }[] = [
+    { match: 'President', icon: Crown },
+    { match: 'Chief Editor', icon: Newspaper },
+    { match: 'Representative', icon: Flag },
+    { match: 'Committee', icon: UsersRound },
+    { match: 'Board', icon: Users },
+];
 
+const leadership = LEADERSHIP_ORDER.flatMap(({ match, icon }) =>
+    clubsData.filter((club) => club.role.includes(match)).map((club) => ({ ...club, icon }))
+);
+const memberships = clubsData.filter((club) => !leadership.some((lead) => lead.name === club.name));
+const membershipGroups = (['University', 'School'] as const)
+    .map((scope) => ({ scope, clubs: memberships.filter((club) => club.scope === scope) }))
+    .filter((group) => group.clubs.length > 0);
+
+export default function Clubs() {
     const handleViewExperience = () => {
         window.open('https://www.linkedin.com/in/udaranalawansa/', '_blank');
     };
 
     return (
-        <section id="clubs" className={styles.clubs} ref={ref}>
+        <section id="clubs" className={styles.clubs}>
             <div className={styles.container}>
                 <h2 className="section-title">Clubs & Societies</h2>
-                <div className={styles.clubsList}>
-                    {clubsData.map((club, index) => (
-                        <motion.div
-                            key={index}
-                            className={styles.clubItem}
-                            initial={{ opacity: 0, x: -10 }}
-                            animate={isInView ? { opacity: 1, x: 0 } : {}}
-                            transition={{ delay: index * 0.05, duration: 0.3 }}
-                        >
-                            <div className={styles.clubContent}>
-                                <span className={styles.bullet}>▸</span>
-                                <div className={styles.clubInfo}>
-                                    <span className={styles.clubName}>{club.name}</span>
-                                    <span className={styles.clubRole}>{club.role}</span>
-                                    {club.description && (
-                                        <p className={styles.clubDescription}>{club.description}</p>
-                                    )}
+
+                <p className={styles.groupLabel}>leadership</p>
+                <div className={styles.leadGrid}>
+                    {leadership.map((club, index) => {
+                        const Icon = club.icon;
+                        return (
+                            <motion.article
+                                key={club.name}
+                                className={`${styles.leadCard} ${index < 2 ? styles.leadCardLarge : ''}`}
+                                initial={{ opacity: 0, y: 16 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true, margin: '-80px' }}
+                                transition={{ delay: index * 0.07, duration: 0.45 }}
+                            >
+                                <div className={styles.leadTop}>
+                                    <span className={styles.leadIcon}>
+                                        <Icon size={18} aria-hidden="true" />
+                                    </span>
+                                    <span className={styles.scope}>{club.scope}</span>
                                 </div>
-                            </div>
-                        </motion.div>
+                                <p className={styles.role}>{club.role}</p>
+                                <h3 className={styles.org}>{club.name}</h3>
+                                {club.description && <p className={styles.description}>{club.description}</p>}
+                            </motion.article>
+                        );
+                    })}
+                </div>
+
+                <p className={styles.groupLabel}>member of</p>
+                <div className={styles.memberGroups}>
+                    {membershipGroups.map((group) => (
+                        <div key={group.scope} className={styles.memberGroup}>
+                            <span className={styles.memberScope}>{group.scope}</span>
+                            <ul className={styles.memberList}>
+                                {group.clubs.map((club, index) => (
+                                    <motion.li
+                                        key={club.name}
+                                        className={styles.memberChip}
+                                        title={club.description}
+                                        initial={{ opacity: 0, scale: 0.94 }}
+                                        whileInView={{ opacity: 1, scale: 1 }}
+                                        viewport={{ once: true }}
+                                        transition={{ delay: index * 0.05, duration: 0.3 }}
+                                    >
+                                        {club.name}
+                                    </motion.li>
+                                ))}
+                            </ul>
+                        </div>
                     ))}
                 </div>
+
                 <div className={styles.viewMoreContainer}>
                     <button onClick={handleViewExperience} className={styles.linkedinButton}>
                         <Linkedin size={18} />

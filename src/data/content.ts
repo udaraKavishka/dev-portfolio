@@ -6,7 +6,19 @@ import {
     Code,
     Globe,
     Facebook,
-    Instagram
+    Instagram,
+    Stethoscope,
+    MessageCircle,
+    BrainCircuit,
+    Database,
+    Link2,
+    Bus,
+    SquareKanban,
+    TreePalm,
+    MapPinned,
+    PenLine,
+    Terminal,
+    type LucideIcon,
 } from 'lucide-react';
 
 export const heroData = {
@@ -22,15 +34,16 @@ export const heroData = {
     ],
     tagline: "Designing Scalable Systems Through Software, Cloud, and Automation",
     bio: "Associate Software Engineer at Xaventra and full stack developer in Sri Lanka focused on cloud infrastructure, automation, continuous delivery, and MLOps. I design resilient CI/CD pipelines, build scalable applications, deploy containerized workloads, and implement infrastructure as code with tools such as Kubernetes, Docker, Terraform, AWS, and GitHub Actions.",
+    // icon = file name of the logo in public/icons/tech/
     techStack: [
-        { name: 'Docker', icon: '🐳' },
-        { name: 'Kubernetes', icon: '☸️' },
-        { name: 'AWS', icon: '☁️' },
-        { name: 'Terraform', icon: '🏗️' },
-        { name: 'Python', icon: '🐍' },
-        { name: 'ML', icon: '🤖' },
-        { name: 'Jenkins', icon: '🔧' },
-        { name: 'Linux', icon: '🐧' },
+        { name: 'Docker', icon: 'docker' },
+        { name: 'Kubernetes', icon: 'kubernetes' },
+        { name: 'AWS', icon: 'aws' },
+        { name: 'Terraform', icon: 'terraform' },
+        { name: 'Python', icon: 'python' },
+        { name: 'ML', icon: 'ml' },
+        { name: 'Jenkins', icon: 'jenkins' },
+        { name: 'Linux', icon: 'linux' },
     ],
     profileImage: "/profile.jpg",
     socialLinks: [
@@ -49,36 +62,43 @@ interface ProjectItem {
     liveUrl?: string;
     isOngoing?: boolean;
     caseStudySlug?: string;
+    // Short line under the title on the home page card
+    subtitle?: string;
+    // Bento tile size on the home page; small when omitted
+    tile?: 'large' | 'wide';
+    // Domain icon drawn on the home page tile
+    icon: LucideIcon;
 }
 
 export const projectsData: ProjectItem[] = [
     {
         id: 12,
-        title: 'Agentic Healthcare Assistant — Hybrid RAG + SQL Hospital Chatbot',
+        title: 'Agentic Healthcare Assistant',
+        subtitle: 'Hybrid RAG + SQL hospital chatbot',
+        icon: Stethoscope,
+        tile: 'large',
         description: 'An agentic chatbot for Nawaloka Hospitals that routes each patient question between scraped website knowledge (hybrid vector search) and a read-only SQL database of doctors, channeling schedules, and lab prices, then streams a grounded answer to a chat UI.',
         techStack: ['Python', 'FastAPI', 'Streamlit', 'Groq', 'Qdrant', 'fastembed', 'SQLite', 'sqlglot', 'Playwright', 'uv'],
         githubUrl: 'https://github.com/udaraKavishka/Agentic-Healthcare-Assistant',
         caseStudySlug: 'agentic-healthcare-assistant',
     },
     {
-        id: 1,
-        title: 'TaskFlow | Task Management System (MERN Stack)',
-        description: 'Taskflow is an efficient and user-friendly task management system designed to help individuals and teams organize, track, and manage their tasks seamlessly.',
-        techStack: ['Node.js', 'Express.js', 'MongoDB', 'React', 'Redux', 'Material UI', 'JWT',],
-        githubUrl: 'https://github.com/udaraKavishka/IT22242024taskflow',
-        caseStudySlug: 'taskflow',
-    },
-    {
-        id: 2,
-        title: 'URL Shortener (Go)',
-        description: 'A simple and fast URL shortening service built with Go, Gin, and Redis. This project provides endpoints for generating short links and redirecting to the original URLs.',
-        techStack: ['Go', 'Gin Web Framework', 'Redis', 'Docker'],
-        githubUrl: 'https://github.com/udaraKavishka/URL-Shortner',
-        caseStudySlug: 'url-shortener-go',
+        id: 11,
+        title: 'WhatsApp AI Chatbot',
+        subtitle: 'Workspace bot on the WhatsApp Cloud API',
+        icon: MessageCircle,
+        tile: 'wide',
+        description: 'A WhatsApp Cloud API webhook integration backed by a swappable AI chat backend, with signature validation, idempotency checks, and a local Gemini shim for development. Built to be reusable as a chatbot template for any business.',
+        techStack: ['Python', 'WhatsApp Cloud API', 'Meta Webhooks', 'Shell'],
+        githubUrl: 'https://github.com/udaraKavishka/whatsapp-ai-bot',
+        caseStudySlug: 'whatsapp-ai-chatbot',
     },
     {
         id: 3,
-        title: 'DevOps and AI: Building Production-Ready RAG Systems',
+        title: 'Production-Ready RAG API',
+        subtitle: 'DevOps and AI with a local LLM',
+        icon: BrainCircuit,
+        tile: 'wide',
         description: 'DevOps and AI project implementing a RAG-based API with FastAPI and a local LLM. Designed to evolve into a production-ready system with Docker, Kubernetes, and automated workflows.',
         techStack: ['FastAPI', 'Kubernetes', 'ChromaDB', 'Ollama', 'TinyLlama', 'Swagger UI', 'Docker'],
         githubUrl: 'https://github.com/udaraKavishka/devops-ai-rag-api',
@@ -86,8 +106,73 @@ export const projectsData: ProjectItem[] = [
         // isOngoing: true
     },
     {
+        id: 5,
+        title: 'Flask CRUD API',
+        subtitle: 'Docker, Postgres and CI health checks',
+        icon: Database,
+        tile: 'wide',
+        description: 'Built a containerized CRUD REST API for user management using Flask and SQLAlchemy, with Postgres persistence via Docker Compose and automated CI health/E2E checks.',
+        techStack: ['Python', "Flask", 'Flask-SQLAlchemy', 'PostgreSQL', 'Docker', 'Docker Compose', 'GitHub Actions'],
+        githubUrl: 'https://github.com/udaraKavishka/flask-crud-api',
+        caseStudySlug: 'flask-crud-api',
+    },
+    {
+        id: 2,
+        title: 'URL Shortener',
+        subtitle: 'Go, Gin and Redis',
+        icon: Link2,
+        description: 'A simple and fast URL shortening service built with Go, Gin, and Redis. This project provides endpoints for generating short links and redirecting to the original URLs.',
+        techStack: ['Go', 'Gin Web Framework', 'Redis', 'Docker'],
+        githubUrl: 'https://github.com/udaraKavishka/URL-Shortner',
+        caseStudySlug: 'url-shortener-go',
+    },
+    {
+        id: 6,
+        title: 'TrackNGo',
+        subtitle: 'Real-time bus tracking',
+        icon: Bus,
+        description: 'A public transportation solution providing real time bus tracking, route guidance, fare estimation, and lost and found management to enhance commuter convenience and safety.',
+        techStack: ['MongoDB', "Express.js", 'React', 'Node.js', 'Socket.io', 'JavaScript', 'Mongoose', 'JWT'],
+        githubUrl: 'https://github.com/TrackNGo',
+        caseStudySlug: 'trackngo',
+    },
+    {
+        id: 1,
+        title: 'TaskFlow',
+        subtitle: 'Task management system (MERN stack)',
+        icon: SquareKanban,
+        tile: 'wide',
+        description: 'Taskflow is an efficient and user-friendly task management system designed to help individuals and teams organize, track, and manage their tasks seamlessly.',
+        techStack: ['Node.js', 'Express.js', 'MongoDB', 'React', 'Redux', 'Material UI', 'JWT',],
+        githubUrl: 'https://github.com/udaraKavishka/IT22242024taskflow',
+        caseStudySlug: 'taskflow',
+    },
+    {
+        id: 7,
+        title: 'CeylonRoots',
+        subtitle: 'Sri Lankan travel platform',
+        icon: TreePalm,
+        description: "A travel platform that showcases Sri Lanka's cultural heritage while offering features like itinerary customization, bookings, and customer support with smooth frontend and backend integration.",
+        techStack: ['Next.js', 'React', 'Spring Boot', 'Java', 'MySQL', 'Tailwind'],
+        githubUrl: 'https://github.com/udaraKavishka/CeylonRoots',
+        caseStudySlug: 'ceylonroots',
+    },
+    {
+        id: 9,
+        title: 'Efficient Campus Navigation',
+        subtitle: 'Smart shortest path system for University of Vavuniya',
+        icon: MapPinned,
+        description: 'A smart navigation system for the University of Vavuniya campus that predicts travel times and computes the shortest paths, enhancing efficiency for students, staff, and visitors. I was in charge of the prediction model.',
+        techStack: ['Python', 'Pandas', 'NumPy', 'scikit-learn (Random Forest)', 'NetworkX', 'Tkinter', 'Pillow (PIL)', 'Dijkstra Algorithm'],
+        githubUrl: 'https://github.com/DilmyPerera/Efficient-Campus-Navigation',
+        caseStudySlug: 'campus-navigation',
+    },
+    {
         id: 4,
         title: 'ParaWrite',
+        subtitle: 'Sentence-by-sentence paraphrasing tool',
+        icon: PenLine,
+        tile: 'wide',
         description: 'A text paraphrasing tool that enables sentence by sentence editing with efficient processing and a clean, user friendly interface for improving written content.',
         techStack: ['Next.js', 'React', 'TypeScript', 'CSS Modules'],
         githubUrl: 'https://github.com/udaraKavishka/ParaWrite',
@@ -95,53 +180,26 @@ export const projectsData: ProjectItem[] = [
 
     },
     {
-        id: 5,
-        title: 'Flask CRUD API with Docker & Postgres',
-        description: 'Built a containerized CRUD REST API for user management using Flask and SQLAlchemy, with Postgres persistence via Docker Compose and automated CI health/E2E checks.',
-        techStack: ['Python', "Flask", 'Flask-SQLAlchemy', 'PostgreSQL', 'Docker', 'Docker Compose', 'GitHub Actions'],
-        githubUrl: 'https://github.com/udaraKavishka/flask-crud-api',
-        caseStudySlug: 'flask-crud-api',
-    },
-    {
-        id: 6,
-        title: 'TrackNGo',
-        description: 'A public transportation solution providing real time bus tracking, route guidance, fare estimation, and lost and found management to enhance commuter convenience and safety.',
-        techStack: ['MongoDB', "Express.js", 'React', 'Node.js', 'Socket.io', 'JavaScript', 'Mongoose', 'JWT'],
-        githubUrl: 'https://github.com/TrackNGo',
-        caseStudySlug: 'trackngo',
-    },
-    {
-        id: 7,
-        title: 'CeylonRoots',
-        description: "A travel platform that showcases Sri Lanka's cultural heritage while offering features like itinerary customization, bookings, and customer support with smooth frontend and backend integration.",
-        techStack: ['Next.js', 'React', 'Spring Boot', 'Java', 'MySQL', 'Tailwind'],
-        githubUrl: 'https://github.com/udaraKavishka/CeylonRoots',
-        caseStudySlug: 'ceylonroots',
-    },
-    {
         id: 8,
-        title: 'DevOps Portfolio Website',
+        title: 'Portfolio Website',
+        subtitle: 'This site, on Next.js and Vercel',
+        tile: 'wide',
+        icon: Terminal,
         description: 'A modern, professional portfolio website showcasing my skills, projects, and experience as a DevOps engineer, built with Next.js and deployed on Vercel for optimal performance and scalability.',
         techStack: ['Next.js', 'React', 'TypeScript', 'CSS Modules', 'Vercel'],
         githubUrl: 'https://github.com/udaraKavishka/dev-portfolio',
         liveUrl: 'https://udaradev.me',
     },
-    {
-        id: 9,
-        title: 'Efficient Campus Navigation — Smart Shortest Path System for University of Vavuniya',
-        description: 'A smart navigation system for the University of Vavuniya campus that predicts travel times and computes the shortest paths, enhancing efficiency for students, staff, and visitors. I was in charge of the prediction model.',
-        techStack: ['Python', 'Pandas', 'NumPy', 'scikit-learn (Random Forest)', 'NetworkX', 'Tkinter', 'Pillow (PIL)', 'Dijkstra Algorithm'],
-        githubUrl: 'https://github.com/DilmyPerera/Efficient-Campus-Navigation',
-        caseStudySlug: 'campus-navigation',
-    },
-    {
-        id: 10,
-        title: 'Modern Portfolio — Responsive Personal Website',
-        description: 'A sleek, fully responsive personal portfolio website built to showcase projects, skills, and technology interests with modern UI design and smooth navigation.',
-        techStack: ['React', 'Tailwind CSS', 'Figma', 'React Scroll', 'SVG Icons'],
-        githubUrl: 'https://github.com/udaraKavishka/modern-portfolio',
-        liveUrl: 'https://udara-portfolio.vercel.app/'
-    },
+    // {
+    //     id: 10,
+    //     title: 'Modern Portfolio',
+    //     subtitle: 'Responsive personal website',
+    //     icon: PanelsTopLeft,
+    //     description: 'A sleek, fully responsive personal portfolio website built to showcase projects, skills, and technology interests with modern UI design and smooth navigation.',
+    //     techStack: ['React', 'Tailwind CSS', 'Figma', 'React Scroll', 'SVG Icons'],
+    //     githubUrl: 'https://github.com/udaraKavishka/modern-portfolio',
+    //     liveUrl: 'https://udara-portfolio.vercel.app/'
+    // },
     // {
     //     id: 11,
     //     title: 'Predictive Kubernetes Autoscaler with Continual Learning',
@@ -150,89 +208,71 @@ export const projectsData: ProjectItem[] = [
     //     githubUrl: 'https://github.com/udaraKavishka/predictive-k8s-autoscaler',
     //     isOngoing: true,
     // },
-    {
-        id: 11,
-        title: 'WhatsApp AI Workspace Chatbot',
-        description: 'A WhatsApp Cloud API webhook integration backed by a swappable AI chat backend, with signature validation, idempotency checks, and a local Gemini shim for development. Built to be reusable as a chatbot template for any business.',
-        techStack: ['Python', 'WhatsApp Cloud API', 'Meta Webhooks', 'Shell'],
-        githubUrl: 'https://github.com/udaraKavishka/whatsapp-ai-bot',
-        caseStudySlug: 'whatsapp-ai-chatbot',
-    },
 ];
 
-export const skillsData = [
-    // Cloud and DevOps
-    { name: 'AWS', category: 'Cloud' },
-    { name: 'GCP', category: 'Cloud' },
-    { name: 'Docker', category: 'Containerization' },
-    { name: 'Kubernetes', category: 'Orchestration' },
-    { name: 'Docker Compose', category: 'Containerization' },
-    { name: 'Podman', category: 'Containerization' },
+interface SkillItem {
+    name: string;
+    // Key on the stack.yaml line in the Tech Stack section
+    category: string;
+    // File name of the logo in public/icons/tech/
+    icon?: string;
+}
 
-    // CI/CD
-    { name: 'GitHub Actions', category: 'CI/CD' },
-    { name: 'GitLab CI', category: 'CI/CD' },
-    { name: 'ArgoCD', category: 'CI/CD' },
+export const skillsData: SkillItem[] = [
+    { name: 'AWS', category: 'cloud_devops', icon: 'aws' },
+    { name: 'GCP', category: 'cloud_devops', icon: 'googlecloud' },
+    { name: 'Docker', category: 'cloud_devops', icon: 'docker' },
+    { name: 'Docker Compose', category: 'cloud_devops', icon: 'docker' },
+    { name: 'Podman', category: 'cloud_devops', icon: 'podman' },
+    { name: 'Kubernetes', category: 'cloud_devops', icon: 'kubernetes' },
+    { name: 'GitHub Actions', category: 'cloud_devops', icon: 'githubactions' },
+    { name: 'GitLab CI', category: 'cloud_devops', icon: 'gitlab' },
+    { name: 'ArgoCD', category: 'cloud_devops', icon: 'argo' },
+    { name: 'Terraform', category: 'cloud_devops', icon: 'terraform' },
+    { name: 'Ansible', category: 'cloud_devops', icon: 'ansible' },
+    { name: 'Prometheus', category: 'cloud_devops', icon: 'prometheus' },
+    { name: 'Grafana', category: 'cloud_devops', icon: 'grafana' },
+    { name: 'ELK Stack', category: 'cloud_devops', icon: 'elasticsearch' },
+    { name: 'Sentry', category: 'cloud_devops', icon: 'sentry' },
 
-    // Infrastructure as Code
-    { name: 'Terraform', category: 'IaC' },
-    { name: 'Ansible', category: 'IaC' },
+    { name: 'PyTorch', category: 'ai_ml', icon: 'pytorch' },
+    { name: 'scikit-learn', category: 'ai_ml', icon: 'scikitlearn' },
+    { name: 'Pandas', category: 'ai_ml', icon: 'pandas' },
+    { name: 'NumPy', category: 'ai_ml', icon: 'numpy' },
+    { name: 'MLP', category: 'ai_ml' },
+    { name: 'MLOps', category: 'ai_ml', icon: 'ml' },
+    { name: 'RAG', category: 'ai_ml' },
+    { name: 'ChromaDB', category: 'ai_ml' },
+    { name: 'Ollama', category: 'ai_ml', icon: 'ollama' },
 
-    // Monitoring and Logging
-    { name: 'Prometheus', category: 'Monitoring' },
-    { name: 'Grafana', category: 'Monitoring' },
-    { name: 'ELK Stack', category: 'Monitoring' },
-    { name: 'Sentry', category: 'Monitoring' },
+    { name: 'Python', category: 'languages', icon: 'python' },
+    { name: 'Go', category: 'languages', icon: 'go' },
+    { name: 'TypeScript', category: 'languages', icon: 'typescript' },
+    { name: 'JavaScript', category: 'languages', icon: 'javascript' },
+    { name: 'Java', category: 'languages', icon: 'openjdk' },
+    { name: 'Bash', category: 'languages', icon: 'gnubash' },
 
-    // AI and Machine Learning
-    { name: 'PyTorch', category: 'AI/ML' },
-    { name: 'scikit-learn', category: 'AI/ML' },
-    { name: 'Pandas', category: 'AI/ML' },
-    { name: 'NumPy', category: 'AI/ML' },
-    { name: 'MLP', category: 'AI/ML' },
-    { name: 'MLOps', category: 'AI/ML' },
-    { name: 'RAG', category: 'AI/ML' },
-    { name: 'ChromaDB', category: 'AI/ML' },
-    { name: 'Ollama', category: 'AI/ML' },
+    { name: 'React.js', category: 'frontend', icon: 'react' },
+    { name: 'Next.js', category: 'frontend', icon: 'nextdotjs' },
+    { name: 'React Native', category: 'frontend', icon: 'react' },
+    { name: 'TailwindCSS', category: 'frontend', icon: 'tailwindcss' },
+    { name: 'TanStack Query', category: 'frontend', icon: 'reactquery' },
 
-    // Programming and Scripting
-    { name: 'Python', category: 'Programming' },
-    { name: 'Java', category: 'Programming' },
-    { name: 'JavaScript', category: 'Programming' },
-    { name: 'TypeScript', category: 'Programming' },
-    { name: 'Bash', category: 'Programming' },
-    { name: 'Go', category: 'Programming' },
+    { name: 'FastAPI', category: 'backend_data', icon: 'fastapi' },
+    { name: 'Flask', category: 'backend_data', icon: 'flask' },
+    { name: 'Node.js', category: 'backend_data', icon: 'nodedotjs' },
+    { name: 'Spring Boot', category: 'backend_data', icon: 'springboot' },
+    { name: 'SQLAlchemy', category: 'backend_data', icon: 'sqlalchemy' },
+    { name: 'Pydantic', category: 'backend_data', icon: 'pydantic' },
+    { name: 'PostgreSQL', category: 'backend_data', icon: 'postgresql' },
+    { name: 'MySQL', category: 'backend_data', icon: 'mysql' },
+    { name: 'MongoDB', category: 'backend_data', icon: 'mongodb' },
 
-    // Frontend
-    { name: 'React.js', category: 'Frontend' },
-    { name: 'Next.js', category: 'Frontend' },
-    { name: 'React Native', category: 'Frontend' },
-    { name: 'TailwindCSS', category: 'Frontend' },
-    { name: 'TanStack Query', category: 'Frontend' },
-
-    // Backend
-    { name: 'Node.js', category: 'Backend' },
-    { name: 'Python', category: 'Backend' },
-    { name: 'Java', category: 'Backend' },
-    { name: 'Go', category: 'Backend' },
-    { name: 'Spring Boot', category: 'Backend' },
-    { name: 'FastAPI', category: 'Backend' },
-    { name: 'Flask', category: 'Backend' },
-    { name: 'SQLAlchemy', category: 'Backend' },
-    { name: 'Pydantic', category: 'Backend' },
-
-    // Databases
-    { name: 'MongoDB', category: 'Database' },
-    { name: 'MySQL', category: 'Database' },
-    { name: 'PostgreSQL', category: 'Database' },
-
-    // Tools and Collaboration
-    { name: 'Git', category: 'Tools' },
-    { name: 'Linux', category: 'Tools' },
-    { name: 'Claude Code', category: 'Tools' },
-    { name: 'MCP', category: 'Tools' },
-    { name: 'Postman', category: 'Tools' }
-
+    { name: 'Git', category: 'tools', icon: 'git' },
+    { name: 'Linux', category: 'tools', icon: 'linux' },
+    { name: 'Claude Code', category: 'tools', icon: 'claude' },
+    { name: 'MCP', category: 'tools', icon: 'modelcontextprotocol' },
+    { name: 'Postman', category: 'tools', icon: 'postman' },
 ];
 
 interface ExperienceItem {
@@ -242,6 +282,8 @@ interface ExperienceItem {
     description?: string;
     highlights?: string[];
     link?: string;
+    // Short tech chips shown under the entry in the Journey section
+    tags?: string[];
 }
 
 export const experienceData: ExperienceItem[] = [
@@ -255,6 +297,7 @@ export const experienceData: ExperienceItem[] = [
             'Designed and integrated RESTful APIs in FastAPI and PostgreSQL against a Next.js and TypeScript frontend, following OpenAPI-driven development.',
             'Diagnosed and resolved production issues through log analysis, database inspection, and API tracing, and supported CI/CD workflows, Alembic migrations, and incident response with root-cause analysis.',
         ],
+        tags: ['Flask', 'FastAPI', 'Next.js', 'TypeScript', 'PostgreSQL', 'Alembic', 'GitHub Actions'],
     },
 ];
 
@@ -316,6 +359,8 @@ interface ResearchItem {
     institution: string;
     period: string;
     highlights: string[];
+    // Short tech chips shown under the entry in the Journey section
+    tags?: string[];
 }
 
 export const researchData: ResearchItem[] = [
@@ -329,12 +374,15 @@ export const researchData: ResearchItem[] = [
             'Deployed and managed a controlled Kubernetes test environment and benchmarked the predictive autoscaler against the standard Horizontal Pod Autoscaler using a Prometheus based evidence pipeline.',
             'Analyzed cluster behaviour and resource utilization patterns to improve scaling efficiency.',
         ],
+        tags: ['PyTorch', 'LSTM', 'MLP', 'Continual learning', 'Kubernetes', 'Prometheus'],
     },
 ];
 
 interface ClubItem {
     name: string;
     role: string;
+    // Where the club sits, shown as a small label on the card
+    scope: 'University' | 'School';
     description?: string;
 }
 
@@ -342,51 +390,61 @@ export const clubsData: ClubItem[] = [
     { 
         name: 'Interact: Rotary Sponsored Club', 
         role: 'Member',
+        scope: 'School',
         description: 'Participated in community service initiatives and youth development programs.'
     },
     { 
         name: 'General Knowledge Club of St Josephs College', 
         role: 'Board Member',
+        scope: 'School',
         description: 'Organized debates, quizzes, and knowledge-sharing sessions for students.'
     },
     { 
         name: 'Commerce Union of St Josephs College', 
         role: 'Member',
+        scope: 'School',
         description: 'Engaged in business-related activities and entrepreneurship events.'
     },
     { 
         name: 'Christian Society', 
         role: 'President',
+        scope: 'University',
         description: 'Led spiritual activities and community outreach programs for the university.'
     },
     { 
         name: 'Sri Lanka University Catholic Students Movement (SLUCSM)', 
         role: 'University of Vavuniya Representative',
+        scope: 'University',
         description: 'Represented the university in national-level religious and social activities.'
     },
     { 
         name: 'ZeroPlastic Movement of University of Vavuniya', 
         role: 'Member',
+        scope: 'University',
         description: 'Promoted environmental sustainability and plastic-free initiatives on campus.'
     },
     { 
         name: 'IEEE Student Branch of University of Vavuniya', 
         role: 'Member',
+        scope: 'University',
         description: 'Participated in technical workshops, hackathons, and IEEE-sponsored events.'
     },
     { 
         name: 'ITCS | Information Technology & Computing Society', 
         role: 'Member',
+        scope: 'University',
         description: 'Contributed to IT-related events, workshops, and student projects.'
     },
     { 
         name: 'AIESEC in University of Vavuniya', 
         role: 'Committee Member',
+        scope: 'University',
         description: 'Contributed in designing posts and Flyers.'
     },
     { 
         name: 'Leo Club of University of Vavuniya', 
         role: 'Chief Editor',
+        scope: 'University',
         description: 'Managed content creation and publication for club newsletters and Flyer materials.'
     },
 ];
@@ -450,7 +508,7 @@ export const setupData = [
         title: 'Hardware',
         icon: Laptop,
         items: [
-            { name: 'Laptop', value: 'Aspire A515-56(i3-i3-1115G4, 12GB RAM, 512 SSD, 1TB HDD)' },
+            { name: 'Laptop', value: 'Aspire A515-56 (i3-1115G4, 12GB RAM, 512GB SSD, 1TB HDD)' },
             { name: 'Smartphone', value: 'Pixel 5' },
             { name: 'External HDD', value: 'WD External HDD 500GB' },
         ],
@@ -459,7 +517,7 @@ export const setupData = [
         title: 'Software & Tools',
         icon: Code,
         items: [
-            { name: 'Operating System', value: 'Omarchy 3.2.2 ( Linux 6.17.8-arch1-1 ' },
+            { name: 'Operating System', value: 'Omarchy 3.2.2 (Linux 6.17.8-arch1-1)' },
             { name: 'Shell', value: 'fish' },
             { name: 'Prompt', value: 'Starship' },
             { name: 'IDE', value: 'Visual Studio Code' },

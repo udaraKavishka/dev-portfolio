@@ -1,21 +1,33 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import { FileText } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
+import { ArrowRight, FileText, MapPin } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import styles from './Hero.module.css';
 import { heroData } from '@/data/content';
-import TerminalPrompt from './TerminalPrompt';
 import ViewCounter from './ViewCounter';
 
+const [firstName, ...restOfName] = heroData.name.split(' ');
+const lastName = restOfName.join(' ');
+
+// Staggered entrance for each hero row.
+const rise = (delay: number) => ({
+    initial: { opacity: 0, y: 16 },
+    animate: { opacity: 1, y: 0 },
+    transition: { delay, duration: 0.5, ease: [0.22, 1, 0.36, 1] as const },
+});
+
 export default function Hero() {
-    const { name, tagline, bio, techStack, profileImage, socialLinks, roles } = heroData;
+    const { tagline, bio, techStack, profileImage, socialLinks, roles } = heroData;
+    const reduceMotion = useReducedMotion();
+    const heroRef = useRef<HTMLElement>(null);
     const [currentRoleIndex, setCurrentRoleIndex] = useState(0);
     const [displayedText, setDisplayedText] = useState('');
     const [isDeleting, setIsDeleting] = useState(false);
 
     useEffect(() => {
+        if (reduceMotion) return;
         const currentRole = roles[currentRoleIndex];
         const typingSpeed = isDeleting ? 50 : 100;
         const pauseTime = isDeleting ? 1000 : 2000;
@@ -42,104 +54,66 @@ export default function Hero() {
         }, typingSpeed);
 
         return () => clearTimeout(timeout);
-    }, [displayedText, isDeleting, currentRoleIndex, roles]);
+    }, [displayedText, isDeleting, currentRoleIndex, roles, reduceMotion]);
 
-    const handleViewResume = () => {
-        window.open('/Udara_Nalawansa.pdf', '_blank');
+    // The backdrop glow follows the pointer; written straight to CSS variables so it never re-renders.
+    const handlePointerMove = (e: React.PointerEvent<HTMLElement>) => {
+        const hero = heroRef.current;
+        if (!hero || e.pointerType !== 'mouse') return;
+        const rect = hero.getBoundingClientRect();
+        hero.style.setProperty('--glow-x', `${e.clientX - rect.left}px`);
+        hero.style.setProperty('--glow-y', `${e.clientY - rect.top}px`);
+    };
+
+    const handleContactClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+        const contact = document.getElementById('contact');
+        if (!contact) return;
+        e.preventDefault();
+        contact.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' });
     };
 
     return (
-        <section id="about" className={styles.hero}>
+        <section id="about" ref={heroRef} className={styles.hero} onPointerMove={handlePointerMove}>
+            <div className={styles.backdrop} aria-hidden="true" />
             <div className={styles.container}>
-                <motion.div
-                    className={styles.content}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6 }}
-                >
-                    <div className={styles.terminal}>
-                        <div className={styles.terminalHeader}>
-                            <div className={styles.terminalButtons}>
-                                <span className={styles.buttonRed}></span>
-                                <span className={styles.buttonYellow}></span>
-                                <span className={styles.buttonGreen}></span>
-                            </div>
-                            <span className={styles.terminalTitle}>about.sh</span>
-                        </div>
-                        <div className={styles.terminalBody}>
-                            <div className={styles.terminalLine}>
-                                <span className={styles.prompt}>$</span>
-                                <span className={styles.command}>whoami</span>
-                            </div>
-                            <div className={styles.output}>
-                                <h1 className={styles.name}>{name}</h1>
-                                <div className={styles.roleContainer}>
-                                    <span className={styles.prompt}>❯</span>
-                                    <span className={styles.role}>
-                                        {displayedText}
-                                        <span className={styles.cursor}>|</span>
-                                    </span>
-                                </div>
-                                <p className={styles.tagline}>
-                                    {tagline}
-                                </p>
-                            </div>
-                            <div className={styles.terminalLine}>
-                                <span className={styles.prompt}>$</span>
-                                <span className={styles.command}>cat bio.txt</span>
-                            </div>
-                            <div className={styles.output}>
-                                <p className={styles.bio}>
-                                    {bio}
-                                </p>
-                            </div>
-                            <button 
-                                onClick={handleViewResume}
-                                className={styles.resumeButton}
-                                aria-label="View Resume"
-                            >
-                                <FileText size={18} />
-                                <span>View My Resume</span>
-                            </button>
-                            <TerminalPrompt name={name} roles={roles} bio={bio} />
-                        </div>
-                    </div>
+                <div className={styles.layout}>
+                    <div className={styles.main}>
+                        <motion.h1 className={styles.name} {...rise(0)}>
+                            <span className={styles.firstName}>{firstName}</span>
+                            <span className={styles.lastName}>
+                                {lastName}
+                                <span className={styles.blockCursor} aria-hidden="true" />
+                            </span>
+                        </motion.h1>
 
-                    <div className={styles.sidebar}>
-                        <motion.div
-                            className={styles.profileCard}
-                            initial={{ opacity: 0, scale: 0.9 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            transition={{ delay: 0.3, duration: 0.5 }}
-                        >
-                            <div className={styles.profileImage}>
-                                <Image
-                                    src={profileImage}
-                                    alt="Udara Nalawansa, DevOps engineer and full stack developer"
-                                    fill
-                                    loading="eager"
-                                    priority
-                                    sizes="150px"
-                                    className={styles.profileImg}
-                                />
-                            </div>
-                            <div className={styles.techStack}>
-                                <h3 className={styles.techTitle}>Tech Stack</h3>
-                                <div className={styles.techGrid}>
-                                    {techStack.map((tech, index) => (
-                                        <motion.div
-                                            key={tech.name}
-                                            className={styles.techItem}
-                                            initial={{ opacity: 0, y: 10 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            transition={{ delay: 0.5 + index * 0.1 }}
-                                        >
-                                            <span className={styles.techIcon}>{tech.icon}</span>
-                                            <span className={styles.techName}>{tech.name}</span>
-                                        </motion.div>
-                                    ))}
-                                </div>
-                            </div>
+                        <motion.p className={styles.roleLine} {...rise(0.08)}>
+                            <span className={styles.prompt} aria-hidden="true">❯</span>
+                            <span className={styles.role} aria-hidden="true">
+                                {reduceMotion ? roles[0] : displayedText}
+                                <span className={styles.caret} />
+                            </span>
+                            <span className={styles.visuallyHidden}>{roles.join(', ')}</span>
+                        </motion.p>
+
+                        <motion.div className={styles.copy} {...rise(0.16)}>
+                            <p className={styles.tagline}>{tagline}</p>
+                            <p className={styles.bio}>{bio}</p>
+                        </motion.div>
+
+                        <motion.div className={styles.actions} {...rise(0.24)}>
+                            <a
+                                href="/Udara_Nalawansa.pdf"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className={styles.primaryCta}
+                            >
+                                <FileText size={18} aria-hidden="true" />
+                                View resume
+                            </a>
+                            <a href="#contact" className={styles.secondaryCta} onClick={handleContactClick}>
+                                Contact
+                                <ArrowRight size={18} aria-hidden="true" />
+                            </a>
                             <div className={styles.social}>
                                 {socialLinks.map((link) => (
                                     <a
@@ -148,15 +122,56 @@ export default function Hero() {
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className={styles.socialLink}
+                                        aria-label={link.label}
                                     >
-                                        <link.icon size={20} />
+                                        <link.icon size={18} />
                                     </a>
                                 ))}
                             </div>
-                            <ViewCounter />
+                        </motion.div>
+
+                        <motion.div className={styles.stack} {...rise(0.32)}>
+                            <span className={styles.stackLabel}>stack</span>
+                            <ul className={styles.stackList}>
+                                {techStack.map((tech) => (
+                                    <li key={tech.name} className={styles.stackItem}>
+                                        <span
+                                            className={styles.stackIcon}
+                                            style={{ '--icon': `url(/icons/tech/${tech.icon}.svg)` } as React.CSSProperties}
+                                            aria-hidden="true"
+                                        />
+                                        {tech.name}
+                                    </li>
+                                ))}
+                            </ul>
                         </motion.div>
                     </div>
-                </motion.div>
+
+                    <motion.figure className={styles.portrait} {...rise(0.12)}>
+                        <div className={styles.photoFrame}>
+                            <div className={styles.photoWrap}>
+                                <Image
+                                    src={profileImage}
+                                    alt="Udara Nalawansa, DevOps engineer and full stack developer"
+                                    fill
+                                    loading="eager"
+                                    priority
+                                    sizes="(min-width: 1024px) 360px, 420px"
+                                    className={styles.photo}
+                                />
+                            </div>
+                            <span className={styles.corners} aria-hidden="true" />
+                        </div>
+                        <figcaption className={styles.caption}>
+                            <span className={styles.fileName}>~/udara.jpg</span>
+                            <span className={styles.location}>
+                                <MapPin size={13} aria-hidden="true" />
+                                Colombo, LK
+                            </span>
+                            <ViewCounter />
+                        </figcaption>
+                    </motion.figure>
+                </div>
             </div>
         </section>
     );
