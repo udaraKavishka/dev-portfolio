@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Linkedin, ArrowRight, Crown, Newspaper, Flag, Users, UsersRound, type LucideIcon } from 'lucide-react';
+import { Linkedin, ArrowRight, Crown, Newspaper, Trophy, Flag, Users, UsersRound, type LucideIcon } from 'lucide-react';
 import styles from './Clubs.module.css';
 import { clubsData } from '@/data/content';
 
@@ -9,14 +9,18 @@ import { clubsData } from '@/data/content';
 const LEADERSHIP_ORDER: { match: string; icon: LucideIcon }[] = [
     { match: 'President', icon: Crown },
     { match: 'Chief Editor', icon: Newspaper },
+    { match: 'Colours', icon: Trophy },
     { match: 'Representative', icon: Flag },
     { match: 'Committee', icon: UsersRound },
     { match: 'Board', icon: Users },
 ];
 
-const leadership = LEADERSHIP_ORDER.flatMap(({ match, icon }) =>
-    clubsData.filter((club) => club.role.includes(match)).map((club) => ({ ...club, icon }))
-);
+// A role can name two ranks ("Committee Member, … Representative"); the first one in the order wins.
+const rankOf = (role: string) => LEADERSHIP_ORDER.findIndex(({ match }) => role.includes(match));
+const leadership = clubsData
+    .filter((club) => rankOf(club.role) >= 0)
+    .sort((a, b) => rankOf(a.role) - rankOf(b.role))
+    .map((club) => ({ ...club, icon: LEADERSHIP_ORDER[rankOf(club.role)].icon }));
 const memberships = clubsData.filter((club) => !leadership.some((lead) => lead.name === club.name));
 const membershipGroups = (['University', 'School'] as const)
     .map((scope) => ({ scope, clubs: memberships.filter((club) => club.scope === scope) }))
@@ -39,7 +43,7 @@ export default function Clubs() {
                         return (
                             <motion.article
                                 key={club.name}
-                                className={`${styles.leadCard} ${index < 2 ? styles.leadCardLarge : ''}`}
+                                className={styles.leadCard}
                                 initial={{ opacity: 0, y: 16 }}
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true, margin: '-80px' }}

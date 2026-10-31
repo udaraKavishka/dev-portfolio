@@ -62,6 +62,8 @@ body {
 }
 
 html {
+  /* framer-motion's useScroll measures section offsets against the page; it needs a positioned root */
+  position: relative;
   scroll-behavior: smooth;
 }
 

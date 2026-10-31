@@ -56,7 +56,7 @@ export default function Home() {
         <Skills />
         <Journey />
         <Clubs />
-        <HomeBlog posts={posts} />
+        <HomeBlog posts={posts.slice(0, 5)} />
         <Setup />
         <Contact />
       </main>

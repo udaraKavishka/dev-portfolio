@@ -110,7 +110,8 @@ export default function HomeBlog({ posts }: HomeBlogProps) {
                 </ul>
 
                 <div className={styles.viewMoreContainer}>
-                    <Link href="/blog" className={styles.viewMoreButton}>
+                    {/* No prefetch: the blog index carries the full-text search index for every post */}
+                    <Link href="/blog" prefetch={false} className={styles.viewMoreButton}>
                         <span>view all posts</span>
                         <ArrowRight size={16} />
                     </Link>

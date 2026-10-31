@@ -1,5 +1,5 @@
 import { Rss } from 'lucide-react';
-import { getAllPosts, getSearchIndex } from '@/lib/posts';
+import { getAllPosts } from '@/lib/posts';
 import BlogList from '@/components/BlogList';
 import Reading from '@/components/Reading';
 import Navbar from '@/components/Navbar';
@@ -36,7 +36,6 @@ export const metadata: Metadata = {
 
 export default async function Blog() {
     const posts = getAllPosts();
-    const searchIndex = getSearchIndex();
 
     return (
         <>
@@ -58,7 +57,7 @@ export default async function Blog() {
                         <span>rss</span>
                     </a>
                 </header>
-                <BlogList posts={posts} searchIndex={searchIndex} />
+                <BlogList posts={posts} />
                 <Reading />
             </div>
             </main>

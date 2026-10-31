@@ -20,6 +20,8 @@ async function redis(command: string): Promise<number | null> {
       method: 'POST',
       headers: { Authorization: `Bearer ${config.token}` },
       cache: 'no-store',
+      // The counter is decoration; never keep the request hanging on a slow Redis.
+      signal: AbortSignal.timeout(3000),
     });
     if (!response.ok) return null;
     const data = await response.json();

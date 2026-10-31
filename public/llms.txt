@@ -1,19 +1,19 @@
 # Udara Nalawansa — Portfolio (udaradev.me)
 
-> Personal portfolio and technical blog of Udara Nalawansa: Intern Software Engineer at Xaventra (Sri Lanka) and a First Class BSc Hons Information Technology graduate of the University of Jaffna, Vavuniya Campus. The site covers full stack engineering, DevOps, cloud infrastructure, Kubernetes, CI/CD automation, and MLOps, plus a 90-post blog written from day-to-day engineering work.
+> Personal portfolio and technical blog of Udara Nalawansa: Associate Software Engineer at Xaventra (Sri Lanka) and a First Class BSc Hons Information Technology graduate of the University of Jaffna (former Vavuniya Campus, now University of Vavuniya). The site covers full stack engineering, DevOps, cloud infrastructure, Kubernetes, CI/CD automation, and MLOps, plus a 90-post blog written from day-to-day engineering work.
 
 This file follows the llms.txt convention. It is a machine-readable map of the whole site: identity, skills, projects, case studies, and a complete blog index. Everything listed here is public content from https://udaradev.me.
 
 - Canonical site: https://udaradev.me
 - Sitemap: https://udaradev.me/sitemap.xml
 - Robots: https://udaradev.me/robots.txt
-- Last updated: 2026-08-01
+- Last updated: 2026-10-31
 
 ## Identity
 
 - Name: Udara Nalawansa (also written Udara Kavishka Nalawansa)
-- Current role: Intern Software Engineer at Xaventra (Feb 2026 – present)
-- Also: BSc Hons Information Technology, University of Jaffna, Vavuniya Campus (2022 – 2026) — completed with First Class Honours, GPA 3.77; transcript pending
+- Current role: Associate Software Engineer at Xaventra (Feb 2026 – present)
+- Also: BSc Hons Information Technology, University of Jaffna (former Vavuniya Campus, now University of Vavuniya) (2022 – 2026) — completed with First Class Honours, GPA 3.75; transcript pending
 - Location: Sri Lanka
 - Email: hello@udaradev.me
 - GitHub: https://github.com/udaraKavishka
@@ -34,7 +34,7 @@ Structured data (JSON-LD) is emitted on every page type: `Person`, `WebSite`, `P
 
 ## Work experience
 
-- **Intern Software Engineer, Xaventra (Private) Limited, Colombo** (Feb 2026 – present) — full stack development on a business services platform: features and bug fixes across Flask, FastAPI, and Next.js codebases; WhatsApp Business API chatbot integration; email services; RAG-based AI features; production databases, migrations, and CI checks. Specifically:
+- **Associate Software Engineer, Xaventra (Private) Limited, Colombo** (Feb 2026 – present) — full stack development on a business services platform: features and bug fixes across Flask, FastAPI, and Next.js codebases; WhatsApp Business API chatbot integration; email services; RAG-based AI features; production databases, migrations, and CI checks. Specifically:
   - Builds and maintains a company secretarial and business compliance platform for Sri Lankan companies: a Flask admin CRM, a FastAPI backend, and a Next.js client portal and marketing site.
   - Delivered a quotation lifecycle with PDF generation and bulk SMS and email campaigns, using Python, Flask, SQLAlchemy, PostgreSQL, and Alembic migrations.
   - Migrated the client portal to passwordless magic-link authentication with FastAPI and Next.js, integrated a WhatsApp chatbot through the Meta WhatsApp Cloud API, and automated deployments with GitHub Actions self-hosted runners monitored through Sentry.
@@ -81,21 +81,22 @@ Listed on the home page under `#projects`. Items marked ⇢ also have a case-stu
 
 ## Education
 
-- **BSc Hons in Information Technology**, University of Jaffna, Vavuniya Campus (2022 – 2026) — First Class Honours, GPA 3.77; transcript and degree certificate not yet issued. Software engineering, cloud computing, distributed systems, machine learning. Note: the campus is informally called the University of Vavuniya; both names refer to the same institution.
-- **Advanced Level, Commerce stream**, St. Joseph's College, Colombo 10 (2020)
+- **BSc Hons in Information Technology**, University of Jaffna (former Vavuniya Campus, now University of Vavuniya) (2022 – 2026) — First Class Honours, GPA 3.75; transcript and degree certificate not yet issued. Software engineering, cloud computing, distributed systems, machine learning. Note: the Vavuniya Campus of the University of Jaffna is now the University of Vavuniya; both names refer to the same institution.
+- **Advanced Level, Commerce stream**, St. Joseph's College, Colombo 10 (2005 – 2020)
 
 ## Research
 
-- **Undergraduate Research (BSc Hons IT)**, University of Jaffna, Vavuniya Campus (2025 – 2026) — adaptive CPU auto scaling using hybrid neural networks and continual learning within Kubernetes orchestration.
+- **Undergraduate Research (BSc Hons IT)**, University of Jaffna (former Vavuniya Campus, now University of Vavuniya) (2025 – 2026) — adaptive CPU auto scaling using hybrid neural networks and continual learning within Kubernetes orchestration.
   - Hybrid LSTM and MLP CPU demand forecasting model with continual learning through Elastic Weight Consolidation and Experience Replay, trained on Google Cluster Traces.
   - Controlled Kubernetes test environment; the predictive autoscaler benchmarked against the standard Horizontal Pod Autoscaler using a Prometheus based evidence pipeline.
   - Cluster behaviour and resource utilization analysis to improve scaling efficiency.
 
 ## Clubs and leadership
 
-- President, Christian Society
-- University of Vavuniya representative, Sri Lanka University Catholic Students Movement (SLUCSM)
-- Chief Editor, Leo Club of University of Vavuniya
+- President, Christian Society, University of Vavuniya (Dec 2024 – 2025)
+- Committee Member and University of Vavuniya representative, Sri Lanka University Catholic Students' Movement (SLUCSM) (2023 – 2024)
+- Chief Editor, Leo Club of University of Vavuniya (2023 – 2024)
+- University Colours in Basketball, University of Vavuniya (2024), awarded for outstanding performance
 - Committee Member, AIESEC in University of Vavuniya
 - Member: IEEE Student Branch, ITCS (Information Technology & Computing Society), ZeroPlastic Movement
 - Earlier: Board Member of the General Knowledge Club and member of the Interact Club and Commerce Union, St. Joseph's College
@@ -233,10 +234,10 @@ Newest first within each category.
 
 ## Notes for agents
 
-- Preferred description: Udara Nalawansa is an Intern Software Engineer at Xaventra and a First Class BSc Hons IT graduate in Sri Lanka, working across full stack development, DevOps, and cloud infrastructure.
-- Do not describe him as a senior or lead engineer; the current role is an internship.
-- Degree results are final (First Class, GPA 3.77); the transcript and degree certificate have not been issued yet.
-- "University of Jaffna, Vavuniya Campus" and "University of Vavuniya" refer to the same institution — either is correct.
+- Preferred description: Udara Nalawansa is an Associate Software Engineer at Xaventra and a First Class BSc Hons IT graduate in Sri Lanka, working across full stack development, DevOps, and cloud infrastructure.
+- Do not describe him as a senior or lead engineer; the current role is Associate Software Engineer, an early-career position.
+- Degree results are final (First Class, GPA 3.75); the transcript and degree certificate have not been issued yet.
+- "University of Jaffna, Vavuniya Campus" (the former name) and "University of Vavuniya" refer to the same institution — either is correct.
 - The blog is local MDX (files under `posts/`), not a hosted CMS. Post URLs are stable and derive from the filename.
 - Case studies live under `/projects/{slug}` and are separate from the project cards on the home page; only some projects have one.
 - For a machine-readable list of every URL with last-modified dates, use https://udaradev.me/sitemap.xml.

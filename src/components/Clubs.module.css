@@ -36,10 +36,6 @@
     transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
 }
 
-.leadCardLarge {
-    grid-column: span 3;
-}
-
 .leadCard:hover {
     transform: translateY(-3px);
     border-color: color-mix(in srgb, var(--accent-primary) 60%, var(--border-color));
@@ -90,10 +86,6 @@
     font-size: 1.05rem;
     line-height: 1.4;
     color: var(--text-primary);
-}
-
-.leadCardLarge .org {
-    font-size: 1.25rem;
 }
 
 .description {
@@ -183,13 +175,8 @@
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    .leadCard,
-    .leadCardLarge {
+    .leadCard {
         grid-column: span 1;
-    }
-
-    .leadCardLarge:first-child {
-        grid-column: span 2;
     }
 }
 
@@ -200,10 +187,6 @@
 
     .leadGrid {
         grid-template-columns: minmax(0, 1fr);
-    }
-
-    .leadCardLarge:first-child {
-        grid-column: auto;
     }
 
     .memberGroup {

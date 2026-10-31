@@ -109,6 +109,7 @@ export default function Navbar() {
                         <Link
                             key={link.href}
                             href={link.href}
+                            prefetch={false}
                             className={`${styles.link} ${activeSection === link.href.slice(1) ? styles.active : ''}`}
                             aria-current={activeSection === link.href.slice(1) ? 'location' : undefined}
                             onClick={(e) => handleNavClick(e, link.href)}
@@ -141,6 +142,7 @@ export default function Navbar() {
                         <Link
                             key={link.href}
                             href={link.href}
+                            prefetch={false}
                             className={`${styles.mobileLink} ${activeSection === link.href.slice(1) ? styles.active : ''}`}
                             aria-current={activeSection === link.href.slice(1) ? 'location' : undefined}
                             onClick={(e) => handleNavClick(e, link.href)}

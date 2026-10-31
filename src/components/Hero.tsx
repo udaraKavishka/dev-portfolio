@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, useReducedMotion } from 'framer-motion';
+import { useReducedMotion } from 'framer-motion';
 import { ArrowRight, FileText, MapPin } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
@@ -11,12 +11,9 @@ import ViewCounter from './ViewCounter';
 const [firstName, ...restOfName] = heroData.name.split(' ');
 const lastName = restOfName.join(' ');
 
-// Staggered entrance for each hero row.
-const rise = (delay: number) => ({
-    initial: { opacity: 0, y: 16 },
-    animate: { opacity: 1, y: 0 },
-    transition: { delay, duration: 0.5, ease: [0.22, 1, 0.36, 1] as const },
-});
+// Staggered entrance for each hero row. A CSS animation, so the name and photo paint
+// with the HTML instead of waiting for hydration (they are the page's LCP elements).
+const rise = (delay: number) => ({ style: { animationDelay: `${delay}s` } });
 
 export default function Hero() {
     const { tagline, bio, techStack, profileImage, socialLinks, roles } = heroData;
@@ -78,29 +75,29 @@ export default function Hero() {
             <div className={styles.container}>
                 <div className={styles.layout}>
                     <div className={styles.main}>
-                        <motion.h1 className={styles.name} {...rise(0)}>
+                        <h1 className={`${styles.rise} ${styles.name}`} {...rise(0)}>
                             <span className={styles.firstName}>{firstName}</span>
                             <span className={styles.lastName}>
                                 {lastName}
                                 <span className={styles.blockCursor} aria-hidden="true" />
                             </span>
-                        </motion.h1>
+                        </h1>
 
-                        <motion.p className={styles.roleLine} {...rise(0.08)}>
+                        <p className={`${styles.rise} ${styles.roleLine}`} {...rise(0.08)}>
                             <span className={styles.prompt} aria-hidden="true">❯</span>
                             <span className={styles.role} aria-hidden="true">
                                 {reduceMotion ? roles[0] : displayedText}
                                 <span className={styles.caret} />
                             </span>
                             <span className={styles.visuallyHidden}>{roles.join(', ')}</span>
-                        </motion.p>
+                        </p>
 
-                        <motion.div className={styles.copy} {...rise(0.16)}>
+                        <div className={`${styles.rise} ${styles.copy}`} {...rise(0.16)}>
                             <p className={styles.tagline}>{tagline}</p>
                             <p className={styles.bio}>{bio}</p>
-                        </motion.div>
+                        </div>
 
-                        <motion.div className={styles.actions} {...rise(0.24)}>
+                        <div className={`${styles.rise} ${styles.actions}`} {...rise(0.24)}>
                             <a
                                 href="/Udara_Nalawansa.pdf"
                                 target="_blank"
@@ -128,9 +125,9 @@ export default function Hero() {
                                     </a>
                                 ))}
                             </div>
-                        </motion.div>
+                        </div>
 
-                        <motion.div className={styles.stack} {...rise(0.32)}>
+                        <div className={`${styles.rise} ${styles.stack}`} {...rise(0.32)}>
                             <span className={styles.stackLabel}>stack</span>
                             <ul className={styles.stackList}>
                                 {techStack.map((tech) => (
@@ -144,10 +141,10 @@ export default function Hero() {
                                     </li>
                                 ))}
                             </ul>
-                        </motion.div>
+                        </div>
                     </div>
 
-                    <motion.figure className={styles.portrait} {...rise(0.12)}>
+                    <figure className={`${styles.rise} ${styles.portrait}`} {...rise(0.12)}>
                         <div className={styles.photoFrame}>
                             <div className={styles.photoWrap}>
                                 <Image
@@ -170,7 +167,7 @@ export default function Hero() {
                             </span>
                             <ViewCounter />
                         </figcaption>
-                    </motion.figure>
+                    </figure>
                 </div>
             </div>
         </section>

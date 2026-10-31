@@ -225,7 +225,10 @@ export const skillsData: SkillItem[] = [
     { name: 'Docker Compose', category: 'cloud_devops', icon: 'docker' },
     { name: 'Podman', category: 'cloud_devops', icon: 'podman' },
     { name: 'Kubernetes', category: 'cloud_devops', icon: 'kubernetes' },
+    { name: 'Vercel', category: 'cloud_devops', icon: 'vercel' },
     { name: 'GitHub Actions', category: 'cloud_devops', icon: 'githubactions' },
+    { name: 'Jenkins', category: 'cloud_devops', icon: 'jenkins' },
+    { name: 'SonarQube', category: 'cloud_devops', icon: 'sonarqubeserver' },
     { name: 'GitLab CI', category: 'cloud_devops', icon: 'gitlab' },
     { name: 'ArgoCD', category: 'cloud_devops', icon: 'argo' },
     { name: 'Terraform', category: 'cloud_devops', icon: 'terraform' },
@@ -257,22 +260,34 @@ export const skillsData: SkillItem[] = [
     { name: 'React Native', category: 'frontend', icon: 'react' },
     { name: 'TailwindCSS', category: 'frontend', icon: 'tailwindcss' },
     { name: 'TanStack Query', category: 'frontend', icon: 'reactquery' },
+    { name: 'shadcn/ui', category: 'frontend', icon: 'shadcnui' },
+    { name: 'React Hook Form', category: 'frontend', icon: 'reacthookform' },
+    { name: 'Zod', category: 'frontend', icon: 'zod' },
+    { name: 'HTML', category: 'frontend', icon: 'html5' },
 
     { name: 'FastAPI', category: 'backend_data', icon: 'fastapi' },
     { name: 'Flask', category: 'backend_data', icon: 'flask' },
     { name: 'Node.js', category: 'backend_data', icon: 'nodedotjs' },
+    { name: 'Express.js', category: 'backend_data', icon: 'express' },
     { name: 'Spring Boot', category: 'backend_data', icon: 'springboot' },
     { name: 'SQLAlchemy', category: 'backend_data', icon: 'sqlalchemy' },
+    { name: 'Alembic', category: 'backend_data' },
     { name: 'Pydantic', category: 'backend_data', icon: 'pydantic' },
+    { name: 'REST APIs', category: 'backend_data' },
     { name: 'PostgreSQL', category: 'backend_data', icon: 'postgresql' },
     { name: 'MySQL', category: 'backend_data', icon: 'mysql' },
     { name: 'MongoDB', category: 'backend_data', icon: 'mongodb' },
 
     { name: 'Git', category: 'tools', icon: 'git' },
+    { name: 'GitHub', category: 'tools', icon: 'github' },
     { name: 'Linux', category: 'tools', icon: 'linux' },
     { name: 'Claude Code', category: 'tools', icon: 'claude' },
     { name: 'MCP', category: 'tools', icon: 'modelcontextprotocol' },
     { name: 'Postman', category: 'tools', icon: 'postman' },
+    { name: 'OpenAPI', category: 'tools', icon: 'openapiinitiative' },
+    { name: 'Figma', category: 'tools', icon: 'figma' },
+    { name: 'Huly', category: 'tools' },
+    { name: 'Trello', category: 'tools', icon: 'trello' },
 ];
 
 interface ExperienceItem {
@@ -293,8 +308,9 @@ export const experienceData: ExperienceItem[] = [
         period: 'Feb 2026 - Present',
         description: 'Full stack development on a business services platform — building features and fixing bugs across Flask, FastAPI, and Next.js codebases, integrating WhatsApp Business API chatbots, email services, and RAG-based AI features, and working with production databases, migrations, and CI checks.',
         highlights: [
-            'Building and maintaining a company secretarial and business compliance platform for Sri Lankan companies, spanning a Flask admin CRM, a FastAPI backend, and a Next.js client portal and marketing site.',
-            'Designed and integrated RESTful APIs in FastAPI and PostgreSQL against a Next.js and TypeScript frontend, following OpenAPI-driven development.',
+            'Building and maintaining a company secretarial and business compliance platform, spanning a Flask admin CRM, a FastAPI backend, and a Next.js client portal and marketing site.',
+            'Delivered features end to end using Python, Flask, FastAPI, SQLAlchemy, PostgreSQL, and Alembic migrations, and automated deployments with GitHub Actions self-hosted runners monitored through Sentry.',
+            'Designed and integrated RESTful APIs in FastAPI and PostgreSQL against a Next.js and TypeScript frontend, following OpenAPI-driven development so the generated client stays in sync with the backend contract.',
             'Diagnosed and resolved production issues through log analysis, database inspection, and API tracing, and supported CI/CD workflows, Alembic migrations, and incident response with root-cause analysis.',
         ],
         tags: ['Flask', 'FastAPI', 'Next.js', 'TypeScript', 'PostgreSQL', 'Alembic', 'GitHub Actions'],
@@ -317,7 +333,7 @@ interface EducationItem {
 export const educationData: EducationItem[] = [
     {
         degree: 'Bachelor of Science Honours in Information Technology - First Class',
-        institution: 'University of Jaffna (Vavuniya University)',
+        institution: 'University of Jaffna (former Vavuniya Campus, now University of Vavuniya)',
         period: 'Oct 2022 – Oct 2026',
         description: 'Completed with First Class Honours and a GPA of 3.75. Focused on software engineering, cloud computing, distributed systems, and machine learning. Actively involved in various technical projects and leadership roles.',
         media: [
@@ -348,7 +364,7 @@ export const educationData: EducationItem[] = [
     {
         degree: 'School Education',
         institution: 'St. Joseph\'s College, Colombo 10',
-        period: '2020',
+        period: '2005 – 2020',
         description: 'Completed Advanced Level examination in Commerce stream with strong foundation in statistics.',
     },
 ];
@@ -367,7 +383,7 @@ export const researchData: ResearchItem[] = [
     {
         title: 'Undergraduate Research (BSc Hons IT)',
         focus: 'Adaptive CPU auto scaling using hybrid neural networks and continual learning within Kubernetes orchestration',
-        institution: 'University of Jaffna (Vavuniya University)',
+        institution: 'University of Jaffna (former Vavuniya Campus, now University of Vavuniya)',
         period: '2025 - 2026',
         highlights: [
             'Built a hybrid LSTM and MLP CPU demand forecasting model with continual learning through Elastic Weight Consolidation and Experience Replay, trained on Google Cluster Traces.',
@@ -406,14 +422,14 @@ export const clubsData: ClubItem[] = [
         description: 'Engaged in business-related activities and entrepreneurship events.'
     },
     { 
-        name: 'Christian Society', 
+        name: 'Christian Society, University of Vavuniya', 
         role: 'President',
         scope: 'University',
         description: 'Led spiritual activities and community outreach programs for the university.'
     },
     { 
-        name: 'Sri Lanka University Catholic Students Movement (SLUCSM)', 
-        role: 'University of Vavuniya Representative',
+        name: "Sri Lanka University Catholic Students' Movement (SLUCSM)", 
+        role: 'Committee Member, University of Vavuniya Representative',
         scope: 'University',
         description: 'Represented the university in national-level religious and social activities.'
     },
@@ -446,6 +462,12 @@ export const clubsData: ClubItem[] = [
         role: 'Chief Editor',
         scope: 'University',
         description: 'Managed content creation and publication for club newsletters and Flyer materials.'
+    },
+    {
+        name: 'Basketball, University of Vavuniya',
+        role: 'University Colours',
+        scope: 'University',
+        description: 'Awarded University Colours in 2024 for outstanding performance. Played for the Applied Science team and at the Inter University Basketball Championship 2024.'
     },
 ];
 

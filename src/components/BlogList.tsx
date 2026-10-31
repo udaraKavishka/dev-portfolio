@@ -11,7 +11,6 @@ import styles from './BlogList.module.css';
 
 interface BlogListProps {
     posts: Post[];
-    searchIndex: SearchEntry[];
 }
 
 function formatDate(date: string) {
@@ -61,7 +60,7 @@ function bodySnippet(body: string, q: string) {
     );
 }
 
-export default function BlogList({ posts, searchIndex }: BlogListProps) {
+export default function BlogList({ posts }: BlogListProps) {
     const router = useRouter();
     const searchRef = useRef<HTMLInputElement>(null);
     const rowRefs = useRef<(HTMLAnchorElement | null)[]>([]);
@@ -72,6 +71,21 @@ export default function BlogList({ posts, searchIndex }: BlogListProps) {
     });
     const [query, setQuery] = useState('');
     const [selectedIndex, setSelectedIndex] = useState(0);
+
+    // Post bodies for full-text search load on first focus of the search box; until they
+    // arrive, search still matches titles and excerpts.
+    const [searchIndex, setSearchIndex] = useState<SearchEntry[]>([]);
+    const searchIndexRequested = useRef(false);
+    const loadSearchIndex = () => {
+        if (searchIndexRequested.current) return;
+        searchIndexRequested.current = true;
+        fetch('/blog/search-index.json')
+            .then((response) => (response.ok ? response.json() : Promise.reject(response)))
+            .then((entries: SearchEntry[]) => setSearchIndex(entries))
+            .catch(() => {
+                searchIndexRequested.current = false;
+            });
+    };
 
     const bodyMap = useMemo(() => {
         return new Map(searchIndex.map((entry) => [entry.slug, entry.body]));
@@ -271,6 +285,7 @@ export default function BlogList({ posts, searchIndex }: BlogListProps) {
                     placeholder="search posts… ( / )"
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
+                    onFocus={loadSearchIndex}
                     aria-label="search posts"
                     autoComplete="off"
                     spellCheck={false}
@@ -317,8 +332,10 @@ export default function BlogList({ posts, searchIndex }: BlogListProps) {
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: Math.min(index * 0.03, 0.6), duration: 0.4 }}
                             >
+                                {/* No prefetch: the full list is ~100 posts, and each page is static anyway */}
                                 <Link
                                     href={`/blog/${post.slug}`}
+                                    prefetch={false}
                                     ref={(el) => {
                                         rowRefs.current[index] = el;
                                     }}
