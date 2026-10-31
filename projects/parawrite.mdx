@@ -1,0 +1,31 @@
+---
+title: "ParaWrite"
+date: "2025-10-20"
+excerpt: "A paraphrasing tool that keeps the writer in control: it splits a document into sentences and walks through them one at a time, with the sentences around each one in view."
+techStack: ["React", "TypeScript", "Vite", "Tailwind", "shadcn/ui", "Python", "Flask", "Supabase"]
+githubUrl: "https://github.com/udaraKavishka/ParaWrite"
+liveUrl: "https://parawrite.udaradev.me"
+---
+
+## Problem
+
+Automatic paraphrasers rewrite a whole document at once, and the result often drifts from what the writer meant. When I rewrite by hand, the hard part is not the rewriting. It is keeping my place in a long document and remembering what the sentence before said. I wanted a tool that does the bookkeeping and leaves the writing to me: show one sentence, show its neighbours, let me rewrite it, move on.
+
+## Architecture / Approach
+
+<Diagram src="/projects/parawrite/architecture.svg" alt="The writer pastes text or uploads a file in the React app. Uploads go to a Flask API that picks an order of extraction methods, runs them until one returns text, logs the job to Supabase and sends the text back for review. Reviewed or pasted text is split into sentences in the browser, edited one sentence at a time with the previous and next in view, and rejoined for copy or download." />
+
+- **React + TypeScript on Vite**, with **shadcn/ui** and **Tailwind** for the interface. Pasted text goes straight to the splitter. Uploaded files go to the backend first.
+- **A Flask extraction API** reads PDF, DOCX, DOC, Markdown, MDX and plain text. Each format has a list of methods to try in order, and the first one that returns non-empty text wins. For PDFs that is PyMuPDF, then pypdf, then pdfplumber. Word files try docx2txt, then python-docx. Markdown is rendered to HTML and stripped back to text with BeautifulSoup, so headings and links don't leak syntax into the sentences.
+- **Retry with a reason.** The extracted text opens in a review panel where it can be edited, with find and replace. If something looks wrong, the writer retries and says what went wrong. The backend uses that and the method that ran last to pick a different order: a reason that mentions a scan switches to OCR (PyMuPDF renders each page at 220 dpi and Tesseract reads it), and a bad pypdf result moves to the slower, more careful pdfplumber first.
+- **Sentence splitting** runs in the browser, and it is harder than splitting on full stops. Abbreviations (Dr., e.g., U.S.A.), decimals, quotes and ellipses all break naive splitters. The splitter knows these cases, keeps closing quotes and brackets with their sentence, and has a test suite for the edge cases.
+- **The editor** shows the current sentence with the previous and next ones beside it and a progress bar for the document. At the end the edited sentences are joined back together to copy or download.
+- **Supabase** stores a row for each extraction: file type, the method that worked, the retry mode and the text length. That shows which files and methods fail most often. A status dot in the header checks the backend's health endpoint every 30 seconds, including whether Tesseract is installed for OCR.
+
+## My Contribution
+
+I built it alone: the editor, the splitter and its tests, and the extraction backend. The decision I'm happiest with is the review step after extraction. PDF text extraction is never perfect, and letting people fix the text, or retry with a different method, before they start beats making them notice a broken sentence halfway through.
+
+## Outcome
+
+ParaWrite is live and still the tool I reach for when I rewrite my own writing. Building it taught me how much hidden work sits in something as ordinary as finding where a sentence ends.

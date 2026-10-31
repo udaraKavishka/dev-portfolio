@@ -93,13 +93,41 @@
 
 .links {
     display: flex;
-    gap: 1rem;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.25rem;
+}
+
+/* Same look as the hero's primary button, so the live site is the obvious next click */
+.liveButton {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-height: 44px;
+    padding: 0.75rem 1.4rem;
+    border-radius: var(--radius-sm);
+    background-color: var(--accent-primary);
+    color: var(--bg-primary);
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    font-weight: 700;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.liveButton:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px -10px color-mix(in srgb, var(--accent-primary) 70%, transparent);
+}
+
+.liveButton:active {
+    transform: translateY(0);
 }
 
 .linkButton {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
+    min-height: 44px;
     font-family: var(--font-mono);
     font-size: 0.9rem;
     color: var(--accent-tertiary);

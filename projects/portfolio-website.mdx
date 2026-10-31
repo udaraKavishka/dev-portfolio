@@ -1,0 +1,29 @@
+---
+title: "Portfolio Website"
+date: "2025-11-23"
+excerpt: "This site: a Next.js App Router portfolio where the blog and case studies are MDX files in the repo, built to load fast and to be easy for people and AI tools to read."
+techStack: ["Next.js", "React", "TypeScript", "CSS Modules", "MDX", "Framer Motion", "Vercel"]
+githubUrl: "https://github.com/udaraKavishka/dev-portfolio"
+liveUrl: "https://udaradev.me"
+---
+
+## Problem
+
+I wanted one place for my projects, my writing and my CV that I fully control, where adding a blog post is as easy as adding a file. The first version used Sanity as a CMS. It worked, but for one writer it was an extra service to run and log into, and the content didn't live next to the code.
+
+## Architecture / Approach
+
+- **Next.js App Router** with **React** and **TypeScript**. Blog posts and project pages are generated at build time, so they are served as static files.
+- **Content as MDX in the repo.** Posts live in `posts/` and case studies in `projects/`, read with gray-matter and rendered with next-mdx-remote. In July 2026 I removed Sanity completely, so a new post is now a new file and a commit.
+- **CSS Modules** with a dark terminal theme and a light theme, and **Framer Motion** for scroll animations.
+- **Readable by machines as well as people.** The site has a sitemap, an RSS feed, JSON-LD structured data, generated Open Graph images, and an `llms.txt` file that summarises the site for AI tools.
+- **Small extras:** a post view counter on Upstash Redis with a short timeout so a slow request never holds up the page, and a contact form through Formspree.
+- **Deployed on Vercel.**
+
+## My Contribution
+
+I designed and built all of it. The part I learned most from was performance work. The hero section used to stay hidden until JavaScript loaded. Now it animates in with plain CSS, so it shows up with the first HTML. The blog index used to send the full text of every post for search. That text now loads only when someone clicks the search box, which cut the page from about 400 KB to about 110 KB.
+
+## Outcome
+
+The site is live at udaradev.me, and what you are reading is part of it. Writing a post or a case study is now a single file, which is the reason the blog actually gets updated.

@@ -106,17 +106,6 @@ export const projectsData: ProjectItem[] = [
         // isOngoing: true
     },
     {
-        id: 5,
-        title: 'Flask CRUD API',
-        subtitle: 'Docker, Postgres and CI health checks',
-        icon: Database,
-        tile: 'wide',
-        description: 'Built a containerized CRUD REST API for user management using Flask and SQLAlchemy, with Postgres persistence via Docker Compose and automated CI health/E2E checks.',
-        techStack: ['Python', "Flask", 'Flask-SQLAlchemy', 'PostgreSQL', 'Docker', 'Docker Compose', 'GitHub Actions'],
-        githubUrl: 'https://github.com/udaraKavishka/flask-crud-api',
-        caseStudySlug: 'flask-crud-api',
-    },
-    {
         id: 2,
         title: 'URL Shortener',
         subtitle: 'Go, Gin and Redis',
@@ -148,6 +137,17 @@ export const projectsData: ProjectItem[] = [
         caseStudySlug: 'taskflow',
     },
     {
+        id: 5,
+        title: 'Flask CRUD API',
+        subtitle: 'Docker, Postgres and CI health checks',
+        icon: Database,
+        tile: 'wide',
+        description: 'Built a containerized CRUD REST API for user management using Flask and SQLAlchemy, with Postgres persistence via Docker Compose and automated CI health/E2E checks.',
+        techStack: ['Python', "Flask", 'Flask-SQLAlchemy', 'PostgreSQL', 'Docker', 'Docker Compose', 'GitHub Actions'],
+        githubUrl: 'https://github.com/udaraKavishka/flask-crud-api',
+        caseStudySlug: 'flask-crud-api',
+    },
+    {
         id: 7,
         title: 'CeylonRoots',
         subtitle: 'Sri Lankan travel platform',
@@ -174,10 +174,10 @@ export const projectsData: ProjectItem[] = [
         icon: PenLine,
         tile: 'wide',
         description: 'A text paraphrasing tool that enables sentence by sentence editing with efficient processing and a clean, user friendly interface for improving written content.',
-        techStack: ['Next.js', 'React', 'TypeScript', 'CSS Modules'],
+        techStack: ['React', 'TypeScript', 'Vite', 'Tailwind', 'shadcn/ui', 'Python', 'Flask', 'Supabase'],
         githubUrl: 'https://github.com/udaraKavishka/ParaWrite',
         liveUrl: 'https://parawrite.udaradev.me',
-
+        caseStudySlug: 'parawrite',
     },
     {
         id: 8,
@@ -189,6 +189,7 @@ export const projectsData: ProjectItem[] = [
         techStack: ['Next.js', 'React', 'TypeScript', 'CSS Modules', 'Vercel'],
         githubUrl: 'https://github.com/udaraKavishka/dev-portfolio',
         liveUrl: 'https://udaradev.me',
+        caseStudySlug: 'portfolio-website',
     },
     // {
     //     id: 10,

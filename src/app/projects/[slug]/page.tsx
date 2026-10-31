@@ -119,6 +119,17 @@ export default async function ProjectCaseStudy({
                                 </div>
                             )}
                             <div className={styles.links}>
+                                {project.liveUrl && (
+                                    <a
+                                        href={project.liveUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className={styles.liveButton}
+                                    >
+                                        <ExternalLink size={16} />
+                                        <span>View live</span>
+                                    </a>
+                                )}
                                 {project.githubUrl && (
                                     <a
                                         href={project.githubUrl}
@@ -128,17 +139,6 @@ export default async function ProjectCaseStudy({
                                     >
                                         <Github size={16} />
                                         <span>Source</span>
-                                    </a>
-                                )}
-                                {project.liveUrl && (
-                                    <a
-                                        href={project.liveUrl}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className={styles.linkButton}
-                                    >
-                                        <ExternalLink size={16} />
-                                        <span>Live</span>
                                     </a>
                                 )}
                             </div>
